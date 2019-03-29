@@ -1,7 +1,9 @@
+#!/bin/bash
+
 source "utils/cachengo.sh"
 source "utils/parameters.sh"
 
-function install {
+function do_install {
   update_status "Installing"
   local PORTS_ARR
   local ENVVARS_ARR
@@ -12,16 +14,15 @@ function install {
   update_status "Installed"
 }
 
-function uninstall {
+function do_uninstall {
   update_status "Uninstalling"
   docker stop $APPID
   docker rm $APPID
   update_status "Uninstalled"
 }
 
-while getopts 'iu' flag; do
-  case "${flag}" in
-    i) install ;;
-    u) uinstall ;;
-  esac
-done
+
+case "$1" in
+  install) do_install ;;
+  uninstall) do_uninstall ;;
+esac
