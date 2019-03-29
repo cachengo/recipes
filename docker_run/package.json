@@ -1,0 +1,36 @@
+{
+  "name": "docker_run",
+  "display_name": "Docker",
+  "description": "Runs a docker container",
+  "parameters": [
+    {
+      "name": "IMAGE",
+      "display_name": "Image",
+      "description": "Image name",
+      "type": "string",
+      "required": true,
+      "default": ""
+    },
+    {
+      "name": "PORTS",
+      "display_name": "Ports",
+      "description": "List of \"host:container\" ports to map",
+      "type": "list",
+      "required": false,
+      "default": []
+    },
+    {
+      "name": "ENVVARS",
+      "display_name": "Environment Variables",
+      "description": "List of \"NAME=VALUE\" env-vars to add to installation" ,
+      "type": "list",
+      "required": false,
+      "default": []
+    }
+  ],
+  "main": "docker_run/run.sh",
+  "dependencies": [
+    "docker_run/run.sh",
+    "utils/parameters.sh"
+  ]
+}

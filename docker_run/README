@@ -1,0 +1,7 @@
+
+
+## Example Use:
+export ENVVARS='["FOO=BAR", "QWE=RTY"]'
+export PORTS='["123:456", "789:1011"]'
+export IMAGE='cachengo/onos:1.13.2'
+docker_run/run.sh
