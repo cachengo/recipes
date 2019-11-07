@@ -10,7 +10,7 @@ function do_install {
   array_from_json_list PORTS_ARR "$PORTS"
   array_from_json_list ENVVARS_ARR "$ENVVARS"
   declare -p PORTS_ARR
-  docker run -d "${PORTS_ARR[@]/#/-p}" "${ENVVARS_ARR[@]/#/-e}" -n $APPID $IMAGE
+  docker run -d "${PORTS_ARR[@]/#/-p}" "${ENVVARS_ARR[@]/#/-e}" --name $APPID $IMAGE
   update_status "Installed"
 }
 
