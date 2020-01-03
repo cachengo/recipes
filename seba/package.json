@@ -1,0 +1,11 @@
+{
+  "name": "seba",
+  "display_name": "Seba",
+  "description": "Installs the Akraino SEBA blueprint",
+  "parameters": [],
+  "main": "seba/run.sh",
+  "dependencies": [
+    "seba/run.sh",
+    "utils/cachengo.sh"
+  ]
+}

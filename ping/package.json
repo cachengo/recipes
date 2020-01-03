@@ -1,0 +1,24 @@
+{
+  "name": "ping",
+  "display_name": "Ping",
+  "description": "Pings a specified URL or IP at a specific rate",
+  "parameters": [
+    {
+      "name": "URL", 
+      "index": "URL", 
+      "type": "string", 
+      "required": true
+    },
+    {
+      "name": "Requests per second", 
+      "index": "REQS_PER_SEC", 
+      "type": "int", 
+      "required": false
+    }
+  ],
+  "main": "ping/run.sh",
+  "dependencies": [
+    "ping/run.sh",
+    "utils/cachengo.sh"
+  ]
+}

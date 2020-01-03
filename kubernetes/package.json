@@ -1,0 +1,18 @@
+{
+  "name": "kubernetes",
+  "display_name": "Kubernetes",
+  "description": "Starts a single-node kubernetes cluster",
+  "parameters": [
+    {
+      "name": "Pod Network Cidr", 
+      "index": "POD_NET_CIDR", 
+      "type": "string", 
+      "required": false
+    }
+  ],
+  "main": "kubernetes/run.sh",
+  "dependencies": [
+    "kubernetes/run.sh",
+    "utils/cachengo.sh"
+  ]
+}

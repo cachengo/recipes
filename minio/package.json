@@ -1,0 +1,11 @@
+{
+  "name": "minio",
+  "display_name": "Min.io",
+  "description": "Runs a Min.io S3 server",
+  "parameters": [],
+  "main": "minio/run.sh",
+  "dependencies": [
+    "minio/run.sh",
+    "utils/cachengo.sh"
+  ]
+}
