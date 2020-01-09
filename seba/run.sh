@@ -1,17 +1,8 @@
 #!/bin/bash
 
 source "utils/cachengo.sh"
-source "utils/parameters.sh"
 
-function do_install {
-  set -e
-
-  CORD_REPO=${CORD_REPO:-https://charts.opencord.org}
-  CORD_PLATFORM_VERSION=${CORD_PLATFORM_VERSION:-6.1.0}
-  SEBA_VERSION=${SEBA_VERSION:-1.0.0}
-  ATT_WORKFLOW_VERSION=${ATT_WORKFLOW_VERSION:-1.0.2}
-
-  function wait_for {
+function wait_for {
     (
       local sleep_time=3
       local total_wait=$1
@@ -29,7 +20,15 @@ function do_install {
       done
       $the_test || exit 1
     )
-  }
+}
+
+function do_install {
+  set -e
+
+  CORD_REPO=${CORD_REPO:-https://charts.opencord.org}
+  CORD_PLATFORM_VERSION=${CORD_PLATFORM_VERSION:-6.1.0}
+  SEBA_VERSION=${SEBA_VERSION:-1.0.0}
+  ATT_WORKFLOW_VERSION=${ATT_WORKFLOW_VERSION:-1.0.2}
 
   tiller_test() { [[ $(kubectl get pods --all-namespaces | grep -ce "tiller.*Running") -eq 1 ]]; }
   wait_for 10 tiller_test "Waiting for Tiller"

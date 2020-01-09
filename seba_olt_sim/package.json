@@ -1,6 +1,6 @@
 {
   "name": "seba_olt_sim",
-  "display_name": "SSEBA OLT Sim",
+  "display_name": "SEBA OLT Sim",
   "description": "OLT device simulator for testing SEBA",
   "parameters": [],
   "main": "seba_olt_sim/run.sh",
