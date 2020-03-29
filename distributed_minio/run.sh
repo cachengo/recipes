@@ -1,27 +1,27 @@
 #!/bin/bash
 
 source "utils/cachengo.sh"
+source "utils/parameters.sh"
 
 function do_install {
   set -e
   cachengo-cli updateInstallStatus $APPID "Installing"
-  docker run \
-    --name $APPID \
-    -d \
-    -p 9000:9000 \
-    -e "MINIO_ACCESS_KEY=$ACCESS_KEY" \
-    -e "MINIO_SECRET_KEY=$SECRET_KEY" \
-    --restart unless-stopped \
-    -v /data/minio:/data \
-    registry.cachengo.com/cachengo/minio:latest server /data
+  local IPS_ARR
+  array_from_json_list IPS_ARR "$IPS"
+  export MINIO_ACCESS_KEY=$ACCESS_KEY
+  export MINIO_SECRET_KEY=$SECRET_KEY
+  mkdir /data/dist_minio
+  #count number of nodes
+  #write to hosts file
+  minio server http://host{1...32}/data/dist_minio
   cachengo-cli updateInstallStatus $APPID "Installed"
 }
 
 function do_uninstall {
   cachengo-cli updateInstallStatus $APPID "Uninstalling"
+  rm -rf /data/dist_minio
+  #clean host file
   docker stop $APPID
-  docker rm $APPID
-  rm -rf /data/minio/*
   cachengo-cli updateInstallStatus $APPID "Uninstalled"
 }
 

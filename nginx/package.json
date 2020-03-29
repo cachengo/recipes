@@ -1,0 +1,11 @@
+{
+  "name": "nginx",
+  "display_name": "NGINX",
+  "description": "Docker version of Nginx reverse proxy server. Serves files located in the node's /data/nginx folder",
+  "parameters": [],
+  "main": "nginx/run.sh",
+  "dependencies": [
+    "nginx/run.sh",
+    "utils/cachengo.sh"
+  ]
+}

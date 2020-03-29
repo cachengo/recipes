@@ -6,7 +6,7 @@
     {
       "name": "ACCESS_KEY",
       "display_name": "Access Key",
-      "description": "Access key for accessing the S3 cluster. Can be any string.",
+      "description": "Access key for accessing the S3 cluster",
       "type": "string",
       "required": true
     },
@@ -21,6 +21,7 @@
   "main": "minio/run.sh",
   "dependencies": [
     "minio/run.sh",
-    "utils/cachengo.sh"
+    "utils/cachengo.sh",
+    "utils/parameters.sh"
   ]
 }
