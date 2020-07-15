@@ -1,12 +1,12 @@
 {
     "name": "rancher",
     "display_name": "Rancher",
-    "description": "Runs a docker container",
+    "description": "Initialize rancher cluster",
     "parameters": [
         {
             "name": "K3S_TOKEN",
             "display_name": "Secret token",
-            "description": "Secret token for usued for joining new nodes" ,
+            "description": "Secret token used for joining new nodes" ,
             "type": "string",
             "required": true,
             "default": []
