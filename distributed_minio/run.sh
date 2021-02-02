@@ -6,21 +6,37 @@ source "utils/parameters.sh"
 function do_install {
   set -e
   cachengo-cli updateInstallStatus $APPID "Installing"
+  echo "Hello"
+  echo $IPS
   local IPS_ARR
   array_from_json_list IPS_ARR "$IPS"
   export MINIO_ACCESS_KEY=$ACCESS_KEY
   export MINIO_SECRET_KEY=$SECRET_KEY
-  mkdir /data/dist_minio
-  #count number of nodes
-  #write to hosts file
-  minio server http://host{1...32}/data/dist_minio
+
+  for ((i=0;i<${#IPS_ARR[@]};++i)); do 
+    echo "Trying"
+    echo "${IPS_ARR[i]} $GROUPID-$i"
+    echo "${IPS_ARR[i]} $GROUPID-$i" >> /etc/hosts
+  done
+
+  echo "Total: $i"
+
+  docker run -p 9000:9000 \
+    --name $APPID \
+    -d \
+    -e "MINIO_ROOT_USER=AKIAIOSFODNN7EXAMPLE" \
+    -e "MINIO_ROOT_PASSWORD=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" \
+    --net host \
+    --restart unless-stopped \
+    registry.cachengo.com/minio/minio server http://$GROUPID-{0...$((i-1))}/data/
+
   cachengo-cli updateInstallStatus $APPID "Installed"
 }
 
 function do_uninstall {
   cachengo-cli updateInstallStatus $APPID "Uninstalling"
   rm -rf /data/dist_minio
-  #clean host file
+  sed -i "/$GROUPID/d" /etc/hosts
   docker stop $APPID
   cachengo-cli updateInstallStatus $APPID "Uninstalled"
 }

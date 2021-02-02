@@ -5,16 +5,26 @@ source "utils/cachengo.sh"
 function do_install {
   set -e
   cachengo-cli updateInstallStatus $APPID "Installing"
-  # Remove user@host to add our own identifier
-  key="$( cut -d ' ' -f 2 <<< "$PUBLIC_KEY" )"
-  echo "ssh-rsa $key $APPID" >> /home/$TARGET_USER/.ssh/authorized_keys
+  mkdir -p /bitcoin-data
+  docker run \
+    --name $APPID \
+    -d \
+    -p 8332:8332 \
+    -p 8333:8333 \
+    -p 9332:9332 \
+    -p 9333:9333 \
+    -p 18332:18332 \
+    -p 18333:18333 \
+    -v ~/bitcoin-data:/data \
+    --restart unless-stopped \
+    registry.cachengo.com/cachengo/docker-sv-aarch64:0.0
   cachengo-cli updateInstallStatus $APPID "Installed"
 }
 
 function do_uninstall {
   cachengo-cli updateInstallStatus $APPID "Uninstalling"
-  sed -i "/$APPID/d" /home/*/.ssh/authorized_keys
-  sed -i "/$APPID/d" /home/.*/.ssh/authorized_keys
+  docker stop $APPID
+  docker rm $APPID
   cachengo-cli updateInstallStatus $APPID "Uninstalled"
 }
 
