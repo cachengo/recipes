@@ -4,15 +4,16 @@
   "description": "Starts a single-node kubernetes cluster",
   "parameters": [
     {
-      "name": "Pod Network Cidr", 
-      "index": "POD_NET_CIDR", 
+      "name": "ADVERTISE_ADDRESSr", 
+      "index": "ADVERTISE_ADDRESS", 
       "type": "string", 
-      "required": false
+      "required": true
     }
   ],
   "main": "kubernetes/run.sh",
   "dependencies": [
     "kubernetes/run.sh",
-    "utils/cachengo.sh"
+    "utils/cachengo.sh",
+    "kubernetes/calico.yaml"
   ]
 }
