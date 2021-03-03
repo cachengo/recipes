@@ -22,6 +22,7 @@ function do_install {
     docker run -d \
       --name $QUEUENAME \
       --net=$NETNAME \
+      --restart unless-stopped \
       -p 6379:6379 \
       redis:alpine;
 
@@ -29,6 +30,7 @@ function do_install {
     docker run -d \
         --name $DBNAME \
         --net $NETNAME \
+	--restart unless-stopped \
         -p 5432:5432 \
         -e POSTGRES_PASSWORD=password \
         postgres
@@ -43,6 +45,7 @@ function do_install {
       -v $DATADIR:/images \
       --net=$NETNAME \
       --name $SERVERNAME \
+      --restart unless-stopped \
       cachengo/video-object-detection:1.0;
     
     cachengo-cli updateInstallStatus $APPID "Installing: Server Worker"
@@ -55,12 +58,14 @@ function do_install {
       --net=$NETNAME \
       --name $WORKERNAME \
       --dns=8.8.8.8 \
+      --restart unless-stopped \
       cachengo/video-object-detection:1.0;
   else
     cachengo-cli updateInstallStatus $APPID "Installing: Inference Worker"
     docker run -d \
       --add-host leader:$LEADER_URL \
       --network host \
+      --restart unless-stopped \
       -e CELERY_BROKER_URL="redis://leader:6379" \
       -e CELERY_RESULT_BACKEND="redis://leader:6379" \
       -e CONTAINER_ROLE=inference \
