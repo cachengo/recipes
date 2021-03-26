@@ -3,8 +3,9 @@
 source "utils/cachengo.sh"
 
 function do_install {
-#  cachengo-cli updateInstallStatus $APPID "Installing K8s"
+  cachengo-cli updateInstallStatus $APPID "Installing K8s"
  
+  sudo adduser kubernetes --disabled-password
   swapoff -a; sed -i '/swap/d' /etc/fstab
 
   sysctl -w net.ipv6.conf.all.forwarding=1
@@ -23,20 +24,21 @@ EOF
 
   #Initialization
   kubeadm init --apiserver-advertise-address=$ADVERTISE_ADDRESS
- 
 
-  mkdir -p $HOME/.kube
-  cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-
-  kubectl apply -f kubernetes/calico.yaml
+  mkdir -p /home/kubernetes/.kube
+  cp -i /etc/kubernetes/admin.conf /home/kubernetes/.kube/config 
+  chown -R kubernetes /home/kubernetes/.kube
+  chown kubernetes /home/kubernetes/.kube/config
+  
+  sudo -u kubernetes kubectl apply -f kubernetes/calico.yaml
 }
 
 function do_uninstall {
   cachengo-cli updateInstallStatus $APPID "Uninstalling"
-  kubeadm reset -f
+  #anadir eliminar usr kubernetes
+  kubeadm reset -f -y
   cachengo-cli updateInstallStatus $APPID "Uninstalled"
 }
-
 
 case "$1" in
   install) do_install ;;
