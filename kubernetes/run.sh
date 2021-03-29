@@ -3,7 +3,7 @@
 source "utils/cachengo.sh"
 
 function do_install {
-  cachengo-cli updateInstallStatus $APPID "Installing K8s"
+  cachengo-cli updateInstallStatus $APPID "Installing"
  
   sudo adduser kubernetes --disabled-password
   swapoff -a; sed -i '/swap/d' /etc/fstab
@@ -23,7 +23,7 @@ EOF
   apt update && apt install -y kubeadm=1.18.5-00 kubelet=1.18.5-00 kubectl=1.18.5-00
 
   #Initialization
-  kubeadm init --apiserver-advertise-address=$ADVERTISE_ADDRESS
+  kubeadm init --apiserver-advertise-address=$ADVERTISE_ADDRES --skip-token-print --skip-certificate-key-print
 
   mkdir -p /home/kubernetes/.kube
   cp -i /etc/kubernetes/admin.conf /home/kubernetes/.kube/config 
@@ -37,8 +37,8 @@ EOF
 
 function do_uninstall {
   cachengo-cli updateInstallStatus $APPID "Uninstalling"
-  #anadir eliminar usr kubernetes
-  kubeadm reset -f -y
+  echo "Delete reached"
+  kubeadm reset -f
   sudo userdel -r kubernetes
   cachengo-cli updateInstallStatus $APPID "Uninstalled"
 }
