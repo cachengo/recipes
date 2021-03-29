@@ -31,12 +31,15 @@ EOF
   chown kubernetes /home/kubernetes/.kube/config
   
   sudo -u kubernetes kubectl apply -f kubernetes/calico.yaml
+
+  cachengo-cli updateInstallStatus $APPID "Installed"
 }
 
 function do_uninstall {
   cachengo-cli updateInstallStatus $APPID "Uninstalling"
   #anadir eliminar usr kubernetes
   kubeadm reset -f -y
+  sudo userdel -r kubernetes
   cachengo-cli updateInstallStatus $APPID "Uninstalled"
 }
 
