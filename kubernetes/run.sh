@@ -23,7 +23,7 @@ EOF
   apt update && apt install -y kubeadm=1.18.5-00 kubelet=1.18.5-00 kubectl=1.18.5-00
 
   #Initialization happens conditionally depending if the machine is a master or a worker node
-  if [$KUBERNETES_TKN == '']; then
+  if [ ! "$KUBERNETES_TKN" ]; then
     kubeadm init --apiserver-advertise-address=$ADVERTISE_ADDRESS --skip-token-print --skip-certificate-key-print
     mkdir -p /home/kubernetes/.kube
     cp -i /etc/kubernetes/admin.conf /home/kubernetes/.kube/config 
@@ -50,10 +50,6 @@ function do_uninstall {
   kubeadm reset -f
   sudo userdel -r kubernetes
   cachengo-cli updateInstallStatus $APPID "Uninstalled"
-}
-
-function declare_secret {
-  cachengo-cli declareSecret -i $APPID -n $1 -v $2
 }
 
 case "$1" in
