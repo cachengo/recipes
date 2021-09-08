@@ -24,16 +24,17 @@ function do_install {
     -d \
     -e "MINIO_ROOT_USER=$ACCESS_KEY" \
     -e "MINIO_ROOT_PASSWORD=$SECRET_KEY" \
+    -v /data/$GROUPID:/data \
     --net host \
     --restart unless-stopped \
-    registry.cachengo.com/minio/minio server http://$GROUPID-{0...$((i-1))}/data/
+    minio/minio server http://$GROUPID-{0...$((i-1))}/data/
 
   cachengo-cli updateInstallStatus $APPID "Installed"
 }
 
 function do_uninstall {
   cachengo-cli updateInstallStatus $APPID "Uninstalling"
-  rm -rf /data/dist_minio
+  rm -rf /data/$GROUPID
   sed -i "/$GROUPID/d" /etc/hosts
   docker stop $APPID
   cachengo-cli updateInstallStatus $APPID "Uninstalled"

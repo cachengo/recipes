@@ -34,7 +34,7 @@ function do_install {
     -e "FACEREC_ADDRESS=$APPID-facerec:5000" \
     --network=$NETNAME \
     --name $APPID-sso \
-    registry.cachengo.com/cachengo/sso_example:1.5
+    registry.cachengo.com/cachengo/ford_sso_example:latest
 
   cachengo-cli updateInstallStatus $APPID "Installed"
 }
