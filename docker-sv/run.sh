@@ -5,15 +5,19 @@ source "utils/cachengo.sh"
 function do_install {
   set -e
   cachengo-cli updateInstallStatus $APPID "Installing"
+  mkdir -p /bitcoin-data
   docker run \
     --name $APPID \
     -d \
-    -p 9000:9000 \
-    -e "MINIO_ACCESS_KEY=$ACCESS_KEY" \
-    -e "MINIO_SECRET_KEY=$SECRET_KEY" \
+    -p 8332:8332 \
+    -p 8333:8333 \
+    -p 9332:9332 \
+    -p 9333:9333 \
+    -p 18332:18332 \
+    -p 18333:18333 \
+    -v ~/bitcoin-data:/data \
     --restart unless-stopped \
-    -v /data/minio:/data \
-    registry.cachengo.com/cachengo/minio:latest server /data
+    registry.cachengo.com/cachengo/docker-sv-aarch64:0.0
   cachengo-cli updateInstallStatus $APPID "Installed"
 }
 
@@ -21,7 +25,6 @@ function do_uninstall {
   cachengo-cli updateInstallStatus $APPID "Uninstalling"
   docker stop $APPID
   docker rm $APPID
-  rm -rf /data/minio/*
   cachengo-cli updateInstallStatus $APPID "Uninstalled"
 }
 

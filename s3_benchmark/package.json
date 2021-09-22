@@ -1,0 +1,41 @@
+{
+    "name": "s3_benchmark",
+    "display_name": "S3 Benchmark",
+    "description": "A tool to benchmark S3 clusters in parallel from multiple clients",
+    "parameters": [
+      {
+        "name": "ACCESS_KEY",
+        "display_name": "Access Key",
+        "description": "Access key for accessing the S3 cluster",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "SECRET_KEY",
+        "display_name": "Secret Key",
+        "description": "Secret key for accessing the S3 cluster",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "SERVERS",
+        "display_name": "Server IPs",
+        "description": "IP addresses to use for communicating with S3 servers",
+        "type": "list",
+        "required": true
+      },
+      {
+        "name": "CLIENTS",
+        "display_name": "Client IPs",
+        "description": "IP addresses to use for the  clients",
+        "type": "list",
+        "required": true
+      }
+    ],
+    "main": "s3_benchmark/run.sh",
+    "dependencies": [
+      "s3_benchmark/run.sh",
+      "utils/cachengo.sh",
+      "utils/parameters.sh"
+    ]
+  }

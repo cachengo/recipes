@@ -1,0 +1,26 @@
+{
+  "name": "public_key",
+  "display_name": "Public Key",
+  "description": "Install a public key for node access via SSH",
+  "parameters": [
+    {
+      "name": "TARGET_USER",
+      "display_name": "User",
+      "description": "User on which to install the key",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "PUBLIC_KEY",
+      "display_name": "Public Key",
+      "description": "Public key to add to authorized users",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "main": "public_key/run.sh",
+  "dependencies": [
+    "public_key/run.sh",
+    "utils/cachengo.sh"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "new_user",
+  "display_name": "New User",
+  "description": "Adds a new user account to the target devices",
+  "parameters": [
+    {
+      "name": "TARGET_USER",
+      "display_name": "User",
+      "description": "User on which to install the key",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "IS_SUDOER",
+      "display_name": "Sudoer?",
+      "description": "Should this user be added to the sudoers list?",
+      "type": "boolean",
+      "required": false
+    }
+  ],
+  "main": "new_user/run.sh",
+  "dependencies": [
+    "new_user/run.sh",
+    "utils/cachengo.sh"
+  ]
+}

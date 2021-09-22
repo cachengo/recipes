@@ -1,0 +1,27 @@
+{
+  "name": "plex",
+  "display_name": "Plex",
+  "description": "Plex Media Server",
+  "parameters": [
+    {
+      "name": "PLEX_CLAIM",
+      "display_name": "Plex Claim",
+      "description": "Claim for you Plex accout. Get it at plex.tv/claim",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "IP_ADDRESSES",
+      "display_name": "Custom IPs",
+      "description": "IP addresses to advertise",
+      "type": "list",
+      "required": false
+    }
+  ],
+  "main": "plex/run.sh",
+  "dependencies": [
+    "plex/run.sh",
+    "utils/cachengo.sh",
+    "plex/fix_preferences.py"
+  ]
+}

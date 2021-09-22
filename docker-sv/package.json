@@ -1,0 +1,11 @@
+{
+  "name": "bsv-bitcoind",
+  "display_name": "BSV bitcoind",
+  "description": "Runs the bitcoind executable from a Docker container.",
+  "parameters": [],
+  "main": "docker-sv/run.sh",
+  "dependencies": [
+    "docker-sv/run.sh",
+    "utils/cachengo.sh"
+  ]
+}
