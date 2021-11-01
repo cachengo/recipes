@@ -1,0 +1,9 @@
+[Unit]
+Description=Minio
+[Service]
+Environment=MINIO_ROOT_USER=access_key
+Environment=MINIO_ROOT_PASSWORD=secret_key
+ExecStart=/usr/bin/minio server  http://jimmy-minio-server-{8...15}/data/
+Restart=always
+[Install]
+WantedBy=multi-user.target
