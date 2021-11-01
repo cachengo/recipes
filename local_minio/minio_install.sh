@@ -37,7 +37,7 @@ IPS_ARR=(
 )
 ACCESS_KEY=access_key
 SECRET_KEY=secret_key
-GROUPID=jimmy-minio-server
+GROUPID=minio-server
 
 function do_install {
   do_uninstall
