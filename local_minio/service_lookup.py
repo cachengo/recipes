@@ -67,7 +67,7 @@ if __name__ == "__main__":
     # hostnames = ['B020111-958092d', 'B020112-9a4ebf6', 'B020113-2c652b2', 'B020114-8c52d97', 'B020111-ddd4188', 'B020122-5b92ff2', 'B020123-461cda3', 'B020124-0689480']
     hostnames_json = os.environ.get('HOSTNAMES')
     hostnames = json.loads(hostnames_json)
-    print("hostnames inside json are:", hostnames)
+
     host_ip = {host: None for host in hostnames}
 
     while True:

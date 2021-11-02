@@ -30,6 +30,8 @@
       "local_minio/minio_install.sh",
       "utils/cachengo.sh",
       "utils/parameters.sh",
-      "local_minio/service_lookup.py"
+      "local_minio/service_lookup.py",
+      "local_minio/minio.service",
+      "local_minio/minio_lookup.service"
     ]
   }
