@@ -35,6 +35,10 @@ function do_install {
     platform=amd64
   fi
 
+  if [[ $platform == aarch64 ]]; then
+    platform=arm64
+  fi
+
   
   if [ ! -f /usr/bin/minio ]; then
     curl -o /usr/bin/minio "http://dl.min.io/server/minio/release/linux-$platform/minio"
