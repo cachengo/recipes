@@ -30,9 +30,14 @@ function do_install {
   systemctl daemon-reload
   service minio_lookup start
 
+  platform=`uname -m`
+  if [[ $platform == x86_64 ]]; then
+    platform=amd64
+  fi
+
   
   if [ ! -f /usr/bin/minio ]; then
-    curl -o /usr/bin/minio http://dl.min.io/server/minio/release/linux-amd64/minio
+    curl -o /usr/bin/minio "http://dl.min.io/server/minio/release/linux-$platform/minio"
     chmod +x /usr/bin/minio
   fi
   cp local_minio/minio.service /lib/systemd/system/minio.service
