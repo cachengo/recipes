@@ -32,7 +32,7 @@ function do_install {
 
   
   if [ ! -f /usr/bin/minio ]; then
-    curl -o /usr/bin/minio https://dl.min.io/server/minio/release/linux-amd64q/minio
+    curl -o /usr/bin/minio http://dl.min.io/server/minio/release/linux-amd64/minio
     chmod +x /usr/bin/minio
   fi
   cp local_minio/minio.service /lib/systemd/system/minio.service
@@ -54,6 +54,7 @@ function do_uninstall {
   rm /lib/systemd/system/minio_lookup.service
   rm /usr/bin/service_lookup.py
   rm /usr/bin/minio_lookup_hostnames.json
+  rm /usr/bin/minio
   systemctl daemon-reload
 }
 
