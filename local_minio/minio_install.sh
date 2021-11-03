@@ -44,6 +44,7 @@ function do_install {
     curl -o /usr/bin/minio "http://dl.min.io/server/minio/release/linux-$platform/minio"
     chmod +x /usr/bin/minio
   fi
+  sed -i "s/#host_number#/${#HOSTS_ARR[@]}" /etc/hosts
   cp local_minio/minio.service /lib/systemd/system/minio.service
   chmod 664 /lib/systemd/system/minio.service
   systemctl daemon-reload
@@ -65,6 +66,7 @@ function do_uninstall {
   rm /usr/bin/minio_lookup_hostnames.json
   rm /usr/bin/minio
   systemctl daemon-reload
+  sed -i "/$GROUPID/d" /etc/hosts
 }
 
 
