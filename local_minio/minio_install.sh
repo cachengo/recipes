@@ -6,7 +6,7 @@ source "utils/parameters.sh"
 GROUPID=minio-server
 
 function do_install {
-  # do_uninstall
+  uninstall_only
 
   # cachengo-cli updateInstallStatus $APPID "Installing"
   local HOSTS_ARR
@@ -51,10 +51,7 @@ function do_install {
   service minio start
 }
 
-function do_uninstall {
-  echo "Uninstalling"
-  cachengo-cli updateInstallStatus $APPID "Uinstalling"
-  cachengo-cli updateInstallStatus $APPID "Uninstalled"
+function uninstall_only {
   rm -rfR /data/*
   rm  -rfR /data/.*
   sed -i "/$GROUPID/d" /etc/hosts
@@ -67,6 +64,13 @@ function do_uninstall {
   rm /usr/bin/minio
   systemctl daemon-reload
   sed -i "/$GROUPID/d" /etc/hosts
+}
+
+function do_uninstall {
+  echo "Uninstalling"
+  cachengo-cli updateInstallStatus $APPID "Uinstalling"
+  uninstall_only
+  cachengo-cli updateInstallStatus $APPID "Uninstalled"
 }
 
 
