@@ -11,7 +11,7 @@ function do_install {
   # cachengo-cli updateInstallStatus $APPID "Installing"
   local HOSTS_ARR
   array_from_json_list HOSTS_ARR "$HOSTNAMES"
-  
+  array_len=$((${#HOSTS_ARR[@]}-1 ))
   export MINIO_ACCESS_KEY=$ACCESS_KEY
   export MINIO_SECRET_KEY=$SECRET_KEY
 
@@ -44,7 +44,7 @@ function do_install {
     curl -o /usr/bin/minio "http://dl.min.io/server/minio/release/linux-$platform/minio"
     chmod +x /usr/bin/minio
   fi
-  sed -i "s/#host_number#/${#HOSTS_ARR[@]}/" local_minio/minio.service
+  sed -i "s/#host_number#/$array_len/" local_minio/minio.service
   cp local_minio/minio.service /lib/systemd/system/minio.service
   chmod 664 /lib/systemd/system/minio.service
   systemctl daemon-reload
