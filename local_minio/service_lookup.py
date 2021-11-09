@@ -64,11 +64,7 @@ def fetch_parse_avahi():
 
 if __name__ == "__main__":
 
-    # hostnames = ['B020111-958092d', 'B020112-9a4ebf6', 'B020113-2c652b2', 'B020114-8c52d97', 'B020111-ddd4188', 'B020122-5b92ff2', 'B020123-461cda3', 'B020124-0689480']
-    hostnames_json = open("/usr/bin/minio_lookup_hostnames.json","r")
-    jsonString = hostnames_json.readline()
-    hostnames = json.loads(jsonString)
-
+    hostnames = os.environ['HOSTNAMES']
     host_ip = {host: None for host in hostnames}
 
     while True:

@@ -47,8 +47,8 @@ function do_install {
 }
 
 function uninstall_only {
-  rm -rfR /data/*
-  rm  -rfR /data/.*
+  rm -rfR /data/$GROUPID/*
+  rm  -rfR /data/$GROUPID/.*
   sed -i "/$GROUPID/d" /etc/hosts
   service minio stop
   rm /lib/systemd/system/minio.service
