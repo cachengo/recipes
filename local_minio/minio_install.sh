@@ -1,14 +1,10 @@
 #!/bin/bash
 source "utils/parameters.sh"
 
-# IPS_ARR=(
-
-GROUPID=minio-server
-
 function do_install {
   uninstall_only
 
-  # cachengo-cli updateInstallStatus $APPID "Installing"
+  cachengo-cli updateInstallStatus $APPID "Installing"
   local HOSTS_ARR
   array_from_json_list HOSTS_ARR "$HOSTNAMES"
   array_len=$((${#HOSTS_ARR[@]}-1 ))
