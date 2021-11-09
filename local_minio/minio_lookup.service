@@ -2,6 +2,7 @@
 Description=MinioLookup
 [Service]
 Environment=HOSTNAMES='#hostnames_json#'
+Environment=GROUP_ID=#group_id#
 ExecStart=/usr/bin/service_lookup.py
 Restart=always
 [Install]

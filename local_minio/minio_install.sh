@@ -17,6 +17,7 @@ function do_install {
     
   # install lookup service files  
   sed -i "s/#hostnames_json#/$HOSTNAMES/" local_minio/minio_lookup.service
+  sed -i "s/#group_id#/$GROUPID/" local_minio/minio_lookup.service
   cp local_minio/service_lookup.py /usr/bin/service_lookup.py
   chmod +x /usr/bin/service_lookup.py
   cp local_minio/minio_lookup.service /lib/systemd/system/minio_lookup.service

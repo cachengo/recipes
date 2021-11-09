@@ -5,6 +5,8 @@ import subprocess
 import time
 import json
 
+group_id = os.environ["GROUP_ID"]
+
 def get_avahi_data():
     try:
         process = subprocess.Popen(
@@ -88,7 +90,7 @@ if __name__ == "__main__":
                     print('Try finished')
                 if is_up:
                     print('Will set ip')
-                    set_ip_for_host(f'minio-server-{i}', new_ip)
+                    set_ip_for_host(f'{group_id}-{i}', new_ip)
                     host_ip[hostname] = new_ip
                     change_detected = True
 
