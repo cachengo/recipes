@@ -65,7 +65,6 @@ def fetch_parse_avahi():
 if __name__ == "__main__":
 
     group_id = os.environ["GROUP_ID"]
-    print("Group id is", group_id)
     hostnames = json.loads(os.environ['HOSTNAMES'])
     
     host_ip = {host: None for host in hostnames}
