@@ -5,8 +5,6 @@ import subprocess
 import time
 import json
 
-group_id = os.environ["GROUP_ID"]
-
 def get_avahi_data():
     try:
         process = subprocess.Popen(
@@ -66,7 +64,10 @@ def fetch_parse_avahi():
 
 if __name__ == "__main__":
 
+    group_id = os.environ["GROUP_ID"]
+    print("Group id is", group_id)
     hostnames = os.environ['HOSTNAMES']
+    print("Hostnames are:", hostnames)
     host_ip = {host: None for host in hostnames}
 
     while True:
