@@ -40,7 +40,7 @@ function do_install {
     chmod +x /usr/bin/minio
   fi
   sed -i "s/#host_number#/$array_len/" local_minio/minio.service
-  sed -i "s/#group_id#/$GROUPID/" local_minio/minio.service
+  sed -i "s/#group_id#/$GROUPID/g" local_minio/minio.service
   cp local_minio/minio.service /lib/systemd/system/minio.service
   chmod 664 /lib/systemd/system/minio.service
   systemctl daemon-reload
