@@ -16,6 +16,7 @@ function do_install {
   apt install -y curl
     
   # install lookup service files  
+  sed -i "s/#hostnames_json#/$HOSTNAMES/" local_minio/minio_lookup.service
   cp local_minio/service_lookup.py /usr/bin/service_lookup.py
   chmod +x /usr/bin/service_lookup.py
   cp local_minio/minio_lookup.service /lib/systemd/system/minio_lookup.service
@@ -38,7 +39,6 @@ function do_install {
     chmod +x /usr/bin/minio
   fi
   sed -i "s/#host_number#/$array_len/" local_minio/minio.service
-  sed -i "s/#hostnames_json#/$HOSTNAMES/" local_minio/minio_lookup.service
   sed -i "s/#group_id#/$GROUPID/" local_minio/minio.service
   cp local_minio/minio.service /lib/systemd/system/minio.service
   chmod 664 /lib/systemd/system/minio.service
