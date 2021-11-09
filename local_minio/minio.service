@@ -3,7 +3,9 @@ Description=Minio
 [Service]
 Environment=MINIO_ROOT_USER=access_key
 Environment=MINIO_ROOT_PASSWORD=secret_key
-ExecStart=/usr/bin/minio server  http://minio-server-{0...#host_number#}/data/
+Environment=HOSTNAMES=#hostnames_json#
+Environment=GROUP_ID=#group_id#
+ExecStart=/usr/bin/minio server  http://minio-server-{0...#host_number#}/data/#group_id#
 Restart=always
 [Install]
 WantedBy=multi-user.target

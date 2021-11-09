@@ -14,9 +14,6 @@ function do_install {
   apt install -y avahi-utils
   apt install -y python3
   apt install -y curl
-
-  #output hostnames to use with lookup service to a common file
-  echo $HOSTNAMES > /usr/bin/minio_lookup_hostnames.json
     
   # install lookup service files  
   cp local_minio/service_lookup.py /usr/bin/service_lookup.py
@@ -41,6 +38,8 @@ function do_install {
     chmod +x /usr/bin/minio
   fi
   sed -i "s/#host_number#/$array_len/" local_minio/minio.service
+  sed -i "s/#hostnames_json#/$HOSTNAMES/" local_minio/minio.service
+  sed -i "s/#group_id#/$GROUPID/" local_minio/minio.service
   cp local_minio/minio.service /lib/systemd/system/minio.service
   chmod 664 /lib/systemd/system/minio.service
   systemctl daemon-reload
