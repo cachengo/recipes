@@ -48,16 +48,24 @@ function do_install {
 }
 
 function uninstall_only {
+  #stop services
+  service minio stop
+  service minio_lookup stop
+
+  #remove service files
+  rm /lib/systemd/system/minio.service
+  rm /lib/systemd/system/minio_lookup.service
+  
+  #remove data
   rm -rfR /data/$GROUPID/*
   rm  -rfR /data/$GROUPID/.*
-  service minio stop
-  rm /lib/systemd/system/minio.service
-  service minio_lookup stop
-  rm /lib/systemd/system/minio_lookup.service
+  
+  #remove support files
   rm /usr/bin/service_lookup.py
-  rm /usr/bin/minio_lookup_hostnames.json
   rm /usr/bin/minio
   systemctl daemon-reload
+  
+  #clean hosts file
   sed -i "/$GROUPID/d" /etc/hosts
 }
 
