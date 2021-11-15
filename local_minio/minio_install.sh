@@ -70,9 +70,6 @@ function uninstall_only {
 }
 
 function do_uninstall {
-  echo on
-  echo "Uninstalling"
-  echo "Group ID is $GROUPID"
   cachengo-cli updateInstallStatus $APPID "Uinstalling"
   uninstall_only
   cachengo-cli updateInstallStatus $APPID "Uninstalled"
