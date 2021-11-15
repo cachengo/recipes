@@ -45,6 +45,7 @@ function do_install {
   chmod 664 /lib/systemd/system/minio.service
   systemctl daemon-reload
   service minio start
+  service avahi-daemon restart
 }
 
 function uninstall_only {
@@ -57,8 +58,7 @@ function uninstall_only {
   rm /lib/systemd/system/minio_lookup.service
   
   #remove data
-  rm -rfR /data/$GROUPID/*
-  rm  -rfR /data/$GROUPID/.*
+  rm -rfR /data/$GROUPID/
   
   #remove support files
   rm /usr/bin/service_lookup.py
@@ -70,7 +70,9 @@ function uninstall_only {
 }
 
 function do_uninstall {
+  echo on
   echo "Uninstalling"
+  echo "Group ID is $GROUPID"
   cachengo-cli updateInstallStatus $APPID "Uinstalling"
   uninstall_only
   cachengo-cli updateInstallStatus $APPID "Uninstalled"
