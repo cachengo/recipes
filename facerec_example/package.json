@@ -1,0 +1,11 @@
+{
+  "name": "facerec_example",
+  "display_name": "Facerec Demo",
+  "description": "Runs a facial-recognition inference engine, a nearest-neighbors search database and a webserver exposed on :5001",
+  "parameters": [],
+  "main": "facerec_example/run.sh",
+  "dependencies": [
+    "facerec_example/run.sh",
+    "utils/cachengo.sh"
+  ]
+}

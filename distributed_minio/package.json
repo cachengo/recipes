@@ -1,12 +1,12 @@
 {
   "name": "minio",
-  "display_name": "Standalone MinIO",
+  "display_name": "Distributed MinIO",
   "description": "MinIO is a high performance object storage server. Users can interact with it through its S3 API.",
   "parameters": [
     {
       "name": "ACCESS_KEY",
       "display_name": "Access Key",
-      "description": "Access key for accessing the S3 cluster. Can be any string.",
+      "description": "Access key for accessing the S3 cluster",
       "type": "string",
       "required": true
     },
@@ -16,11 +16,19 @@
       "description": "Secret key for accessing the S3 cluster",
       "type": "string",
       "required": true
+    },
+    {
+      "name": "IPS",
+      "display_name": "Peer IPs",
+      "description": "IP addresses to use for cluster communication",
+      "type": "list",
+      "required": true
     }
   ],
-  "main": "minio/run.sh",
+  "main": "distributed_minio/run.sh",
   "dependencies": [
-    "minio/run.sh",
-    "utils/cachengo.sh"
+    "distributed_minio/run.sh",
+    "utils/cachengo.sh",
+    "utils/parameters.sh"
   ]
 }

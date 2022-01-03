@@ -1,0 +1,26 @@
+{
+  "name": "video_object_detection",
+  "display_name": "Object Detection Demo",
+  "description": "Object detection with distributed inferencing. Leader exposes on :5000",
+  "parameters": [
+    {
+      "name": "LEADER_URL",
+      "display_name": "Leader URL",
+      "description": "URL or IP Address where leader node is exposed",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "INFERENCE_WORKER",
+      "display_name": "Inference Worker?",
+      "description": "Whether to install an inference worker instead of a leader",
+      "type": "boolean",
+      "required": false
+    }
+  ],
+  "main": "video_object_detection/run.sh",
+  "dependencies": [
+    "video_object_detection/run.sh",
+    "utils/cachengo.sh"
+  ]
+}
