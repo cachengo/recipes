@@ -3,7 +3,7 @@
 import os
 import subprocess
 import time
-
+import json
 
 def get_avahi_data():
     try:
@@ -64,7 +64,9 @@ def fetch_parse_avahi():
 
 if __name__ == "__main__":
 
-    hostnames = ['B020111-958092d', 'B020112-9a4ebf6', 'B020113-2c652b2', 'B020114-8c52d97', 'B020111-ddd4188', 'B020122-5b92ff2', 'B020123-461cda3', 'B020124-0689480']
+    group_id = os.environ["GROUP_ID"]
+    hostnames = json.loads(os.environ['HOSTNAMES'])
+    
     host_ip = {host: None for host in hostnames}
 
     while True:
@@ -88,7 +90,7 @@ if __name__ == "__main__":
                     print('Try finished')
                 if is_up:
                     print('Will set ip')
-                    set_ip_for_host(f'minio-server-{i}', new_ip)
+                    set_ip_for_host(f'{group_id}-{i}', new_ip)
                     host_ip[hostname] = new_ip
                     change_detected = True
 

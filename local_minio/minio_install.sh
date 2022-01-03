@@ -1,69 +1,78 @@
 #!/bin/bash
-
-
-IPS_ARR=(
-    192.168.89.6
-    192.168.89.13
-    192.168.89.20
-    192.168.89.5
-    192.168.89.17
-    192.168.89.10
-    192.168.88.253
-    192.168.89.21
-    192.168.89.0
-    192.168.89.22
-    192.168.89.4
-    192.168.89.8
-    192.168.89.14
-    192.168.89.9
-    192.168.89.2
-    192.168.88.254
-    192.168.89.1
-    192.168.89.24
-    192.168.89.29
-    192.168.89.103
-    192.168.88.252
-    192.168.89.16
-    192.168.89.11
-    192.168.89.18
-    192.168.89.7
-    192.168.89.3
-    192.168.89.19
-    192.168.89.15
-    192.168.89.64
-    192.168.89.65
-    192.168.89.104
-    192.168.89.91
-)
-ACCESS_KEY=access_key
-SECRET_KEY=secret_key
-GROUPID=jimmy-minio-server
+source "utils/parameters.sh"
 
 function do_install {
-  do_uninstall
+  uninstall_only
 
-  for ((i=0;i<${#IPS_ARR[@]};++i)); do
-    echo "${IPS_ARR[i]} $GROUPID-$i" >> /etc/hosts
-  done
+  cachengo-cli updateInstallStatus $APPID "Installing"
+  local HOSTS_ARR
+  array_from_json_list HOSTS_ARR "$HOSTNAMES"
+  array_len=$((${#HOSTS_ARR[@]}-1 ))
+  export MINIO_ACCESS_KEY=$ACCESS_KEY
+  export MINIO_SECRET_KEY=$SECRET_KEY
 
-  echo "Total: $i"
+  apt install -y avahi-utils
+  apt install -y python3
+  apt install -y curl
+    
+  # install lookup service files  
+  sed -i "s/#hostnames_json#/$HOSTNAMES/" local_minio/minio_lookup.service
+  sed -i "s/#group_id#/$GROUPID/" local_minio/minio_lookup.service
+  cp local_minio/service_lookup.py /usr/bin/service_lookup.py
+  chmod +x /usr/bin/service_lookup.py
+  cp local_minio/minio_lookup.service /lib/systemd/system/minio_lookup.service
+  chmod 664 /lib/systemd/system/minio_lookup.service
+  systemctl daemon-reload
+  service minio_lookup start
+
+  platform=`uname -m`
+  if [[ $platform == x86_64 ]]; then
+    platform=amd64
+  fi
+
+  if [[ $platform == aarch64 ]]; then
+    platform=arm64
+  fi
+
+  
   if [ ! -f /usr/bin/minio ]; then
-    curl -o /usr/bin/minio https://dl.min.io/server/minio/release/linux-arm64/minio
+    curl -o /usr/bin/minio "http://dl.min.io/server/minio/release/linux-$platform/minio"
     chmod +x /usr/bin/minio
   fi
-  cp minio.service /lib/systemd/system/minio.service
+  sed -i "s/#host_number#/$array_len/" local_minio/minio.service
+  sed -i "s/#group_id#/$GROUPID/g" local_minio/minio.service
+  cp local_minio/minio.service /lib/systemd/system/minio.service
   chmod 664 /lib/systemd/system/minio.service
   systemctl daemon-reload
   service minio start
+  service avahi-daemon restart
+}
+
+function uninstall_only {
+  #stop services
+  service minio stop
+  service minio_lookup stop
+
+  #remove service files
+  rm /lib/systemd/system/minio.service
+  rm /lib/systemd/system/minio_lookup.service
+  
+  #remove data
+  rm -rfR /data/$GROUPID/
+  
+  #remove support files
+  rm /usr/bin/service_lookup.py
+  rm /usr/bin/minio
+  systemctl daemon-reload
+  
+  #clean hosts file
+  sed -i "/$GROUPID/d" /etc/hosts
 }
 
 function do_uninstall {
-  rm -rfR /data/*
-  rm  -rfR /data/.*
-  sed -i "/$GROUPID/d" /etc/hosts
-  service minio stop
-  rm /lib/systemd/system/minio.service
-  systemctl daemon-reload
+  cachengo-cli updateInstallStatus $APPID "Uinstalling"
+  uninstall_only
+  cachengo-cli updateInstallStatus $APPID "Uninstalled"
 }
 
 
