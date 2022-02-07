@@ -12,5 +12,5 @@ snap install nextcloud
 
 nextcloud.enable-https self-signed
 
-cachengo-cli updateInstallStatus $APPID "NextCloud Installed"
+update_status "NextCloud Installed"
 }
