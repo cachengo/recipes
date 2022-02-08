@@ -1,6 +1,6 @@
 {
-    "name": "local-minio",
-    "display_name": "Local MinIO",
+    "name": "baremetal-minio",
+    "display_name": "Baremetal MinIO",
     "description": "MinIO is a high performance object storage server. Users can interact with it through its S3 API.",
     "parameters": [
       {
@@ -25,13 +25,13 @@
         "required": true
       }
     ],
-    "main": "local_minio/minio_install.sh",
+    "main": "baremetal_minio/minio_install.sh",
     "dependencies": [
-      "local_minio/minio_install.sh",
+      "baremetal_minio/minio_install.sh",
       "utils/cachengo.sh",
       "utils/parameters.sh",
-      "local_minio/service_lookup.py",
-      "local_minio/minio.service",
-      "local_minio/minio_lookup.service"
+      "baremetal_minio/service_lookup.py",
+      "baremetal_minio/minio.service",
+      "baremetal_minio/minio_lookup.service"
     ]
   }
