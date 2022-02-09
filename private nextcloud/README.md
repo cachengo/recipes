@@ -52,11 +52,17 @@ Enjoy constant improvements from a thriving and transparent, entirely open-sourc
 
 1. In the Cachengo Portal, navigate to the information page for your Nextcloud host server.
 2. Here, you will need to copy the IPv4 address. (Example: 192.168.1.1)
-3. Open a new tab and in the URL, type [https://IPv4Address] without the brackets and inserting the IP address you copied. Press enter.
-4. You should now see the Nextcloud login page.
+3. Open a new tab and in the URL, type [https://IPv4Address] without the brackets and inserting the IP address you copied.(Example: https://192.168.1.1) Press enter.
+4. You should now see the Nextcloud login page where you will create your admin account and proceed to log in.
 
 ### - Global Access
 ##### (Use this method if you are NOT connected to the same subnet as your Nextcloud host server)
+##### (You must add your computer to the portal to access your server from outside your server's subnet)
 <br />
 
-1. 
+1. Navigate to the Cachengo Portal.
+2. Select your Nextcloud host server in the 'Devices' tab.
+3. Navigate to the 'Peer Groups' tab.
+4. Add your host server to the peer group that contains the computer you will be using to access Nextcloud. Your Nextcloud host server will now have a unique IPv6 address in it's information tab under Peer Groups.
+5. To navigate to your Nextcloud web interface, type [https://[IPv6Address]], inserting the unique IPv6 address encased in brackets. 
+(Example: https://[fde5:1234:5678:9012:3456:7890:1234:5678]) Press enter.
