@@ -1,7 +1,7 @@
 ![picture alt](https://github.com/cachengo/recipes/blob/JBeaulieu/private_nextcloud/transparent_nextcloud_logo.png "Nextcloud Icon")
 
 
-# Nextcloud Help
+# Directory
 [What is Nextcloud?](#What-is-Nextcloud "Goto What is Nextcloud")
 
 [Nextcloud Features](#Nextcloud-Features "Goto Nextcloud Features")
