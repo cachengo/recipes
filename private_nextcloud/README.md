@@ -1,4 +1,4 @@
-![picture alt](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngfind.com%2Fmpng%2FTibhmTx_transparent-cloud-storage-png-nextcloud-logo-svg-png%2F&psig=AOvVaw24IDTlGZo5E8yfsUkhTM-A&ust=1644523559528000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCNii7-e18_UCFQAAAAAdAAAAABAP "Nextcloud Icon")
+![picture alt](https://github.com/cachengo/recipes/blob/JBeaulieu/private_nextcloud/Nextcloud_logo "Nextcloud Icon")
 
 
 # Nextcloud Help
