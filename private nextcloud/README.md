@@ -1,6 +1,11 @@
 # Nextcloud Help
+1: [What is Nextcloud?](#What-is-Nextcloud "Goto What is Nextcloud")
 
-1: [Navigating to your Nextcloud server](#Navigating-to-your-Nextcloud-server "Goto Navigating to your Nextcloud server")
+2: [Nextcloud Features](#Nextcloud-Features "Goto Nextcloud Features")
+
+3: [Installing Nextcloud](#Installing-Nextcloud "Goto Installing Nextcloud")
+
+4: [Navigating to your Nextcloud server](#Navigating-to-your-Nextcloud-server "Goto Navigating to your Nextcloud server")
 
 # What is Nextcloud?
 ## Control
