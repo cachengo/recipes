@@ -16,9 +16,7 @@ update_status "NextCloud Installed"
 
 function do_uninstall {
   update_status "Uninstalling Nextcloud"
-  rm -rf /data/$GROUPID
-  sed -i "/$GROUPID/d" /etc/hosts
-  docker stop $APPID
+#snap uninstall
   update_status "Nextcloud Uninstalled"
 }
 

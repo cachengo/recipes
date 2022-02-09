@@ -65,4 +65,4 @@ Enjoy constant improvements from a thriving and transparent, entirely open-sourc
 3. Navigate to the 'Peer Groups' tab.
 4. Add your host server to the peer group that contains the computer you will be using to access Nextcloud. Your Nextcloud host server will now have a unique IPv6 address in it's information tab under Peer Groups.
 5. To navigate to your Nextcloud web interface, type [https://[IPv6Address]], inserting the unique IPv6 address encased in brackets. 
-(Example: https://[fde5:1234:5678:9012:3456:7890:1234:5678]) Press enter.
+(Example: https://[fde5:1334:5678:9012:3456:7890:1334:5678]) Press enter.
