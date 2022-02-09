@@ -1,4 +1,6 @@
-![picture alt](https://github.com/cachengo/recipes/blob/JBeaulieu/private_nextcloud/transparent_nextcloud_logo.png "Nextcloud Icon")
+<p align="center">
+  <img src="https://github.com/cachengo/recipes/blob/JBeaulieu/private_nextcloud/transparent_nextcloud_logo.png" />
+</p>
 
 
 # Directory
