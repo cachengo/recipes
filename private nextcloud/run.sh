@@ -16,7 +16,7 @@ update_status "NextCloud Installed"
 
 function do_uninstall {
   update_status "Uninstalling Nextcloud"
-#snap uninstall
+  snap uninstall nextcloud
   update_status "Nextcloud Uninstalled"
 }
 
