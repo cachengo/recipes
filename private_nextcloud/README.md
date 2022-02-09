@@ -1,4 +1,4 @@
-![picture alt](https://github.com/cachengo/recipes/blob/JBeaulieu/private_nextcloud/Nextcloud_logo "Nextcloud Icon")
+![picture alt](https://github.com/cachengo/recipes/blob/JBeaulieu/private_nextcloud/transparent_nextcloud_logo.png "Nextcloud Icon")
 
 
 # Nextcloud Help
