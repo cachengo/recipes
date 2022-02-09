@@ -1,11 +1,14 @@
+![picture alt](https://www.google.com/url?sa=i&url=https%3A%2F%2Ffavpng.com%2Fpng_view%2Fcloud-security-logo-logo-nextcloud-transparency-clip-art-png%2F3akphVkP&psig=AOvVaw24IDTlGZo5E8yfsUkhTM-A&ust=1644523559528000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCNii7-e18_UCFQAAAAAdAAAAABAD "Nextcloud Icon")
+
+
 # Nextcloud Help
-1: [What is Nextcloud?](#What-is-Nextcloud "Goto What is Nextcloud")
+[What is Nextcloud?](#What-is-Nextcloud "Goto What is Nextcloud")
 
-2: [Nextcloud Features](#Nextcloud-Features "Goto Nextcloud Features")
+[Nextcloud Features](#Nextcloud-Features "Goto Nextcloud Features")
 
-3: [Installing Nextcloud](#Installing-Nextcloud "Goto Installing Nextcloud")
+[Installing Nextcloud](#Installing-Nextcloud "Goto Installing Nextcloud")
 
-4: [Navigating to your Nextcloud server](#Navigating-to-your-Nextcloud-server "Goto Navigating to your Nextcloud server")
+[Navigating to your Nextcloud server](#Navigating-to-your-Nextcloud-server "Goto Navigating to your Nextcloud server")
 
 # What is Nextcloud?
 ## Control
@@ -32,7 +35,7 @@ Enjoy constant improvements from a thriving and transparent, entirely open-sourc
 
 - Secure and Access all of your information natively in your server from anywhere using IPv6 capabilities without relying on any external services.
 
-- Explore and navigate the Nextcloud Application store for many more possibilities.
+- Explore and navigate the [Nextcloud Applications](https://apps.nextcloud.com/ "Nextcloud App Marketplace link") store for many more possibilities. 
 
 <br />
 
