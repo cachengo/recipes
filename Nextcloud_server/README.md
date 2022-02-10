@@ -14,7 +14,9 @@
 
 # What is Nextcloud?
 
-[![Intro to Nextcloud](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi3-MWN8_X1AhUol2oFHQl5CRwQwqsBegQIBRAB&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DI8GtygCoNcY&usg=AOvVaw0Rt51Qg2BF5OugH6o7ZVJW)](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi3-MWN8_X1AhUol2oFHQl5CRwQwqsBegQIBRAB&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DI8GtygCoNcY&usg=AOvVaw0Rt51Qg2BF5OugH6o7ZVJW)
+<p align="center">
+  <img src="https://www.youtube.com/watch?v=I8GtygCoNcY" />
+</p>
 
 ## Control
 Protect, control and monitor data and communication across your company. Guarantee compliance with business and legal requirements. Keep your data on servers you own, at all times. Nothing leaks, not even metadata.
