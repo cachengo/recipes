@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/cachengo/recipes/blob/JBeaulieu/private_nextcloud/transparent_nextcloud_logo.png" />
+  <img src="https://github.com/cachengo/recipes/blob/JBeaulieu/Nextcloud_server/transparent_nextcloud_logo.png" />
 </p>
 
 
