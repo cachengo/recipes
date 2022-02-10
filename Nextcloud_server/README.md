@@ -4,15 +4,18 @@
 
 
 # Directory
-[What is Nextcloud?](#What-is-Nextcloud "Goto What is Nextcloud")
+[What is Nextcloud?](#What-is-Nextcloud "Go to What is Nextcloud")
 
-[Nextcloud Features](#Nextcloud-Features "Goto Nextcloud Features")
+[Nextcloud Features](#Nextcloud-Features "Go to Nextcloud Features")
 
-[Installing Nextcloud](#Installing-Nextcloud "Goto Installing Nextcloud")
+[Installing Nextcloud](#Installing-Nextcloud "Go to Installing Nextcloud")
 
-[Navigating to your Nextcloud server](#Navigating-to-your-Nextcloud-server "Goto Navigating to your Nextcloud server")
+[Navigating to your Nextcloud server](#Navigating-to-your-Nextcloud-server "Go to Navigating to your Nextcloud server")
 
 # What is Nextcloud?
+
+[![Intro to Nextcloud](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi3-MWN8_X1AhUol2oFHQl5CRwQwqsBegQIBRAB&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DI8GtygCoNcY&usg=AOvVaw0Rt51Qg2BF5OugH6o7ZVJW)](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi3-MWN8_X1AhUol2oFHQl5CRwQwqsBegQIBRAB&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DI8GtygCoNcY&usg=AOvVaw0Rt51Qg2BF5OugH6o7ZVJW)
+
 ## Control
 Protect, control and monitor data and communication across your company. Guarantee compliance with business and legal requirements. Keep your data on servers you own, at all times. Nothing leaks, not even metadata.
 
@@ -100,3 +103,4 @@ Enjoy constant improvements from a thriving and transparent, entirely open-sourc
 ---
 ---
 <br />
+
