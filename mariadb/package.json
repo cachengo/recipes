@@ -49,6 +49,7 @@
     "main": "mariadb/run.sh",
     "dependencies": [
     "mariadb/run.sh",
-    "utils/cachengo.sh"
+    "utils/cachengo.sh",
+    "utils/docker.sh"
     ]
   }
