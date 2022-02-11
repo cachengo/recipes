@@ -1,0 +1,11 @@
+{
+    "name": "nextcloud_server",
+    "display_name": "Nextcloud Server",
+    "description": "Nextcloud server is a native object store with communication, organization, and productivity solutions with global secure access.",
+    "parameters":[],
+    "main": "Nextcloud_server/run.sh",
+    "dependencies": [
+        "nextcloud_server/run.sh",
+        "utils/cachengo.sh"
+    ]
+  }

@@ -6,16 +6,15 @@ function do_install {
   set -e
   update_status "Installing NextCloud"
 
- snap install nextcloud
+  snap install nextcloud
+  nextcloud.enable-https self-signed
 
- nextcloud.enable-https self-signed
-
- update_status "NextCloud Installed"
+  update_status "NextCloud Installed"
 }
 
 function do_uninstall {
   update_status "Uninstalling Nextcloud"
-  snap uninstall nextcloud
+  snap remove nextcloud
   update_status "Nextcloud Uninstalled"
 }
 
