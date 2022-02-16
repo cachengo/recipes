@@ -1,0 +1,55 @@
+{
+  "name": "minio",
+  "display_name": "Distributed MinIO",
+  "description": "MinIO is a high performance object storage server. Users can interact with it through its S3 API.",
+  "parameters": [
+    {
+      "name": "S3_ACCESS_KEY",
+      "display_name": "S3 Access Key",
+      "description": "Access key for accessing the S3 cluster",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "S3_SECRET_KEY",
+      "display_name": "S3 Secret Key",
+      "description": "Secret key for accessing the S3 cluster",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "RTSP_URL",
+      "display_name": "RTSP URL",
+      "description": "URL for rtsp",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "REMOTE_IP",
+      "display_name": "Remote IP",
+      "description": "Remote IP address for S3",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "REMOTE_USERNAME",
+      "display_name": "Remote Username",
+      "description": "Remote Password",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "REMOTE_PASSWORD",
+      "display_name": "Remote Password",
+      "description": "Remote S3 Password",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "main": "njta/run.sh",
+  "dependencies": [
+    "njta/rtsp_saver/",
+    "njta/rtsp-simple-server-docker/",
+    "njta/s3_backup/"
+  ]
+}
