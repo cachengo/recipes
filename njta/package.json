@@ -44,6 +44,27 @@
       "description": "Remote S3 Password",
       "type": "string",
       "required": true
+    },
+    {
+      "name": "FTP_HOST",
+      "display_name": "FTP HOST IP",
+      "description": "FTP Host IP address",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "FTP_USER",
+      "display_name": "FTP username",
+      "description": "Username for ftp",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "FTP_PASSWORD",
+      "display_name": "FTP Password",
+      "description": "FTP Password",
+      "type": "string",
+      "required": true
     }
   ],
   "main": "njta/run.sh",

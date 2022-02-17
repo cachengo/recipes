@@ -1,7 +1,7 @@
 #!/bin/bash
-HOST=10.29.96.219
-USER=video
-PASSWORD=test123
+HOST=$FTP_HOST
+USER=$FTP_USER
+PASSWORD=$FTP_PASSWORD
 
 /usr/bin/ftp -invp $HOST <<EOF
 user $USER $PASSWORD
