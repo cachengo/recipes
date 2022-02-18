@@ -1,7 +1,7 @@
 {
-  "name": "minio",
-  "display_name": "Distributed MinIO",
-  "description": "MinIO is a high performance object storage server. Users can interact with it through its S3 API.",
+  "name": "njta",
+  "display_name": "NJTA",
+  "description": "Server for NJTA.",
   "parameters": [
     {
       "name": "S3_ACCESS_KEY",
@@ -69,6 +69,8 @@
   ],
   "main": "njta/run.sh",
   "dependencies": [
+    "njta/run.sh",
+    "utils/cachengo.sh",
     "njta/rtsp_saver/",
     "njta/rtsp-simple-server-docker/",
     "njta/s3_backup/"
