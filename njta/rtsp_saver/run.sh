@@ -1,6 +1,5 @@
 #!/bin/bash
 
-export S3_ENDPOINT_URL="http://localhost:9000"
 # export RTSP_URL="rtsp://localhost:8554/compressed"
 
 print_usage() {

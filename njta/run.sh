@@ -5,11 +5,11 @@ source "utils/cachengo.sh"
 function do_install {
   set -e
   cachengo-cli updateInstallStatus $APPID "Installing Simple Server"
-  cd njta/rtsp-simple-server-docker && run.sh -r
+  cd njta/rtsp-simple-server-docker && ./run.sh -r
   cachengo-cli updateInstallStatus $APPID "Installing RTSP Saver"
-  cd njta/rtsp_saver && run.sh -r
+  cd ../rtsp_saver && ./run.sh -r
   cachengo-cli updateInstallStatus $APPID "Installing S3"
-  cd njta/s3_backup && run.sh -r
+  cd ../s3_backup && ./run.sh -r
   cachengo-cli updateInstallStatus $APPID "Installed"
 }
 

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-export S3_ENDPOINT_URL="http://localhost:9000"
 export S3_BUCKET_NAME="mp4"
 export REMOTE_LOCATION='Video'
+export RTSP_URL="rtsp://localhost:8554/compressed"
 
 print_usage() {
   printf "Usage: -r to rebuild image.";
@@ -39,6 +39,9 @@ docker run -d \
   -e REMOTE_USERNAME="$REMOTE_USERNAME" \
   -e REMOTE_PASSWORD="$REMOTE_PASSWORD" \
   -e REMOTE_LOCATION="$REMOTE_LOCATION" \
+  -e FTP_HOST="$FTP_HOST" \
+  -e FTP_USER="$FTP_USER" \
+  -e FTP_PASSWORD="$FTP_PASSWORD" \
   --cap-add SYS_ADMIN \
   --cap-add DAC_READ_SEARCH \
   --name s3_backup \
