@@ -4,43 +4,43 @@
     "description": "MariaDB Server is a high performing open source relational database, forked from MySQL.",
     "parameters": [
       {
-        "name": "MARIADB_ROOT_PASSWORD",
-        "display_name": "Root Password",
+        "name": "ROOT_PASSWORD",
+        "display_name": "MARIADB_ROOT_PASSWORD",
         "description": "This specifies the password that will be set for the MariaDB root superuser account.",
         "type": "string",
         "required": true
       },
       {
-        "name": "MARIADB_DATABASE",
-        "display_name": "MARIADB DATABASE",
+        "name": "DATABASE_NAME",
+        "display_name": "MARIADB_DATABASE",
         "description": "This variable allows you to specify the name of a database to be created on image startup.",
         "type": "string",
         "required": false
       },
       {
-        "name": "MARIADB_USER",
-        "display_name": "MARIADB USER",
+        "name": "DB_USER",
+        "display_name": "MARIADB_USER",
         "description": "These are used in conjunction to create a new user and to set that user's password. Both user and password variables are required for a user to be created.",
         "type": "string",
         "required": false
       },
       {
-        "name": "MARIADB_PASSWORD",
-        "display_name": "MARIADB PASSWORD",
+        "name": "DB_PASSWORD",
+        "display_name": "MARIADB_PASSWORD",
         "description": "These are used in conjunction to create a new user and to set that user's password. Both user and password variables are required for a user to be created.",
         "type": "string",
         "required": false
       },
       {
-        "name": "MARIADB_ALLOW_EMPTY_ROOT_PASSWORD",
-        "display_name": "Allow Empty Password",
+        "name": "ALLOW_EMPTY_ROOT_PASSWORD",
+        "display_name": "MARIADB_ALLOW_EMPTY_ROOT_PASSWORD",
         "description": "Set to a non-empty value, like yes, to allow the container to be started with a blank password for the root user.",
         "type": "string",
         "required": false
       },
       {
-        "name": "MARIADB_RANDOM_ROOT_PASSWORD",
-        "display_name": "Random Root Password",
+        "name": "RANDOM_ROOT_PASSWORD",
+        "display_name": "MARIADB_RANDOM_ROOT_PASSWORD",
         "description": "Set to a non-empty value, like yes, to generate a random initial password for the root user (using pwgen).",
         "type": "string",
         "required": false
