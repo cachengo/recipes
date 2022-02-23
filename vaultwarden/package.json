@@ -1,0 +1,11 @@
+{
+  "name": "vaultwarden",
+  "display_name": "VaultWarden",
+  "description": "VaultWarden is a password manager.",
+  "parameters": [],
+  "main": "vaultwarden/run.sh",
+  "dependencies": [
+    "vaultwarden/run.sh",
+    "utils/cachengo.sh"
+  ]
+}
