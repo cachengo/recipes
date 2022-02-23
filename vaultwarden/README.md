@@ -1,4 +1,4 @@
-![VaultWarden Image](https://raw.githubusercontent.com/cachengo/recipes/darwin_recipes/vaultwarden/vault.png)
+![VaultWarden Image](https://raw.githubusercontent.com/cachengo/recipes/darwin_recipes/vaultwarden/vault1.png)
 
 
 
