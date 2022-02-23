@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="https://github.com/cachengo/recipes/blob/dm_recipes/vaultwarden/vaultwardenlogo2.png" />
-</p>
+![VaultWarden Image](https://raw.githubusercontent.com/cachengo/recipes/darwin_recipes/vaultwarden/vault.png)
 
 
 
