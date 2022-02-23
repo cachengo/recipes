@@ -93,3 +93,5 @@ This method will be used if you're not on the same network as your VaultWarden s
 1. Open your web browser, in the url use either the local or remote ip address of your server and at the end put /admin. (Example: http://192.168.1.2/admin or [http://fde5:ef2d:1377:3a9f:2499:93f5:9159:4f10/admin]
 
 2. Once you've reached the admin page you should be prompted with a login screen. Use the password you set in the parameters section of the instillation to login.
+
+3. From there you can create and control all the vaults, orgs, and users. 
