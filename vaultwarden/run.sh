@@ -7,7 +7,7 @@ function do_install {
   set -e
   cachengo-cli updateInstallStatus $APPID "Installing VaultWarden"
   docker pull vaultwarden/server:latest 
-  docker run -d --name vaultwarden -v /data/vw-data/:/data/ -e ADMIN_TOKEN=$ADMIN_TOKEN -p 80:80 vaultwarden/server:latest 
+  docker run -d --name $APPID -v /data/vw-data/:/data/ -e ADMIN_TOKEN=$ADMIN_TOKEN -p 80:80 vaultwarden/server:latest 
   cachengo-cli updateInstallStatus $APPID "Installed Vaultwarden"
 }
 function do_uninstall {

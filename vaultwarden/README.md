@@ -92,4 +92,4 @@ This method will be used if you're not on the same network as your VaultWarden s
 
 2. Once you've reached the admin page you should be prompted with a login screen. Use the password you set in the parameters section of the instillation to login.
 
-3. From there you can create and control all the vaults, orgs, and users. 
+3. From there you can control all the settings within the admin page. From basic to advanced settings and backups. You can also create and delete users, orgs, and vaults.
