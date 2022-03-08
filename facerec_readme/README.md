@@ -21,9 +21,10 @@
 # What is Facerec?
 
 <p align="center">
-  <img src="https://www.youtube.com/watch?v=I8GtygCoNcY" />
+  <video src="https://youtu.be/CslyEsnhA9k" />
 </p>
 
+[![watch the video](https://youtu.be/CslyEsnhA9k)]
 
 ## Security
 Protect, control and lock important information with just a scan of your face that cannot be duplicated, where only authorized individuals can access the information intended for their eyes only.
