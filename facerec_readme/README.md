@@ -2,47 +2,37 @@
   <img src="https://raw.githubusercontent.com/cachengo/recipes/jb_readmefiles/facerec_readme/face_rec_logo.png" />
 </p>
 
+# Important Information
+
+<br />
+
+- Facerec is exposed on port :5001
+- This application is still in a state of development so use is strictly experimental. 
 
 # Directory
-[What is Nextcloud?](#What-is-Nextcloud "Go to What is Nextcloud")
+[What is Facerec?](#What-is-Facerec "Go to What is Facerec")
 
-[Nextcloud Features](#Nextcloud-Features "Go to Nextcloud Features")
+[Installing Facerec](#Installing-Facerec "Go to Installing Facerec")
 
-[Installing Nextcloud](#Installing-Nextcloud "Go to Installing Nextcloud")
+[Accessing Facerec](#Accessing-Facerec "Go to Accessing Facerec")
 
-[Navigating to your Nextcloud server](#Navigating-to-your-Nextcloud-server "Go to Navigating to your Nextcloud server")
+<br />
 
-# What is Nextcloud?
+# What is Facerec?
 
 <p align="center">
   <img src="https://www.youtube.com/watch?v=I8GtygCoNcY" />
 </p>
 
-## Control
-Protect, control and monitor data and communication across your company. Guarantee compliance with business and legal requirements. Keep your data on servers you own, at all times. Nothing leaks, not even metadata.
 
-## Productivity
-Enable productivity across any platform, whether in the office or on the road, to share, collaborate and communicate across organizational boundaries. Nextcloud provides transparent access to data on any storage.
+## Security
+Protect, control and lock important information with just a scan of your face that cannot be duplicated, where only authorized individuals can access the information intended for their eyes only.
 
-## Community
-Enjoy constant improvements from a thriving and transparent, entirely open-source community development model, free of lockins or paywalls. Enjoy the benefits of enterprise support when you need it.
+## Optimization
+Just like any database, the more we use and enhance our Facerec application, the sharper it gets.
 
-<br />
-
----
----
-<br />
-
-# Nextcloud Features
-- Use Nextcloud as your personal object store to store any files, images, videos, emails, and so many more forms of media.
-
-- Add users to your Nextcloud server to be able to share information among any user you give permissions to.
-
-- Make voice and video calls with 1 or more users through your protected server.
-
-- Secure and Access all of your information natively in your server from anywhere using IPv6 capabilities without relying on any external services.
-
-- Explore and navigate the [Nextcloud Applications](https://apps.nextcloud.com/ "Nextcloud App Marketplace link") store for many more possibilities. 
+## Efficiency
+Run on Cachengo hardware, Facerec is extremely time efficent, easy to use, and still getting better every day.
 
 <br />
 
@@ -50,14 +40,14 @@ Enjoy constant improvements from a thriving and transparent, entirely open-sourc
 ---
 <br />
 
-# Installing Nextcloud  
+# Installing Facerec  
 1. Select desired server from 'Devices' page.
 #
-2. Navigate to the 'App Marketplace' tab and select the 'Nextcloud' application.
+2. Navigate to the 'App Marketplace' tab and select the 'Facerec Example' application.
 #
 3. The 'Install Now' button should now appear near the top of the screen. Select this button.
 #
-4. Give your installation a name and click 'Install Private Nextcloud' in the bottom right corner.
+4. Give your installation a name and click 'Install Private Facerec' in the bottom right corner.
 
 <br />
 
@@ -65,40 +55,40 @@ Enjoy constant improvements from a thriving and transparent, entirely open-sourc
 ---
 <br />
 
-# Navigating to your Nextcloud server
+# Accessing Facerec
 
 <br />
 
 ## - Local Access
-##### (Use this method if you are connected to the same network/subnet as your Nextcloud host server)
+##### (Use this method if you are connected to the same network/subnet as your Facerec host server)
 <br />
 
-1. In the Cachengo Portal, navigate to the information page for your Nextcloud host server.
+1. In the Cachengo Portal, navigate to the information page for your Facerec host server.
 #
 2. Here, you will need to copy the IPv4 address. (Example: 192.168.1.1)
 #
-3. Open a new tab and in the URL, type [https://IPv4Address] without the brackets and inserting the IP address you copied.(Example: https://192.168.1.1) Press enter.
+3. Open a new tab and in the URL, type [https://IPv4Address:5001] without the brackets, inserting the IP address you copied, and specifying port 5001.(Example: https://192.168.1.1:5001) Press enter.
 #
-4. You should now see the Nextcloud login page where you will create your admin account and proceed to log in.
+4. You should now see the Facerec login page where you can sign up and start registering faces to names.
 #
 #
 ## - Global Access
-##### (Use this method if you are NOT connected to the same network/subnet as your Nextcloud host server)
+##### (Use this method if you are NOT connected to the same network/subnet as your Facerec host server)
 ##### (You must add your computer to the portal to access your server from outside your server's subnet)
 <br />
 
 1. Navigate to the Cachengo Portal.
 #
-2. Select your Nextcloud host server in the 'Devices' tab.
+2. Select your Facerec host server in the 'Devices' tab.
 #
 3. Navigate to the 'Peer Groups' tab.
 #
-4. Add your host server to the peer group that contains the computer you will be using to access Nextcloud. Your Nextcloud host server will now have a unique IPv6 address in it's information tab under Peer Groups.
+4. Add your host server to the peer group that contains the computer you will be using to access Facerec. Your Facerec host server will now have a unique IPv6 address in it's information tab under Peer Groups.
 #
-5. To navigate to your Nextcloud web interface, type [https://[IPv6Address]], inserting the unique IPv6 address encased in brackets. 
-(Example: https://[fde5:1334:5678:9012:3456:7890:1334:5678]) Press enter.
+5. To navigate to your Facerec web interface, type [https://[IPv6Address]:5001], inserting the unique IPv6 address encased in brackets and adding port 5001 outside of the brackets. 
+(Example: https://[fde5:1334:5678:9012:3456:7890:1334:5678]:5001) Press enter.
 #
-6. You should now see the Nextcloud login page where you will create your admin account and proceed to log in.
+6. You should now see the Facerec login page where you can sign up and start registering faces to names.
 
 <br />
 
