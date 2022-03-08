@@ -21,10 +21,8 @@
 # What is Facerec?
 
 <p align="center">
-  <video src="https://youtu.be/CslyEsnhA9k" />
+  <video src="https://github.com/cachengo/recipes/raw/jb_readmefiles/facerec_readme/facerec_instructions.mp4" />
 </p>
-
-[![watch the video](https://youtu.be/CslyEsnhA9k)]
 
 ## Security
 Protect, control and lock important information with just a scan of your face that cannot be duplicated, where only authorized individuals can access the information intended for their eyes only.
