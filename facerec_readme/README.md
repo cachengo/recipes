@@ -71,3 +71,8 @@ Run on Cachengo hardware, Facerec is extremely time efficent, easy to use, and s
 6. You should now see the Facerec login page where you can sign up and start registering faces to names.
 ---
 ---
+
+# Installing and Accessing Facerec
+
+[![Watch Video](http://i3.ytimg.com/vi/CslyEsnhA9k/hqdefault.jpg)](https://www.youtube.com/watch?v=CslyEsnhA9k)
+
