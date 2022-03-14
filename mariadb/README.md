@@ -16,8 +16,8 @@ It is built upon the values of performance, stability, and openness.
 -   Transactional scalability: distributed SQL
 -   Analytical scalability: columnar data with massively parallel processing
 -   Development: temporal tables, JSON documents and geospatial support
--  High availability: automatic failover and transaction replay
--  Disaster recovery: online backups and point-in-time restore
+-   High availability: automatic failover and transaction replay
+-   Disaster recovery: online backups and point-in-time restore
 -   Security: transparent data encryption and dynamic data masking
 -   Oracle Database compatiblity: data types, sequences and PL/SQL
 
@@ -52,7 +52,8 @@ Set to a non-empty value, like `yes`, to allow the container to be started with 
 
 Set to a non-empty value, like `yes`, to generate a random initial password for the root user. The generated root password will be printed to stdout (`GENERATED ROOT PASSWORD: .....`).
 
-
+**HOST_PORT**
+The host port mapped to the container.
 
 ## Additional Parameters
 ---
