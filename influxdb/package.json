@@ -1,0 +1,41 @@
+{
+    "name": "influxdb",
+    "display_name": "influxdb",
+    "description": "InfluxDB is an open source time series database for recording metrics, events, and analytics.",
+    "parameters": [
+      {
+        "name": "ROOT_USERNAME",
+        "display_name": "DOCKER_INFLUXDB_INIT_USERNAME",
+        "description": "The username to set for the system's initial super-user",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "ROOT_PASSWORD",
+        "display_name": "DOCKER_INFLUXDB_INIT_PASSWORD",
+        "description": "The password to set for the system's inital super-user",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "DB_ORG",
+        "display_name": "DOCKER_INFLUXDB_INIT_ORG",
+        "description": "The name to set for the system's initial organization",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "DB_BUCKET",
+        "display_name": "DOCKER_INFLUXDB_INIT_BUCKET",
+        "description": "The name to set for the system's initial bucket",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "main": "influxdb/run.sh",
+    "dependencies": [
+      "utils/cachengo.sh",
+      "utils/docker.sh",
+      "influxdb/run.sh"
+    ]
+  }
