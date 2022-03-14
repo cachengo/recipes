@@ -1,5 +1,5 @@
 ﻿
-![mariadb logo](https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/MongoDB_Logo.svg/2560px-MongoDB_Logo.svg.png "MongoDB Logo")
+![mongodb logo](https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/MongoDB_Logo.svg/2560px-MongoDB_Logo.svg.png "MongoDB Logo")
 
 ## What is MongoDB?
 ---
@@ -35,7 +35,8 @@ MongoDB is a free and open-source cross-platform document-oriented database prog
 
 These variables, used in conjunction, create a new user and set that user's password. This user is created in the `admin`  [authentication database](https://docs.mongodb.com/manual/core/security-users/#user-authentication-database) and given [the role of  `root`](https://docs.mongodb.com/manual/reference/built-in-roles/#root), which is [a "superuser" role](https://docs.mongodb.com/manual/core/security-built-in-roles/#superuser-roles).
 
-
+**HOST_PORT**
+The host port mapped to the container. 
 
 ## Additional Parameters
 ---
@@ -50,7 +51,6 @@ This parameter allows you to create or assign the container to a Docker network.
 **DB_NAME** 
 
 This variable allows you to specify the name of a database to be used for creation scripts in `/docker-entrypoint-initdb.d/*.js` (see _Initializing a fresh instance_ below). MongoDB is fundamentally designed for "create on first use", so if you do not insert data with your JavaScript files, then no database is created.
-
 
 
 ## Using MongoDB
@@ -79,7 +79,9 @@ docker run -it --network some-network --rm mongo:4.4 mongo --host some-mongo tes
 ## Limitations / Known issues
 ---
 Version 5.0+ doesn't work on our devices. You need to install version 4.4. 
- 
+
+Web interface not supported.
+
 ## MongoDB Platform  Video
 ---
 
