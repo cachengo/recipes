@@ -79,7 +79,6 @@ if __name__ == "__main__":
     while True:
         change_detected = False
         data_fetched = False
-        print(host_ip)
 
         for i, hostname in enumerate(hostnames):
             if host_ip[hostname] is None or not is_ip_up(host_ip[hostname]) or not ip_exists(host_ip[hostname]):
