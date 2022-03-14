@@ -13,3 +13,7 @@ function delete_network {
     docker network rm "$1"
   fi  
 }
+
+function container_state {
+  echo "$( docker container inspect -f '{{.State.Status}}' $1 )"
+}
