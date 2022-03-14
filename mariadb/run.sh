@@ -26,7 +26,15 @@ function do_install {
       -p "$HOST_PORT":3306 \
       $NET_FLAG \
       mariadb:10.7
-    cachengo-cli updateInstallStatus "$APPID" "Installed"
+      cachengo-cli updateInstallStatus "$APPID" "Checking service"
+
+    sleep 60
+    if [ "$( container_state $APPID)" != "running" ]; then
+      NETWORK_NAME=$(get_network)
+      delete_network "$NETWORK_NAME"
+      exit 1
+    fi
+
   else
     echo "Docker is not installed"
     exit 1 
