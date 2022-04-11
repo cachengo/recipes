@@ -15,15 +15,27 @@ function do_install {
   apt install -y avahi-utils
   apt install -y python3
   apt install -y curl
-    
+
   echo "Installing hostname lookup service" 
   sed -i "s/#hostnames_json#/$HOSTNAMES/" baremetal_minio/minio_lookup.service
   sed -i "s/#group_id#/$GROUPID/" baremetal_minio/minio_lookup.service
+  sed -i "s/#hostnames_json#/$HOSTNAMES/" baremetal_minio/restart_avahi.service
+  sed -i "s/#group_id#/$GROUPID/" baremetal_minio/restart_avahi.service
   cp baremetal_minio/service_lookup.py /usr/bin/service_lookup.py
+  cp baremetal_minio/restart_avahi.py /usr/bin/restart_avahi.py
   chmod +x /usr/bin/service_lookup.py
+  chmod +x /usr/bin/restart_avahi.py
   cp baremetal_minio/minio_lookup.service /lib/systemd/system/minio_lookup.service
+  cp baremetal_minio/minio_lookup.timer /lib/systemd/system/minio_lookup.timer
+  cp baremetal_minio/restart_avahi.service /lib/systemd/system/restart_avahi.service
+  cp baremetal_minio/restart_avahi.timer /lib/systemd/system/restart_avahi.timer
   chmod 664 /lib/systemd/system/minio_lookup.service
+  chmod 664 /lib/systemd/system/restart_avahi.service
+  chmod 664 /lib/systemd/system/minio_lookup.timer
+  chmod 664 /lib/systemd/system/restart_avahi.timer
   systemctl daemon-reload
+  systemctl enable restart_avahi.timer
+  systemctl enable minio_lookup.timer
   service minio_lookup start
 
   platform=`uname -m`
