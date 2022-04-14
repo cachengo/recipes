@@ -30,6 +30,20 @@
         "description": "The name to set for the system's initial bucket",
         "type": "string",
         "required": true
+      },
+      {
+        "name": "BUCKET_RETENTION",
+        "display_name": "DOCKER_INFLUXDB_INIT_RETENTION",
+        "description": "The duration the system's initial bucket should retain data.",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "ADMIN_TOKEN",
+        "display_name": "DOCKER_INFLUXDB_INIT_ADMIN_TOKEN",
+        "description": "The authentication token to associate with the system's initial super-user.",
+        "type": "string",
+        "required": true
       }
     ],
     "main": "influxdb/run.sh",
