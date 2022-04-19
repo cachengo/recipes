@@ -1,0 +1,55 @@
+{
+    "name": "mariadb",
+    "display_name": "MariaDB",
+    "description": "MariaDB Server is a high performing open source relational database, forked from MySQL.",
+    "parameters": [
+      {
+        "name": "ROOT_PASSWORD",
+        "display_name": "MARIADB_ROOT_PASSWORD",
+        "description": "This specifies the password that will be set for the MariaDB root superuser account.",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "DATABASE_NAME",
+        "display_name": "MARIADB_DATABASE",
+        "description": "This variable allows you to specify the name of a database to be created on image startup.",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "DB_USER",
+        "display_name": "MARIADB_USER",
+        "description": "These are used in conjunction to create a new user and to set that user's password. Both user and password variables are required for a user to be created.",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "DB_PASSWORD",
+        "display_name": "MARIADB_PASSWORD",
+        "description": "These are used in conjunction to create a new user and to set that user's password. Both user and password variables are required for a user to be created.",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "ALLOW_EMPTY_ROOT_PASSWORD",
+        "display_name": "MARIADB_ALLOW_EMPTY_ROOT_PASSWORD",
+        "description": "Set to a non-empty value, like yes, to allow the container to be started with a blank password for the root user.",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "RANDOM_ROOT_PASSWORD",
+        "display_name": "MARIADB_RANDOM_ROOT_PASSWORD",
+        "description": "Set to a non-empty value, like yes, to generate a random initial password for the root user (using pwgen).",
+        "type": "string",
+        "required": false
+      }
+    ],
+    "main": "mariadb/run.sh",
+    "dependencies": [
+    "mariadb/run.sh",
+    "utils/cachengo.sh",
+    "utils/docker.sh"
+    ]
+  }
