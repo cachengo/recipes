@@ -1,0 +1,41 @@
+{
+    "name": "postgres",
+    "display_name": "PostgreSQL",
+    "description": "Is an object-relational database management system (ORDBMS) with an emphasis on extensibility and standards-compliance.",
+    "parameters": [
+      {
+        "name": "DB_PASSWORD",
+        "display_name": "POSTGRES_PASSWORD",
+        "description": "This environment variable sets the superuser password for PostgreSQL",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "DB_USER",
+        "display_name": "POSTGRES_USER",
+        "description": "This optional environment variable is used in conjunction with POSTGRES_PASSWORD to set a user and its password.",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "DB_NAME",
+        "display_name": "POSTGRES_DB",
+        "description": "This optional environment variable can be used to define a different name for the default database that is created when the image is first started.",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "DB_ARGS",
+        "display_name": "POSTGRES_INITDB_ARGS",
+        "description": "This optional environment variable can be used to send arguments to postgres initdb. The value is a space separated string of arguments as postgres initdb would expect them.",
+        "type": "string",
+        "required": false
+      }      
+    ],
+    "main": "postgres/run.sh",
+    "dependencies": [
+      "utils/cachengo.sh",
+      "utils/docker.sh",
+      "postgres/run.sh"
+    ]
+  }
