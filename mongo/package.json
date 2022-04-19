@@ -1,0 +1,34 @@
+{
+    "name": "mongo",
+    "display_name": "mongo",
+    "description": "MongoDB is a free and open-source cross-platform document-oriented database program. Classified as a NoSQL database program, MongoDB uses JSON-like documents with schemata.",
+    "parameters": [
+      {
+        "name": "ROOT_USERNAME",
+        "display_name": "MONGO_INITDB_ROOT_USERNAME",
+        "description": "These variables, used in conjunction, create a new user and set that user's password.",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "ROOT_PASSWORD",
+        "display_name": "MONGO_INITDB_ROOT_PASSWORD",
+        "description": "These variables, used in conjunction, create a new user and set that user's password.",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "DB_NAME",
+        "display_name": "MONGO_INITDB_DATABASE",
+        "description": "This variable allows you to specify the name of a database to be used for creation scripts.",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "main": "mongo/run.sh",
+    "dependencies": [
+      "utils/cachengo.sh",
+      "utils/docker.sh",
+      "mongo/run.sh"
+    ]
+  }
