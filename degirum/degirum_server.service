@@ -6,6 +6,5 @@ ExecStart=/usr/bin/python3 -m degirum.server --zoo /data/zoo
 Restart=always
 RestartSec=10
 SyslogIdentifier=degirum-ai-server
-User=root
 [Install]
 WantedBy=multi-user.target
