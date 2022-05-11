@@ -36,7 +36,8 @@ function do_install {
   systemctl daemon-reload
   systemctl enable restart_avahi.timer
   systemctl enable minio_lookup.timer
-  service minio_lookup start
+  systemctl start minio_lookup.service
+  systemctl start restart_avahi.service
 
   platform=`uname -m`
   if [[ $platform == x86_64 ]]; then

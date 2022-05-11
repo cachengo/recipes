@@ -57,13 +57,16 @@ def set_ip_for_host(hostname, ip):
 
 def wipe_hosts(hostname):
     filename = '/etc/hosts'
+    new_file = '/tmp/new_hosts'
     with open(filename, "r") as f:
         lines = f.readlines()
 
-    with open(filename, "w+") as f:
+    with open(new_file, "w+") as f:
         for line in lines:
             if hostname not in line:
                 f.write(line)
+    os.replace(filename, new_file)
+    os.remove(new_file)
 
 def restart_service():
     process = subprocess.Popen(
