@@ -1,17 +1,11 @@
 [Unit]
 Description=DeGirum AI Service
 [Service]
-# >> you may want to adjust the working directory:
 WorkingDirectory=/data/
-# >> you may want to adjust the path to your Python executable and --zoo model zoo path;
-# >> also you may specify server TCP port other than default 8778 by adding --port <port> argument:
 ExecStart=/home/ai-user/miniconda3/bin/python -m degirum.server --zoo /data/zoo
 Restart=always
-# >> you may want to adjust the restart time interval:
 RestartSec=10
 SyslogIdentifier=degirum-ai-server
-# >> you may want to change the user name under which this service will run. 
-# >> This user should have rights to access model zoo directory
 User=ai-user
 [Install]
 WantedBy=multi-user.target
