@@ -2,10 +2,10 @@
 Description=DeGirum AI Service
 [Service]
 WorkingDirectory=/data/
-ExecStart=/home/ai-user/miniconda3/bin/python -m degirum.server --zoo /data/zoo
+ExecStart=/usr/bin/python3 -m degirum.server --zoo /data/zoo
 Restart=always
 RestartSec=10
 SyslogIdentifier=degirum-ai-server
-User=ai-user
+User=root
 [Install]
 WantedBy=multi-user.target
