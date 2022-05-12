@@ -7,6 +7,14 @@
 Lightweight Kubernetes
 The certified Kubernetes distribution built for IoT & Edge computing
 
+K3S-Leader can be used with a single server, called a leader, or with multiple leaders. Adding two or more leaders to the cluster enables high-availability. Single leader clusters can meet a variety of use cases, but for environments where uptime of the Kubernetes control plane is critical, it is recomended to run K3s-Leader with multiple leaders. This means you can start with three servers and if one fails the cluster will still work.
+
+The K3s server process runs several components that include:
+
+Kubernetes API, controller, and scheduler – the basic control-plane components for Kubernetes
+Sqlite as is the default storage backend without HA control plane
+Reverse tunnel proxy, which eliminates the need for bidirectional communication between server and agent, which means you don’t have to punch holes in firewalls for servers to talk to followers.
+
 ## Features
 
 ---
@@ -24,13 +32,15 @@ Both ARM64 and ARMv7 are supported with binaries and multiarch images available 
 
 ---
 
-1. Select the devices to which K3S-Follower will be installed from 'Devices' page.
+1. Select the devices to which K3S-Leader will be installed from 'Devices' page.
 
-2. Navigate to the 'App Marketplace' tab and select the 'K3S-Follower' application.
+2. Navigate to the 'App Marketplace' tab and select the 'K3S-Leader' application.
 
 3. The 'Install Now' button should now appear near the top of the screen. Select this button.
 
-4. Give your installation a name and fill all the parameters. Click 'Install K3S-Follower' in the bottom right corner.
+4. Give your installation a name and fill all the parameters. Click 'Install K3S-Leader' in the bottom right corner.
+
+5. Repeat the process to add additional leaders.
 
 ## Required Parameters
 
@@ -40,7 +50,7 @@ Both ARM64 and ARMv7 are supported with binaries and multiarch images available 
 Secret token used for joining new nodes
 
 **IP_ADDRESS**
-IP address of the leader node
+IP address of an existing leader node. Leave blank if installing the first leader
 
 ## Additional Parameters
 
@@ -56,20 +66,18 @@ Version of k3s to download from github.
 ## Using K3S
 
 ---
+
 ### Device Shell
 
 Use device shell to interact with K3S using kubectl commands. To see the nodes that are part of your cluster, run:
 
-`
-kubectl get nodes
-`
-
+`kubectl get nodes`
 
 For more information about commands visit <https://rancher.com/docs/k3s/latest/en/>
 
 ### K3S Dashboard
 
-Dashboard is a web-based Kubernetes user interface. You can use Dashboard to deploy containerized applications to a Kubernetes cluster, troubleshoot your containerized application, and manage the cluster resources. 
+Dashboard is a web-based Kubernetes user interface. You can use Dashboard to deploy containerized applications to a Kubernetes cluster, troubleshoot your containerized application, and manage the cluster resources.
 
 K3S Dashboard will be available soon to install from the App Marketplace.
 
@@ -82,12 +90,10 @@ K3S Dashboard will be available soon to install from the App Marketplace.
 ## Limitations / Known issues
 
 ---
+
 Before uninstalling a leader node, it must be deleted from another leader node using this command:
 
-`
-kubectl delete node <leader-node-name>
-`
-
+`kubectl delete node <leader-node-name>`
 
 ## K3S Platform Video
 

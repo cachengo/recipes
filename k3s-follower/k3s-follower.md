@@ -7,6 +7,13 @@
 Lightweight Kubernetes
 The certified Kubernetes distribution built for IoT & Edge computing
 
+The K3s-Follower is responsible for running the kubelet and kube-proxy. In addition:
+
+Flannel as embedded process
+Containerd as the container runtime
+Internal load balancer that load-balances connections between all API servers in HA configurations
+Network policy controller to enforce network policies
+
 ## Features
 
 ---
@@ -61,16 +68,13 @@ Version of k3s to download from github.
 
 Use device shell to interact with K3S using kubectl commands. To see the nodes that are part of your cluster, run:
 
-`
-kubectl get nodes
-`
-
+`kubectl get nodes`
 
 For more information about commands visit <https://rancher.com/docs/k3s/latest/en/>
 
 ### K3S Dashboard
 
-Dashboard is a web-based Kubernetes user interface. You can use Dashboard to deploy containerized applications to a Kubernetes cluster, troubleshoot your containerized application, and manage the cluster resources. 
+Dashboard is a web-based Kubernetes user interface. You can use Dashboard to deploy containerized applications to a Kubernetes cluster, troubleshoot your containerized application, and manage the cluster resources.
 
 K3S Dashboard will be available soon to install from the App Marketplace.
 
@@ -83,6 +87,7 @@ K3S Dashboard will be available soon to install from the App Marketplace.
 ## Limitations / Known issues
 
 ---
+
 N/A
 
 ## K3S Platform Video
