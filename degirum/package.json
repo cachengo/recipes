@@ -7,7 +7,5 @@
     "dependencies": [
       "degirum/run.sh",
       "utils/cachengo.sh",
-      "utils/parameters.sh",
-      "degirum/degirum_server.service"
     ]
   }
