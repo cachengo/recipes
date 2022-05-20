@@ -40,7 +40,7 @@ Both ARM64 and ARMv7 are supported with binaries and multiarch images available 
 
 4. Give your installation a name and fill all the parameters. Click 'Install K3S-Leader' in the bottom right corner.
 
-5. Repeat the process to add additional leaders.
+5. Repeat the process filling out the IP_ADDRESS variable with the IP Address of the first leader to add additional leaders.
 
 ## Required Parameters
 
