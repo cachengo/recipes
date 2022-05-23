@@ -1,5 +1,5 @@
 [Unit]
-Description=Minio
+Description=Argos
 [Service]
 Environment=DVR_MINIO_ACCESS_KEY=#access_key#
 Environment=DVR_MINIO_SECRET=#secret_key#

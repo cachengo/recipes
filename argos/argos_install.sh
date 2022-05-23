@@ -6,34 +6,43 @@ function do_install {
 
   echo "Installation started"
   cachengo-cli updateInstallStatus $APPID "Installing"
-  local HOSTS_ARR
-  array_from_json_list HOSTS_ARR "$HOSTNAMES"
-  array_len=$((${#HOSTS_ARR[@]}-1 ))
+  # local HOSTS_ARR
+  # array_from_json_list HOSTS_ARR "$HOSTNAMES"
+  # array_len=$((${#HOSTS_ARR[@]}-1 ))
   
   # export MINIO_ACCESS_KEY=$ACCESS_KEY
   # export MINIO_SECRET_KEY=$SECRET_KEY
 
-  apt install -y avahi-utils
   apt install -y python3
-  apt install -y supervisord
+  apt install -y supervisor
   apt install -y curl 
   
   platform=`uname -m`
   if [[ $platform == x86_64 ]]; then
     dvr_executable=dvr_amd64-linux
+    ffmpeg_executable=ffmpeg-amd64-linux
+    immudb_executable=immudb-v1.2.4-linux-amd64
   fi
 
   if [[ $platform == aarch64 ]]; then
     dvr_executable=dvr_arm64-linux
+    ffmpeg_executable=ffmpeg-arm64-linux
+    immudb_executable=immudb-v1.2.4-linux-arm64
   fi
   
   mkdir /argos 
+  mkdir /immudb
   chmod a+rwx /argos  #verify correct permissions later
+  chmod a+rwx /immudb 
   curl -L -o /argos/dvr "https://downloads.staging.cachengo.com/argos/$dvr_executable"
+  curl -L -o /usr/bin/ffmpeg "https://downloads.staging.cachengo.com/argos/$ffmpeg_executable"
+  curl _l -o /immudb/immudb "https://downloads.staging.cachengo.com/argos/$immudb_executable"
   chmod +x /argos/dvr
+  chmod +x /immudb/immudb 
+  chmod +x /usr/bin/ffmpeg
 
-  sed -i "s/#hostnames_json#/$HOSTNAMES/" argos/argos.service
-  sed -i "s/#group_id#/$GROUPID/" argos/argos.service
+  # sed -i "s/#hostnames_json#/$HOSTNAMES/" argos/argos.service
+  # sed -i "s/#group_id#/$GROUPID/" argos/argos.service
   sed -i "s/#access_key#/$DVR_MINIO_ACCESS_KEY/" argos/argos.service
   sed -i "s/#minio_endpoint#/$DVR_MINIO_ENDPOINT/" argos/argos.service
   sed -i "s/#secret_key#/$DVR_MINIO_SECRET/" argos/argos.service
@@ -44,31 +53,13 @@ function do_install {
   sed -i "s/#join_secret#/$DVR_JOIN_SECRET/" argos/argos.service
   sed -i "s/#bootstrap#/$DVR_RAFT_BOOTSTRAP/" argos/argos.service
   sed -i "s/#api_port#/$DVR_API_PORT/" argos/argos.service
-  sed -i "s/#leaer_api_port#/$DVR_LEADER_API_PORT/" argos/argos.service
-  cp baremetal_minio/service_lookup.py /usr/bin/service_lookup.py
-  chmod +x /usr/bin/service_lookup.py
-  cp baremetal_minio/minio_lookup.service /lib/systemd/system/minio_lookup.service
-  chmod 664 /lib/systemd/system/minio_lookup.service
-  systemctl daemon-reload
-
+  sed -i "s/#leader_api_port#/$DVR_LEADER_API_PORT/" argos/argos.service
   
+  cp argos/argos.service /lib/systemd/system/argos.service
 
-  
-  if [ ! -f /usr/bin/minio ]; then
-    echo "Downloading Min.io"
-    curl -L -o /usr/bin/minio "http://dl.min.io/server/minio/release/linux-$platform/minio"
-    chmod +x /usr/bin/minio
-  fi
-  echo "Installing Min.io service"
-  sed -i "s/#access_key#/$ACCESS_KEY/" baremetal_minio/minio.service
-  sed -i "s/#secret_key#/$SECRET_KEY/" baremetal_minio/minio.service
-  sed -i "s/#host_number#/$array_len/" baremetal_minio/minio.service
-  sed -i "s/#group_id#/$GROUPID/g" baremetal_minio/minio.service
-  cp baremetal_minio/minio.service /lib/systemd/system/minio.service
-  chmod 664 /lib/systemd/system/minio.service
   systemctl daemon-reload
-  service minio start
-  service avahi-daemon restart
+  service argos start
+
   echo "Installation Successful"
 }
 
@@ -78,14 +69,12 @@ function uninstall_only {
   
   echo "Removing services files"
   rm /lib/systemd/system/argos.service
-  
-  
-  echo "Removing data"
-  rm -rfR /argos
+  rm -rf /immudb
+  rm /usr/bin/ffmpeg
+  rm -rf /argos  
+  rm -rf /etc/dvr/
   systemctl daemon-reload
   
-  # echo "Cleaning host files"
-  # sed -i "/$GROUPID/d" /etc/hosts
    echo "Uninstallation Successful"
 }
 

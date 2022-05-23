@@ -1,7 +1,7 @@
 {
     "name": "argos",
     "display_name": "Cachengo Argos",
-    "description": "MinIO is a high performance object storage server. Users can interact with it through its S3 API.",
+    "description": "Cachengo Argos DVR software",
     "parameters": [
       {
         "name": "DVR_MINIO_ACCESS_KEY",
@@ -38,8 +38,6 @@
       "argos/argos_install.sh",
       "utils/cachengo.sh",
       "utils/parameters.sh",
-      "argos/argos.service",
-      "argos/dvr_arm64-linux",
-      "argos/dvr_amd64-linux"
+      "argos/argos.service"
     ]
   }
