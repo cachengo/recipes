@@ -35,11 +35,12 @@ function do_install {
   chmod a+rwx /argos  #verify correct permissions later
   chmod a+rwx /immudb 
   curl -L -o /argos/dvr "https://downloads.staging.cachengo.com/argos/$dvr_executable"
-  curl -L -o /usr/bin/ffmpeg "https://downloads.staging.cachengo.com/argos/$ffmpeg_executable"
-  curl _l -o /immudb/immudb "https://downloads.staging.cachengo.com/argos/$immudb_executable"
-  chmod +x /argos/dvr
-  chmod +x /immudb/immudb 
-  chmod +x /usr/bin/ffmpeg
+  curl -L -o /usr/bin/ffmpeg "https://downloads.staging.cachengo.com/argos/ffmpeg/$ffmpeg_executable"
+  curl -L -o /immudb/immudb "https://downloads.staging.cachengo.com/argos/immudb/$immudb_executable"
+
+  chmod a+rwx /argos/dvr
+  chmod a+rwx /immudb/immudb 
+  chmod a+rwx /usr/bin/ffmpeg
 
   # sed -i "s/#hostnames_json#/$HOSTNAMES/" argos/argos.service
   # sed -i "s/#group_id#/$GROUPID/" argos/argos.service

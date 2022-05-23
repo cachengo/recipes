@@ -1,43 +1,43 @@
 {
-    "name": "argos",
-    "display_name": "Cachengo Argos",
-    "description": "Cachengo Argos DVR software",
-    "parameters": [
-      {
-        "name": "DVR_MINIO_ACCESS_KEY",
-        "display_name": "Minio Access Key",
-        "description": "Access key for accessing the S3 cluster",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "DVR_MINIO_SECRET",
-        "display_name": "Secret Key",
-        "description": "Secret key for accessing the S3 cluster",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "DVR_MINIO_ENDPOINT",
-        "display_name": "Secret Key",
-        "description": "Secret key for accessing the S3 cluster",
-        "type": "string",
-        "required": true
-      },
-      
-      {
-        "name": "HOSTNAMES",
-        "display_name": "Peer IPs",
-        "description": "IP addresses to use for cluster communication",
-        "type": "list",
-        "required": true
-      }
-    ],
-    "main": "argos/argos_install.sh",
-    "dependencies": [
-      "argos/argos_install.sh",
-      "utils/cachengo.sh",
-      "utils/parameters.sh",
-      "argos/argos.service"
-    ]
+  "name": "argos",
+  "display_name": "Cachengo Argos",
+  "description": "Cachengo Argos DVR software",
+  "parameters": [
+    {
+      "name": "DVR_MINIO_ACCESS_KEY",
+      "display_name": "Minio Access Key",
+      "description": "Access key for accessing the S3 cluster",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "DVR_MINIO_SECRET",
+      "display_name": "Secret Key",
+      "description": "Secret key for accessing the S3 cluster",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "DVR_MINIO_ENDPOINT",
+      "display_name": "Secret Key",
+      "description": "Secret key for accessing the S3 cluster",
+      "type": "string",
+      "required": true
+    },
+    
+    {
+      "name": "HOSTNAMES",
+      "display_name": "Peer IPs",
+      "description": "IP addresses to use for cluster communication",
+      "type": "list",
+      "required": true
+    }
+  ],
+  "main": "argos/argos_install.sh",
+  "dependencies": [
+    "argos/argos_install.sh",
+    "utils/cachengo.sh",
+    "utils/parameters.sh",
+    "argos/argos.service"
+  ]
   }
