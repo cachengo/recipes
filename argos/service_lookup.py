@@ -97,7 +97,8 @@ if __name__ == "__main__":
                     print('Try finished')
                 if is_up:
                     print('Will set ip')
-                    set_ip_for_host(f'{group_id}-{i}', new_ip)
+                    #set_ip_for_host(f'{group_id}-{i}', new_ip)
+                    set_ip_for_host(f'{hostname}', new_ip)
                     host_ip[hostname] = new_ip
                     change_detected = True
 

@@ -31,13 +31,6 @@
       "description": "IP addresses to use for cluster communication",
       "type": "list",
       "required": true
-    },
-    {
-      "name": "SERVER_IDS",
-      "display_name": "Server Node IDs",
-      "description": "Identifiers for the raft cluster nodes",
-      "type": "list",
-      "required": false
     }
   ],
   "main": "argos/argos_install.sh",
@@ -45,6 +38,8 @@
     "argos/argos_install.sh",
     "utils/cachengo.sh",
     "utils/parameters.sh",
-    "argos/argos.service"
+    "argos/argos.service",
+    "argos/service_lookup.py",
+    "argos/argos_lookup.service"
   ]
   }
