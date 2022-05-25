@@ -53,7 +53,8 @@ def set_ip_for_host(hostname, ip):
         for line in lines:
             if hostname not in line:
                 f.write(line)
-        f.write(f'{ip} {hostname}\n')
+        group_id = os.environ["GROUP_ID"]
+        f.write(f'{ip} {hostname} # {group_id} \n')
 
 
 def restart_service():

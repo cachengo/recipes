@@ -91,7 +91,9 @@ function uninstall_only {
   rm -rf /etc/dvr/
   systemctl daemon-reload
   
-   echo "Uninstallation Successful"
+  sed -i "/$GROUPID/d" /etc/hosts
+
+  echo "Uninstallation Successful"
 }
 
 function do_uninstall {
