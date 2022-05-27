@@ -23,8 +23,25 @@ function do_install {
     h_name=$DVR_SERVER_ID
   fi 
 
-  peer_addr=$h_name  
+  join_address=""
 
+  for ((i=0;i<${#HOSTS_ARR[@]};++i)); do
+    echo "Hosts[i]=${HOSTS_ARR[i]}"
+    echo "h name is: $h_name"
+
+    if  [[ ${HOSTS_ARR[i]} == $h_name ]]; then 
+  
+      peer_addr="$GROUPID-$i" 
+  
+      if [[ $i != 0 ]] ; then
+        echo "Follower node found"
+        join_address=$DVR_JOIN_ADDRESS
+      fi
+    fi 
+ done
+ 
+  
+  
   if [[ $platform == x86_64 ]]; then
     dvr_executable=dvr_amd64-linux
     ffmpeg_executable=ffmpeg-amd64-linux
@@ -44,7 +61,7 @@ function do_install {
   curl -L -o /argos/dvr "https://downloads.staging.cachengo.com/argos/$dvr_executable"
   curl -L -o /usr/bin/ffmpeg "https://downloads.staging.cachengo.com/argos/ffmpeg/$ffmpeg_executable"
   curl -L -o /immudb/immudb "https://downloads.staging.cachengo.com/argos/immudb/$immudb_executable"
-
+  # cp argos/dvr_arm64-linux /argos/dvr
   chmod a+rwx /argos/dvr
   chmod a+rwx /immudb/immudb 
   chmod a+rwx /usr/bin/ffmpeg
@@ -58,10 +75,9 @@ function do_install {
   sed -i "s/#minio_endpoint#/$DVR_MINIO_ENDPOINT/" argos/argos.service
   sed -i "s/#secret_key#/$DVR_MINIO_SECRET/" argos/argos.service
   sed -i "s/#server_id#/$h_name/" argos/argos.service
-  sed -i "s/#join_address#/$DVR_JOIN_ADDRESS/" argos/argos.service
+  sed -i "s/#join_address#/$join_address/" argos/argos.service
   sed -i "s/#peer_address#/$peer_addr/" argos/argos.service
   sed -i "s/#join_secret#/$DVR_JOIN_SECRET/" argos/argos.service
-  sed -i "s/#bootstrap#/$DVR_RAFT_BOOTSTRAP/" argos/argos.service
   sed -i "s/#api_port#/$DVR_API_PORT/" argos/argos.service
   sed -i "s/#leader_api_port#/$DVR_LEADER_API_PORT/" argos/argos.service
   
@@ -71,8 +87,10 @@ function do_install {
   chmod +x /argos/service_lookup.py
   
   systemctl daemon-reload
-  service argos start
   service argos_lookup start
+  sleep 40
+  service argos start
+  
 
   echo "Installation Successful"
 }
