@@ -40,7 +40,6 @@
     "utils/parameters.sh",
     "argos/argos.service",
     "argos/service_lookup.py",
-    "argos/argos_lookup.service",
-    "argos/dvr_arm64-linux"
+    "argos/argos_lookup.service"
   ]
   }
