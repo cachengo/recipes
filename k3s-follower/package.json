@@ -1,0 +1,34 @@
+{
+    "name": "k3s-follower",
+    "display_name": "K3s",
+    "description": "Initialize K3s cluster",
+    "parameters": [
+        {
+            "name": "K3S_TOKEN",
+            "display_name": "Secret token",
+            "description": "Secret token used for joining new nodes" ,
+            "type": "string",
+            "required": true
+        },
+        {
+            "name": "IP_ADDRESS",
+            "display_name": "Leader IP",
+            "description": "IP address of the leader node" ,
+            "type": "string",
+            "required": true
+        },
+        {
+            "name": "INSTALL_K3S_VERSION",
+            "display_name": "K3S VERSION",
+            "description": "Version of k3s to download from github." ,
+            "type": "string",
+            "required": false
+        }
+    ],
+    "main": "k3s/run.sh",
+    "dependencies": [
+      "k3s-follower/run.sh",
+      "k3s-follower/install_k3s.sh",
+      "utils/cachengo.sh"
+    ]
+  }
