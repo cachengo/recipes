@@ -65,8 +65,7 @@ def wipe_hosts(hostname):
         for line in lines:
             if hostname not in line:
                 f.write(line)
-    os.replace(filename, new_file)
-    os.remove(new_file)
+    os.rename(new_file,filename)
 
 def restart_service():
     process = subprocess.Popen(
