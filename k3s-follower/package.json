@@ -25,7 +25,7 @@
             "required": false
         }
     ],
-    "main": "k3s/run.sh",
+    "main": "k3s-follower/run.sh",
     "dependencies": [
       "k3s-follower/run.sh",
       "k3s-follower/install_k3s.sh",

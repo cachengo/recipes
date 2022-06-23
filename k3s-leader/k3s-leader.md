@@ -46,7 +46,7 @@ Both ARM64 and ARMv7 are supported with binaries and multiarch images available 
 
 ---
 
-**K3S_TOKEN**
+**SECRET**
 Secret token used for joining new nodes
 
 **IP_ADDRESS**

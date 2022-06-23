@@ -25,7 +25,7 @@
             "required": false
         }
     ],
-    "main": "ha/run.sh",
+    "main": "k3s-leader/run.sh",
     "dependencies": [
       "k3s-leader/run.sh",
       "k3s-leader/install_k3s.sh",
