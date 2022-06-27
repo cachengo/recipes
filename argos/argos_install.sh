@@ -106,7 +106,6 @@ function uninstall_only {
   rm -rf /immudb
   rm /usr/bin/ffmpeg
   rm -rf /argos  
-  rm -rf /etc/dvr/
   systemctl daemon-reload
   
   sed -i "/$GROUPID/d" /etc/hosts
