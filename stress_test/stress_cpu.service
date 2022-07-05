@@ -1,0 +1,7 @@
+[Unit]
+Description=CPU_Stress_Test
+[Service]
+ExecStart=/usr/bin/stress --cpu 6
+Restart=always
+[Install]
+WantedBy=multi-user.target

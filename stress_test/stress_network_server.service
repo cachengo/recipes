@@ -1,0 +1,7 @@
+[Unit]
+Description=Network_Stress_Test_Server
+[Service]
+ExecStart=/usr/bin/iperf3 -s
+Restart=always
+[Install]
+WantedBy=multi-user.target
