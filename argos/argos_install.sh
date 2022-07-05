@@ -54,16 +54,16 @@ function do_install {
     immudb_executable=immudb-v1.2.4-linux-arm64
   fi
   
-  mkdir /argos 
-  mkdir /immudb
-  chmod a+rwx /argos  #verify correct permissions later
-  chmod a+rwx /immudb 
-  curl -L -o /argos/dvr "https://downloads.staging.cachengo.com/argos/$dvr_executable"
+  mkdir /data/argos 
+  mkdir /data/immudb
+  chmod a+rwx /data/argos  #verify correct permissions later
+  chmod a+rwx /data/immudb 
+  curl -L -o /data/argos/dvr "https://downloads.staging.cachengo.com/argos/$dvr_executable"
   curl -L -o /usr/bin/ffmpeg "https://downloads.staging.cachengo.com/argos/ffmpeg/$ffmpeg_executable"
-  curl -L -o /immudb/immudb "https://downloads.staging.cachengo.com/argos/immudb/$immudb_executable"
+  curl -L -o /data/immudb/immudb "https://downloads.staging.cachengo.com/argos/immudb/$immudb_executable"
   # cp argos/dvr_arm64-linux /argos/dvr
-  chmod a+rwx /argos/dvr
-  chmod a+rwx /immudb/immudb 
+  chmod a+rwx /data/argos/dvr
+  chmod a+rwx /data/immudb/immudb 
   chmod a+rwx /usr/bin/ffmpeg
 
   # Replace vars on lookup service file
@@ -83,8 +83,8 @@ function do_install {
   
   cp argos/argos.service /lib/systemd/system/argos.service
   cp argos/argos_lookup.service /lib/systemd/system/argos_lookup.service
-  cp argos/service_lookup.py /argos/service_lookup.py
-  chmod +x /argos/service_lookup.py
+  cp argos/service_lookup.py /data/argos/service_lookup.py
+  chmod +x /data/argos/service_lookup.py
   
   systemctl daemon-reload
   service argos_lookup start
@@ -103,9 +103,9 @@ function uninstall_only {
   echo "Removing services files"
   rm /lib/systemd/system/argos.service
   rm /lib/systemd/system/argos_lookup.service
-  rm -rf /immudb
+  rm -rf /data/immudb
   rm /usr/bin/ffmpeg
-  rm -rf /argos  
+  rm -rf /data/argos  
   systemctl daemon-reload
   
   sed -i "/$GROUPID/d" /etc/hosts

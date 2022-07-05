@@ -6,7 +6,8 @@ Environment=DVR_MINIO_SECRET=#secret_key#
 Environment=DVR_MINIO_ENDPOINT=#minio_endpoint#
 Environment=DVR_USE_RAFT="true"
 Environment=DVR_SERVER_ID=#server_id#
-Environment=DVR_DATA_DIR=/argos/raft-storage/
+Environment=IMMU_EXEC=/data/immudb/immudb
+Environment=DVR_DATA_DIR=/data/argos/raft-storage/
 Environment=DVR_RAFT_PORT=7000
 Environment=DVR_PEER_ADDRESS=#peer_address#
 Environment=DVR_JOIN_SECRET=#join_secret#
@@ -14,7 +15,7 @@ Environment=DVR_JOIN_ADDRESS=#join_address#
 Environment=DVR_API_PORT=#api_port#
 Environment=DVR_LEADER_API_PORT=#leader_api_port#
 Environment=GROUP_ID=#group_id#
-ExecStart=/argos/dvr
+ExecStart=/data/argos/dvr
 Restart=always
 [Install]
 WantedBy=multi-user.target
