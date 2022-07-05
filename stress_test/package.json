@@ -1,0 +1,30 @@
+{
+  "name": "stress_test",
+  "display_name": "Stress Test",
+  "description": "Stress Test for CPU, GPU, and Networking",
+  "parameters": [
+    {
+      "name": "SERVER",
+      "display_name": "iPerf Server?",
+      "description": "Is this node a Server or Client for iPerf?",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "SERVER_IP",
+      "display_name": "Server IP Address",
+      "description": "IP Address of iPerf Server",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "main": "stress_test/run.sh",
+  "dependencies": [
+    "stress_test/run.sh",
+    "stress_test/stress_network_server.service",
+    "stress_test/stress_network_client.service",
+    "stress_test/stress_cpu.service",
+    "stress_test/stress_gpu.service",
+    "utils/cachengo.sh"
+  ]
+}
