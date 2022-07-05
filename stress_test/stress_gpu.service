@@ -1,5 +1,5 @@
 [Unit]
-Description=CPU_Stress_Test
+Description=GPU_Stress_Test
 [Service]
 WorkingDirectory=/hashcat-5.1.0
 ExecStart=/usr/bin/hashcat -b
