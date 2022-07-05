@@ -1,7 +1,7 @@
 [Unit]
 Description=GPU_Stress_Test
 [Service]
-WorkingDirectory=/hashcat-5.1.0
+WorkingDirectory=#datadir#/hashcat-5.1.0
 ExecStart=/usr/bin/hashcat -b
 Restart=always
 [Install]
