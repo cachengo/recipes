@@ -11,14 +11,13 @@ function do_install {
 
   if [ "$SERVER" == "true" ]; then
     NETWORKSERVICE=stress_network_server.service
-    apt install iperf -y
     cp stress_test/stress_network_server.service /lib/systemd/system/
   else
     NETWORKSERVICE=stress_network_client.service
-    apt install iperf -y
     sed -i "s/#server_ip#/$SERVER_IP/" stress_test/stress_network_client.service
     cp stress_test/stress_network_client.service /lib/systemd/system/
   fi
+  apt install iperf -y
 
   cachengo-cli updateInstallStatus $APPID "Installing: CPU Stress Test"
   apt install stress -y
