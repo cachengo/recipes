@@ -7,8 +7,8 @@ DATADIR=/data/$APPID
 function do_install {
   set -e
   cachengo-cli updateInstallStatus $APPID "Installing"
+  
   cachengo-cli updateInstallStatus $APPID "Installing: Network Stress Test"
-
   if [ "$SERVER" == "true" ]; then
     NETWORKSERVICE=stress_network_server.service
     cp stress_test/stress_network_server.service /lib/systemd/system/
