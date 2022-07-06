@@ -87,11 +87,13 @@ function do_install {
   chmod +x /data/argos/service_lookup.py
   
   systemctl daemon-reload
+
   service argos_lookup start
   sleep 40
   service argos start
-  
-
+  systemctl enable argos.service 
+  systemctl enable argos_lookup.service
+  systemctl daemon-reload
   echo "Installation Successful"
 }
 

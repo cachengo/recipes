@@ -1,5 +1,7 @@
 [Unit]
 Description=Argos
+Wants=network-online.target
+After=network-online.target
 [Service]
 Environment=DVR_MINIO_ACCESS_KEY=#access_key#
 Environment=DVR_MINIO_SECRET=#secret_key#
@@ -17,5 +19,6 @@ Environment=DVR_LEADER_API_PORT=#leader_api_port#
 Environment=GROUP_ID=#group_id#
 ExecStart=/data/argos/dvr
 Restart=always
+StartLimitBurst=0
 [Install]
 WantedBy=multi-user.target
