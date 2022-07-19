@@ -62,7 +62,7 @@ IP Address of the master servers. At least 3 servers are needed.
 
 **Installation Name**
 
-Here you will put your app name. Although the app name is MariaDB on the portal, you can personalize the name that is shown on the device's Applications.
+Here you will put your app name. Although the app name is SeaweedFS on the portal, you can personalize the name that is shown on the device's Applications.
 
 
 ## How it works
