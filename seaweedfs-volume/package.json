@@ -1,0 +1,36 @@
+{
+    "name": "seaweedfs",
+    "display_name": "seaweedfs",
+    "description": "SeaweedFS is an independent Apache-licensed open source project",
+    "parameters": [
+      {
+        "name": "MASTER_PORT",
+        "display_name": "MASTER_PORT",
+        "description": "MASTER_PORT",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "VOLUME_PORT",
+        "display_name": "VOLUME_PORT",
+        "description": "VOLUME_PORT",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "MASTER_NODES",
+        "display_name": "MASTER_NODES",
+        "description": "MASTER_NODES",
+        "type": "string",
+        "required": true
+      }
+    ],
+    "main": "seaweedfs-volume/run.sh",
+    "dependencies": [
+      "utils/cachengo.sh",
+      "utils/docker.sh",
+      "utils/parameters.sh",
+      "seaweedfs-volume/run.sh"
+      
+    ]
+  }
