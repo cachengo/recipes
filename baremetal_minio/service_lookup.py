@@ -31,10 +31,10 @@ def parse_avahi_data(data, interface='eth0', ip_type='IPv4'):
         result[info[3]] = info[7]
     return result
 
-def ip_exists(ip):
+def ip_exists(hostname, ip):
     hosts = open('/etc/hosts','r')
     for line in hosts:
-        if line.split()[0] == ip:
+        if line.split()[0] == ip and line.split()[1] == hostname:
             return True
     return False
 
@@ -96,7 +96,7 @@ if __name__ == "__main__":
         print(host_ip)
         for i, hostname in enumerate(hostnames):
             print('about to ping')
-            if host_ip[hostname] is None or not is_ip_up(host_ip[hostname]) or not ip_exists(host_ip[hostname]):
+            if host_ip[hostname] is None or not is_ip_up(host_ip[hostname]) or not ip_exists(f'{group_id}-{i}',host_ip[hostname]):
                 print('pinged')
                 if not data_fetched:
                     info = fetch_parse_avahi()
