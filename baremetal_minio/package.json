@@ -23,6 +23,20 @@
         "description": "IP addresses to use for cluster communication",
         "type": "list",
         "required": true
+      },
+      {
+        "name": "CLUSTER_SIZE",
+        "display_name": "Cluster Size",
+        "description": "Size of each cluster",
+        "type": "int",
+        "required": true
+      },
+      {
+        "name": "CLUSTER_NUM",
+        "display_name": "Number of Clusters",
+        "description": "Number of Clusters",
+        "type": "int",
+        "required": true
       }
     ],
     "main": "baremetal_minio/minio_install.sh",

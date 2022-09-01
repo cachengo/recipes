@@ -1,3 +1,5 @@
+http://#group_id#-{0...#host_number#}/data/#group_id#
+
 #!/bin/bash
 source "utils/parameters.sh"
 
@@ -9,6 +11,17 @@ function do_install {
   local HOSTS_ARR
   array_from_json_list HOSTS_ARR "$HOSTNAMES"
   array_len=$((${#HOSTS_ARR[@]}-1 ))
+  clusters_num=$CLUSTER_NUM
+  CLUSTERS=''
+  cluster_end=0
+  cluster_start=0
+
+  for ((i=0;i<$CLUSTER_NUM;++i)); do
+    cluster_end=$(($cluster_end+$CLUSTER_SIZE))
+    CLUSTERS+=('http://$GROUPID-{$cluster_start...$cluster_end}/data/$GROUPID ')
+    cluster_start=$(($cluster_start+$CLUSTER_SIZE))
+  done
+
   export MINIO_ACCESS_KEY=$ACCESS_KEY
   export MINIO_SECRET_KEY=$SECRET_KEY
 
@@ -48,7 +61,7 @@ function do_install {
     platform=arm64
   fi
 
-  
+
   if [ ! -f /usr/bin/minio ]; then
     echo "Downloading Min.io"
     curl -L -o /usr/bin/minio "http://dl.min.io/server/minio/release/linux-$platform/minio"
@@ -57,7 +70,7 @@ function do_install {
   echo "Installing Min.io service"
   sed -i "s/#access_key#/$ACCESS_KEY/" baremetal_minio/minio.service
   sed -i "s/#secret_key#/$SECRET_KEY/" baremetal_minio/minio.service
-  sed -i "s/#host_number#/$array_len/" baremetal_minio/minio.service
+  sed -i "s/#clusters#/$CLUSTERS/" baremetal_minio/minio.service
   sed -i "s/#group_id#/$GROUPID/g" baremetal_minio/minio.service
   cp baremetal_minio/minio.service /lib/systemd/system/minio.service
   chmod 664 /lib/systemd/system/minio.service
