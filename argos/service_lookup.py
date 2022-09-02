@@ -31,10 +31,10 @@ def parse_avahi_data(data, interface='eth0', ip_type='IPv4'):
         result[info[3]] = info[7]
     return result
 
-def ip_exists(ip):
+def ip_exists(hostname, ip):
     hosts = open('/etc/hosts','r')
     for line in hosts:
-        if line.split()[0] == ip:
+        if line.split()[0] == ip and line.split()[1] == hostname:
             return True
     return False
 
@@ -56,6 +56,17 @@ def set_ip_for_host(hostname, ip):
         group_id = os.environ["GROUP_ID"]
         f.write(f'{ip} {hostname} # {group_id} \n')
 
+def wipe_hosts(hostname):
+    filename = '/etc/hosts'
+    new_file = '/tmp/new_hosts'
+    with open(filename, "r") as f:
+        lines = f.readlines()
+
+    with open(new_file, "w+") as f:
+        for line in lines:
+            if hostname not in line:
+                f.write(line)
+    os.rename(new_file,filename)
 
 def restart_service():
     process = subprocess.Popen(
@@ -65,6 +76,8 @@ def restart_service():
     )
     process.communicate()
 
+def restart_avahi():
+    os.system('sudo systemctl restart avahi-daemon')
 
 def fetch_parse_avahi():
     return parse_avahi_data(get_avahi_data())
@@ -74,15 +87,17 @@ if __name__ == "__main__":
 
     group_id = os.environ["GROUP_ID"]
     hostnames = json.loads(os.environ['HOSTNAMES'])
-    
+    wipe_hosts(group_id)
     host_ip = {host: None for host in hostnames}
 
     while True:
         change_detected = False
         data_fetched = False
-
+        print(host_ip)
         for i, hostname in enumerate(hostnames):
-            if host_ip[hostname] is None or not is_ip_up(host_ip[hostname]) or not ip_exists(host_ip[hostname]):
+            print('about to ping')
+            if host_ip[hostname] is None or not is_ip_up(host_ip[hostname]) or not ip_exists(f'{group_id}-{i}',host_ip[hostname]):
+                print('pinged')
                 if not data_fetched:
                     info = fetch_parse_avahi()
                     data_fetched = True
@@ -92,6 +107,7 @@ if __name__ == "__main__":
                     name = hostname + f"-{tries}" if tries > 0 else hostname
                     new_ip = info.get(name)
                     if new_ip is not None:
+                        print('about to ping again')
                         is_up = is_ip_up(new_ip)
                         print(f'Is up: {new_ip}')
                     tries += 1
