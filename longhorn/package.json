@@ -1,0 +1,14 @@
+{
+    "name": "longhorn",
+    "display_name": "Longhorn",
+    "description": "Longhorn",
+    "parameters": [],
+    "main": "longhorn/run.sh",
+    "dependencies": [
+    "longhorn/run.sh",
+    "longhorn/longhorn-service.yaml",
+    "longhorn/longhorn.yaml",
+    "utils/cachengo.sh",
+    "utils/docker.sh"
+    ]
+  }
