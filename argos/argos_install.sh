@@ -45,13 +45,13 @@ function do_install {
   if [[ $platform == x86_64 ]]; then
     dvr_executable=dvr_amd64-linux
     ffmpeg_executable=ffmpeg-amd64-linux
-    immudb_executable=immudb-v1.2.4-linux-amd64
+    immudb_executable=immudb-v1.3.1-linux-amd64
   fi
 
   if [[ $platform == aarch64 ]]; then
     dvr_executable=dvr_arm64-linux
     ffmpeg_executable=ffmpeg-arm64-linux
-    immudb_executable=immudb-v1.2.4-linux-arm64
+    immudb_executable=immudb-v1.3.1-linux-arm64
   fi
   
   mkdir /data/argos 
