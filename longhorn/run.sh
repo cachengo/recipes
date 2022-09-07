@@ -3,6 +3,7 @@
 source "utils/cachengo.sh"
 source "longhorn/longhorn-service.yaml"
 source "longhorn/longhorn.yaml"
+source "longhorn/uninstall.yaml"
 
 function do_install {
   set -e
@@ -30,10 +31,10 @@ function do_uninstall {
   cachengo-cli updateInstallStatus "$APPID" "Uninstalling"
   if [ "$( kubectl config view | grep "clusters:")" != "clusters: null" ]; then
   if [ "$( kubectl get namespace --output json -o jsonpath='{.items[?(@.metadata.name=="longhorn-system")].metadata.name}')" == "longhorn-system" ]; then
-  kubectl create -f https://raw.githubusercontent.com/longhorn/longhorn/v1.2.4/uninstall/uninstall.yaml  
+  kubectl create -f longhorn/uninstall.yaml
   sleep 60
   kubectl delete -f longhorn/longhorn.yaml
-  kubectl delete -f https://raw.githubusercontent.com/longhorn/longhorn/v1.2.4/uninstall/uninstall.yaml
+  kubectl delete -f longhorn/uninstall.yaml
   fi
   fi
   cachengo-cli updateInstallStatus "$APPID" "Uninstalled"

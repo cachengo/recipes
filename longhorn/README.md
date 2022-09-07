@@ -42,7 +42,7 @@ NOTE: Before installing Longhorn, it is required to have already installed k3s-l
 
 4. Give your installation a name. Click 'Install Longhorn' in the bottom right corner.
 
-g## Required Parameters
+## Required Parameters
 
 ---
 

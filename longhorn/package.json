@@ -8,6 +8,7 @@
     "longhorn/run.sh",
     "longhorn/longhorn-service.yaml",
     "longhorn/longhorn.yaml",
+    "longhorn/uninstall.yaml",
     "utils/cachengo.sh",
     "utils/docker.sh"
     ]
