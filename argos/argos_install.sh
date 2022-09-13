@@ -86,7 +86,6 @@ function do_install {
   cp argos/service_lookup.py /data/argos/service_lookup.py
   cp argos/argos_lookup.timer /lib/systemd/system/argos_lookup.timer
   chmod +x /data/argos/service_lookup.py
-  chmod +x /data/argos/restart_avahi.py
   
   systemctl daemon-reload
 
