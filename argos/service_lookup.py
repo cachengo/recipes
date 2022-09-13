@@ -70,7 +70,7 @@ def wipe_hosts(hostname):
 
 def restart_service():
     process = subprocess.Popen(
-        ['service', 'minio', 'restart'],
+        ['service', 'argos', 'restart'],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE
     )
@@ -125,4 +125,4 @@ if __name__ == "__main__":
         else:
             print('No changes')
 
-        time.sleep(50)
+        time.sleep(10)
