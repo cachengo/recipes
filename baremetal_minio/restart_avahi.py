@@ -30,6 +30,5 @@ def restart_avahi():
 if __name__ == "__main__":
     restart_avahi()
     while True:
-        if not check_for_ips():
-            restart_avahi()
+        restart_avahi()
         time.sleep(50)
