@@ -84,6 +84,7 @@ function do_install {
   cp argos/argos.service /lib/systemd/system/argos.service
   cp argos/argos_lookup.service /lib/systemd/system/argos_lookup.service
   cp argos/service_lookup.py /data/argos/service_lookup.py
+  cp argos/argos_lookup.timer /lib/systemd/system/argos_lookup.timer
   chmod +x /data/argos/service_lookup.py
   
   systemctl daemon-reload
@@ -91,8 +92,7 @@ function do_install {
   service argos_lookup start
   sleep 40
   service argos start
-  systemctl enable argos.service 
-  systemctl enable argos_lookup.service
+  systemctl enable argos_lookup.timer
   systemctl daemon-reload
   echo "Installation Successful"
 }
@@ -105,6 +105,7 @@ function uninstall_only {
   echo "Removing services files"
   rm /lib/systemd/system/argos.service
   rm /lib/systemd/system/argos_lookup.service
+  rm /lib/systemd/system/argos_lookup.timer
   rm -rf /data/immudb
   rm /usr/bin/ffmpeg
   rm -rf /data/argos  
