@@ -16,28 +16,28 @@ function do_install {
   apt install -y python3
   apt install -y curl
 
+  touch /etc/dnsmasq.d/$GROUPID.conf
+
+  for ((i=0;i<${#HOSTS_ARR[@]};++i)); do
+    echo "cname=${GROUPID}-${i},${HOSTS_ARR[i]}" >> /etc/dnsmasq.d/minio.conf
+  done
+
+  systemctl restart dnsmasq
+
   echo "Installing hostname lookup service" 
   sed -i "s/#hostnames_json#/$HOSTNAMES/" baremetal_minio/minio_lookup.service
   sed -i "s/#group_id#/$GROUPID/" baremetal_minio/minio_lookup.service
   sed -i "s/#hostnames_json#/$HOSTNAMES/" baremetal_minio/restart_avahi.service
   sed -i "s/#group_id#/$GROUPID/" baremetal_minio/restart_avahi.service
   cp baremetal_minio/service_lookup.py /usr/bin/service_lookup.py
-  cp baremetal_minio/restart_avahi.py /usr/bin/restart_avahi.py
   chmod +x /usr/bin/service_lookup.py
-  chmod +x /usr/bin/restart_avahi.py
   cp baremetal_minio/minio_lookup.service /lib/systemd/system/minio_lookup.service
   cp baremetal_minio/minio_lookup.timer /lib/systemd/system/minio_lookup.timer
-  cp baremetal_minio/restart_avahi.service /lib/systemd/system/restart_avahi.service
-  cp baremetal_minio/restart_avahi.timer /lib/systemd/system/restart_avahi.timer
   chmod 664 /lib/systemd/system/minio_lookup.service
-  chmod 664 /lib/systemd/system/restart_avahi.service
   chmod 664 /lib/systemd/system/minio_lookup.timer
-  chmod 664 /lib/systemd/system/restart_avahi.timer
   systemctl daemon-reload
-  systemctl enable restart_avahi.timer
   systemctl enable minio_lookup.timer
   systemctl start minio_lookup.service
-  systemctl start restart_avahi.service
 
   platform=`uname -m`
   if [[ $platform == x86_64 ]]; then
@@ -62,19 +62,19 @@ function do_install {
   cp baremetal_minio/minio.service /lib/systemd/system/minio.service
   chmod 664 /lib/systemd/system/minio.service
   systemctl daemon-reload
-  service minio start
   service avahi-daemon restart
   echo "Installation Successful"
 }
 
 function uninstall_only {
-  echo "Stoping Services"
+  echo "Stopping Services"
   service minio stop
   service minio_lookup stop
 
   echo "Removing services files"
   rm /lib/systemd/system/minio.service
   rm /lib/systemd/system/minio_lookup.service
+  rm /lib/systemd/system/minio_lookup.timer
   
   echo "Removing data"
   rm -rfR /data/$GROUPID/
@@ -82,8 +82,10 @@ function uninstall_only {
   echo "Removing support files"
   rm /usr/bin/service_lookup.py
   rm /usr/bin/minio
+  rm /etc/dnsmasq.d/$GROUPID.conf
+
   systemctl daemon-reload
-  
+
   echo "Cleaning host files"
   sed -i "/$GROUPID/d" /etc/hosts
   echo "Uninstallation Successful"
