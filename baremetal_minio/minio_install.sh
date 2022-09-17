@@ -37,7 +37,6 @@ function do_install {
   chmod 664 /lib/systemd/system/minio_lookup.timer
   systemctl daemon-reload
   systemctl enable minio_lookup.timer
-  systemctl start minio_lookup.service
 
   platform=`uname -m`
   if [[ $platform == x86_64 ]]; then
@@ -63,6 +62,7 @@ function do_install {
   chmod 664 /lib/systemd/system/minio.service
   systemctl daemon-reload
   service avahi-daemon restart
+  systemctl start minio_lookup.service
   echo "Installation Successful"
 }
 
