@@ -19,7 +19,7 @@ function do_install {
   touch /etc/dnsmasq.d/$GROUPID.conf
 
   for ((i=0;i<${#HOSTS_ARR[@]};++i)); do
-    echo "cname=${GROUPID}-${i},${HOSTS_ARR[i]}" >> /etc/dnsmasq.d/minio.conf
+    echo "cname=${GROUPID}-${i},${HOSTS_ARR[i]}" >> /etc/dnsmasq.d/$GROUPID.conf
   done
 
   systemctl restart dnsmasq
