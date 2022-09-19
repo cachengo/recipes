@@ -91,7 +91,6 @@ function do_install {
   
   cp argos/argos.service /lib/systemd/system/argos.service
   cp argos/argos_lookup.service /lib/systemd/system/argos_lookup.service
-  cp argos/argos_lookup.timer /lib/systemd/system/argos_lookup.timer
   cp argos/service_lookup.py /data/argos/service_lookup.py
   chmod +x /data/argos/service_lookup.py
   
@@ -100,7 +99,7 @@ function do_install {
   service argos_lookup start
   sleep 40
   service argos start
-  systemctl enable argos_lookup.timer
+  systemctl enable argos_lookup
   systemctl daemon-reload
   echo "Installation Successful"
 }
