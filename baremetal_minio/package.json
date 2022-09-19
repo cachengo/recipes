@@ -32,7 +32,6 @@
       "utils/parameters.sh",
       "baremetal_minio/service_lookup.py",
       "baremetal_minio/minio.service",
-      "baremetal_minio/minio_lookup.service",
-      "baremetal_minio/minio_lookup.timer"
+      "baremetal_minio/minio_lookup.service"
     ]
   }

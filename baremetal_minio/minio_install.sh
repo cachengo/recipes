@@ -32,11 +32,10 @@ function do_install {
   cp baremetal_minio/service_lookup.py /usr/bin/service_lookup.py
   chmod +x /usr/bin/service_lookup.py
   cp baremetal_minio/minio_lookup.service /lib/systemd/system/minio_lookup.service
-  cp baremetal_minio/minio_lookup.timer /lib/systemd/system/minio_lookup.timer
   chmod 664 /lib/systemd/system/minio_lookup.service
   chmod 664 /lib/systemd/system/minio_lookup.timer
   systemctl daemon-reload
-  systemctl enable minio_lookup.timer
+  systemctl enable minio_lookup
 
   platform=`uname -m`
   if [[ $platform == x86_64 ]]; then
