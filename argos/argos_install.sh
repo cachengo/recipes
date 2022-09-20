@@ -10,11 +10,11 @@ function do_install {
   array_from_json_list HOSTS_ARR "$HOSTNAMES"
   array_len=$((${#HOSTS_ARR[@]}-1 ))
   
-  touch /etc/dnsmasq.d/$GROUPID.conf
+  # touch /etc/dnsmasq.d/$GROUPID.conf
 
-  for ((i=0;i<${#HOSTS_ARR[@]};++i)); do
-    echo "cname=${GROUPID}-${i},${HOSTS_ARR[i]}" >> /etc/dnsmasq.d/$GROUPID.conf
-  done
+  # for ((i=0;i<${#HOSTS_ARR[@]};++i)); do
+  #   echo "cname=${GROUPID}-${i},${HOSTS_ARR[i]}" >> /etc/dnsmasq.d/$GROUPID.conf
+  # done
 
   systemctl restart dnsmasq
 
@@ -39,7 +39,7 @@ function do_install {
 
     if  [[ ${HOSTS_ARR[i]} == $h_name ]]; then 
   
-      peer_addr="$GROUPID-$i" 
+      peer_addr="${HOSTS_ARR[i]}" 
   
       if [[ $i != 0 ]] ; then
         echo "Follower node found"
@@ -76,7 +76,7 @@ function do_install {
 
   # Replace vars on lookup service file
   sed -i "s/#hostnames_json#/$HOSTNAMES/" argos/argos_lookup.service
-  sed -i "s/#group_id#/$GROUPID/" argos/argos_lookup.service
+  # sed -i "s/#group_id#/$GROUPID/" argos/argos_lookup.service
 
   # Replace vars on argos service file
   sed -i "s/#access_key#/$DVR_MINIO_ACCESS_KEY/" argos/argos.service
