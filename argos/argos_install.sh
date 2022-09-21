@@ -10,6 +10,14 @@ function do_install {
   array_from_json_list HOSTS_ARR "$HOSTNAMES"
   array_len=$((${#HOSTS_ARR[@]}-1 ))
   
+  # touch /etc/dnsmasq.d/$GROUPID.conf
+
+  # for ((i=0;i<${#HOSTS_ARR[@]};++i)); do
+  #   echo "cname=${GROUPID}-${i},${HOSTS_ARR[i]}" >> /etc/dnsmasq.d/$GROUPID.conf
+  # done
+
+  systemctl restart dnsmasq
+
   apt install -y avahi-utils
   apt install -y python3
   apt install -y supervisor
@@ -31,7 +39,7 @@ function do_install {
 
     if  [[ ${HOSTS_ARR[i]} == $h_name ]]; then 
   
-      peer_addr="$GROUPID-$i" 
+      peer_addr="${HOSTS_ARR[i]}" 
   
       if [[ $i != 0 ]] ; then
         echo "Follower node found"
@@ -68,7 +76,7 @@ function do_install {
 
   # Replace vars on lookup service file
   sed -i "s/#hostnames_json#/$HOSTNAMES/" argos/argos_lookup.service
-  sed -i "s/#group_id#/$GROUPID/" argos/argos_lookup.service
+  # sed -i "s/#group_id#/$GROUPID/" argos/argos_lookup.service
 
   # Replace vars on argos service file
   sed -i "s/#access_key#/$DVR_MINIO_ACCESS_KEY/" argos/argos.service
@@ -91,8 +99,7 @@ function do_install {
   service argos_lookup start
   sleep 40
   service argos start
-  systemctl enable argos.service 
-  systemctl enable argos_lookup.service
+  systemctl enable argos_lookup
   systemctl daemon-reload
   echo "Installation Successful"
 }
@@ -104,10 +111,11 @@ function uninstall_only {
   
   echo "Removing services files"
   rm /lib/systemd/system/argos.service
-  rm /lib/systemd/system/argos_lookup.service
+  rm /lib/systemd/system/argos_lookup.*
   rm -rf /data/immudb
   rm /usr/bin/ffmpeg
   rm -rf /data/argos  
+  rm -rf /etc/dnsmasq.d/$GROUPID.conf
   systemctl daemon-reload
   
   sed -i "/$GROUPID/d" /etc/hosts
