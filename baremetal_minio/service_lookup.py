@@ -25,11 +25,19 @@ def restart_service():
     )
     process.communicate()
 
+def restart_dns():
+    process = subprocess.Popen(
+        ['service', 'dnsmasq', 'restart'],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE
+    )
+    process.communicate()
 
 if __name__ == "__main__":
     hostnames = json.loads(os.environ['HOSTNAMES'])
 
     while not all_ips_up(hostnames):
         print("Waiting for all nodes to come online")
-
+        restart_dns()
+        time.sleep(5)
     restart_service()

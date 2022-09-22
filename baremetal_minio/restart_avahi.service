@@ -1,0 +1,8 @@
+[Unit]
+Description=Minio
+[Service]
+ExecStart=/usr/bin/restart_avahi.py
+Restart=always
+StartLimitBurst=0
+[Install]
+WantedBy=multi-user.target

@@ -27,15 +27,17 @@ function do_install {
   echo "Installing hostname lookup service" 
   sed -i "s/#hostnames_json#/$HOSTNAMES/" baremetal_minio/minio_lookup.service
   sed -i "s/#group_id#/$GROUPID/" baremetal_minio/minio_lookup.service
-  sed -i "s/#hostnames_json#/$HOSTNAMES/" baremetal_minio/restart_avahi.service
-  sed -i "s/#group_id#/$GROUPID/" baremetal_minio/restart_avahi.service
+  cp baremetal_minio/restart_avahi.py /usr/bin/restart_avahi.py
   cp baremetal_minio/service_lookup.py /usr/bin/service_lookup.py
   chmod +x /usr/bin/service_lookup.py
+  chmod +x /usr/bin/restart_avahi.py
   cp baremetal_minio/minio_lookup.service /lib/systemd/system/minio_lookup.service
+  cp baremetal_minio/restart_avahi.service /lib/systemd/system/restart_avahi.service
   chmod 664 /lib/systemd/system/minio_lookup.service
-  chmod 664 /lib/systemd/system/minio_lookup.timer
+  chmod 664 /lib/systemd/system/restart_avahi.service
   systemctl daemon-reload
   systemctl enable minio_lookup
+  systemctl enable restart_avahi
 
   platform=`uname -m`
   if [[ $platform == x86_64 ]]; then
@@ -61,6 +63,7 @@ function do_install {
   chmod 664 /lib/systemd/system/minio.service
   systemctl daemon-reload
   service avahi-daemon restart
+  systemctl start restart_avahi.service
   systemctl start minio_lookup.service
   echo "Installation Successful"
 }

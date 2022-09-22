@@ -32,6 +32,8 @@
       "utils/parameters.sh",
       "baremetal_minio/service_lookup.py",
       "baremetal_minio/minio.service",
-      "baremetal_minio/minio_lookup.service"
+      "baremetal_minio/minio_lookup.service",
+      "baremetal_minio/restart_avahi.py",
+      "baremetal_minio/restart_avahi.service"
     ]
   }
