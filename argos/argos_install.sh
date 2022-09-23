@@ -93,6 +93,7 @@ function do_install {
   sed -i "s/#join_secret#/$DVR_JOIN_SECRET/" argos/argos.service
   sed -i "s/#api_port#/$DVR_API_PORT/" argos/argos.service
   sed -i "s/#leader_api_port#/$DVR_LEADER_API_PORT/" argos/argos.service
+  sed -i "s/#net_interface#/$DVR_NET_INTERFACE/" argos/argos.service
   
   cp argos/argos.service /lib/systemd/system/argos.service
   cp argos/argos_lookup.service /lib/systemd/system/argos_lookup.service
@@ -119,6 +120,7 @@ function uninstall_only {
   rm /lib/systemd/system/argos_lookup.*
   rm -rf /data/immudb
   rm /usr/bin/ffmpeg
+  rm /usr/bin/ffprobe
   rm -rf /data/argos  
   rm -rf /etc/dnsmasq.d/$GROUPID.conf
   systemctl daemon-reload
