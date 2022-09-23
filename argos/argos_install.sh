@@ -21,7 +21,8 @@ function do_install {
   apt install -y avahi-utils
   apt install -y python3
   apt install -y supervisor
-  apt install -y curl 
+  apt install -y curl
+  apt install -y atomicparsley openjdk-8-jdk  
   
   platform=`uname -m`
   
@@ -59,6 +60,7 @@ function do_install {
   if [[ $platform == aarch64 ]]; then
     dvr_executable=dvr_arm64-linux
     ffmpeg_executable=ffmpeg-arm64-linux
+    ffprobe_executable=ffprobe-arm64-linux
     immudb_executable=immudb-v1.3.1-linux-arm64
   fi
   
@@ -68,12 +70,15 @@ function do_install {
   chmod a+rwx /data/immudb 
   curl -L -o /data/argos/dvr "https://downloads.staging.cachengo.com/argos/$dvr_executable"
   curl -L -o /usr/bin/ffmpeg "https://downloads.staging.cachengo.com/argos/ffmpeg/$ffmpeg_executable"
+  curl -L -o /usr/bin/ffprobe "https://downloads.staging.cachengo.com/argos/ffmpeg/$ffprobe_executable"
   curl -L -o /data/immudb/immudb "https://downloads.staging.cachengo.com/argos/immudb/$immudb_executable"
+  curl -L -o /etc/CachengoExportConverter "https://downloads.staging.cachengo.com/argos/CachengoExportConverter.tar"
+  tar -xzf /etc/CachengoExportConverter.tar && rm -rf /etc/CachengoExportConverter.tar 
   # cp argos/dvr_arm64-linux /argos/dvr
   chmod a+rwx /data/argos/dvr
   chmod a+rwx /data/immudb/immudb 
   chmod a+rwx /usr/bin/ffmpeg
-
+  chmod a+rwx /usr/bin/ffprobe
   # Replace vars on lookup service file
   sed -i "s/#hostnames_json#/$HOSTNAMES/" argos/argos_lookup.service
   # sed -i "s/#group_id#/$GROUPID/" argos/argos_lookup.service
