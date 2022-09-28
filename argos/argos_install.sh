@@ -72,8 +72,9 @@ function do_install {
   curl -L -o /usr/bin/ffmpeg "https://downloads.staging.cachengo.com/argos/ffmpeg/$ffmpeg_executable"
   curl -L -o /usr/bin/ffprobe "https://downloads.staging.cachengo.com/argos/ffmpeg/$ffprobe_executable"
   curl -L -o /data/immudb/immudb "https://downloads.staging.cachengo.com/argos/immudb/$immudb_executable"
-  curl -L -o /etc/CachengoExportConverter "https://downloads.staging.cachengo.com/argos/CachengoExportConverter.tar"
-  tar -xzf /etc/CachengoExportConverter.tar && rm -rf /etc/CachengoExportConverter.tar 
+  curl -L -o /etc/CachengoExportConverter.zip "https://downloads.staging.cachengo.com/argos/CachengoExportConverter.zip"
+                                               
+  unzip /etc/CachengoExportConverter.zip -d /etc/ && rm -rf /etc/CachengoExportConverter.zip 
   # cp argos/dvr_arm64-linux /argos/dvr
   chmod a+rwx /data/argos/dvr
   chmod a+rwx /data/immudb/immudb 
@@ -123,6 +124,7 @@ function uninstall_only {
   rm /usr/bin/ffprobe
   rm -rf /data/argos  
   rm -rf /etc/dnsmasq.d/$GROUPID.conf
+  rm -rf /etc/CachengoExportConverter
   systemctl daemon-reload
   
   sed -i "/$GROUPID/d" /etc/hosts
