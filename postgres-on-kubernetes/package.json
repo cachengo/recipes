@@ -1,0 +1,16 @@
+{
+    "name": "postgres-on-kubernetes",
+    "display_name": "postgres-on-kubernetes",
+    "description": "postgres-on-kubernetes",
+    "parameters": [],
+    "main": "postgres-on-kubernetes/run.sh",
+    "dependencies": [
+    "postgres-on-kubernetes/run.sh",
+    "postgres-on-kubernetes/postgres-secret.yaml",
+    "postgres-on-kubernetes/postgres-service.yaml",
+    "postgres-on-kubernetes/postgres-configmap.yaml",
+    "postgres-on-kubernetes/postgres-storage.yaml",
+    "postgres-on-kubernetes/postgres-statefulset.yaml",
+    "utils/cachengo.sh"
+    ]
+  }
