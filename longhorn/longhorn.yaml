@@ -913,7 +913,7 @@ data:
     auto-delete-pod-when-volume-detached-unexpectedly:
     disable-scheduling-on-cordoned-node:
     replica-zone-soft-anti-affinity:
-    node-down-pod-deletion-policy:
+    node-down-pod-deletion-policy: delete-both-statefulset-and-deployment-pod
     allow-node-drain-with-last-healthy-replica:
     mkfs-ext4-parameters:
     disable-replica-rebuild:
