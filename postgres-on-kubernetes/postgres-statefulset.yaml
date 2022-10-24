@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:latest
+          image: postgres:14
           volumeMounts:
             - name: postgresdb
               mountPath: /var/lib/postgresql/data
