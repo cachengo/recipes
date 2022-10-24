@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jitsu-config
+  labels:
+    app: jitsu
+  namespace: #namespace_name#
+data:
+  jitsu-url: jitsu-service

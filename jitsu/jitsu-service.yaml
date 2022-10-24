@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jitsu-service
+  namespace: #namespace_name#
+spec:
+  ports:
+    - name: api
+      port: 8000
+      protocol: TCP
+      nodePort: 32301
+  selector:
+    app: jitsu
+  sessionAffinity: None
+  type: NodePort
