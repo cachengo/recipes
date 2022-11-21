@@ -18,6 +18,9 @@ Environment=DVR_API_PORT=#api_port#
 Environment=DVR_LEADER_API_PORT=#leader_api_port#
 Environment=DVR_NET_INTERFACE=#net_interface#
 Environment=GROUP_ID=#group_id#
+Environment=DVR_DB_TYPE=mariadb
+Environment=DVR_DB_USERNAME=root
+Environment=DVR_DB_PASSWORD=secret
 ExecStart=/data/argos/dvr
 Restart=always
 StartLimitBurst=0
