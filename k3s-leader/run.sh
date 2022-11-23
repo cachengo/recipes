@@ -12,10 +12,10 @@ function do_install {
       exit 1
     fi 
     export K3S_TOKEN="$SECRET"
-    export INSTALL_K3S_EXEC="server --server https://$IP_ADDRESS:6443 --disable traefik"
+    export INSTALL_K3S_EXEC="server --server https://$IP_ADDRESS:6443 --disable traefik --disable servicelb"
   else
     export K3S_TOKEN="$SECRET"
-    export INSTALL_K3S_EXEC="server --cluster-init --disable traefik"
+    export INSTALL_K3S_EXEC="server --cluster-init --disable traefik --disable servicelb"
   fi 
     export K3S_KUBECONFIG_MODE="644"
     eval set -- $(escape "${INSTALL_K3S_EXEC}") $(quote "$@")
