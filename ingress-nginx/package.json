@@ -1,0 +1,12 @@
+{
+    "name": "Ingress-nginx",
+    "display_name": "Ingress-nginx",
+    "description": "Ingress-nginx",
+    "parameters": [],
+    "main": "ingress-nginx/run.sh",
+    "dependencies": [
+      "ingress-nginx/run.sh",
+      "utils/cachengo.sh",
+      "utils/kubernetes.sh"
+    ]
+  }
