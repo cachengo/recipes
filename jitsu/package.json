@@ -1,0 +1,19 @@
+{
+    "name": "jitsu",
+    "display_name": "jitsu",
+    "description": "jitsu",
+    "parameters": [],
+    "main": "jitsu/run.sh",
+    "dependencies": [
+    "jitsu/run.sh",
+    "jitsu/jitsu-configmap.yaml",
+    "jitsu/jitsu-service.yaml",
+    "jitsu/jitsu-deployment.yaml",
+    "jitsu/jitsu-ingress.yaml",
+    "jitsu/redis-configmap.yaml",
+    "jitsu/redis-deployment.yaml",
+    "jitsu/redis-service.yaml",
+    "jitsu/redis-storage.yaml",
+    "utils/cachengo.sh"
+    ]
+  }

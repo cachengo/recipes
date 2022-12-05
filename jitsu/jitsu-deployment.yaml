@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jitsu
+  namespace: #namespace_name#
+spec:
+  selector:
+    matchLabels:
+      app: jitsu
+  template:
+    metadata:
+      labels:
+        app: jitsu
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: jitsu
+          image: jitsucom/jitsu:1.43.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+              name: api
+          env:
+            - name: REDIS_URL
+              value: redis-server
+            - name: DOCKER_HOST
+              value: tcp://localhost:2375
+            - name: DOCKER_TLS_CERTDIR
+              value: ""
+  #       volumeMounts:
+  #       - name: logs
+  #         mountPath: /home/eventnative/data/logs
+  #       - name: events
+  #         mountPath: /home/eventnative/data/logs/events
+  # volumeClaimTemplates:
+  #   - metadata:
+  #       name: logs
+  #     spec:
+  #       storageClassName: longhorn
+  #       accessModes: [ "ReadWriteOnce" ]
+  #       resources:
+  #         requests:
+  #           storage: 3Gi
+  #   - metadata:
+  #       name: events
+  #     spec:
+  #       storageClassName: longhorn
+  #       accessModes: [ "ReadWriteOnce" ]
+  #       resources:
+  #         requests:
+  #           storage: 2Gi
