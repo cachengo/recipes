@@ -17,7 +17,15 @@ function do_install {
   if [ "$( kubectl config view | grep "clusters:")" != "clusters: null" ]; then
   if [ "$( kubectl get namespace --output json -o jsonpath='{.items[?(@.metadata.name=="longhorn-system")].metadata.name}')" != "longhorn-system" ]; then
   sleep 60
+  
   sed -i "s|#default_data#|/data/$GROUPID|g" longhorn/longhorn.yaml
+
+  if [ -z "$VERSION" ]; then
+    sed -i "s|#longhorn_version#|v1.3.1|g" longhorn/longhorn-service.yaml
+  else
+    sed -i "s|#longhorn_version#|$VERSION|g" longhorn/longhorn-service.yaml
+  fi
+
   kubectl apply -f longhorn/longhorn.yaml
   cat > longhorn-service.yaml
   cp -f longhorn/longhorn-service.yaml longhorn-service.yaml
