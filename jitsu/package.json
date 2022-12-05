@@ -9,6 +9,7 @@
     "jitsu/jitsu-configmap.yaml",
     "jitsu/jitsu-service.yaml",
     "jitsu/jitsu-deployment.yaml",
+    "jitsu/jitsu-ingress.yaml",
     "jitsu/redis-configmap.yaml",
     "jitsu/redis-deployment.yaml",
     "jitsu/redis-service.yaml",
