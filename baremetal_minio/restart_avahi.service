@@ -1,7 +1,7 @@
 [Unit]
 Description=Minio
 [Service]
-ExecStart=/usr/bin/restart_avahi.py
+ExecStart=/data/minio/restart_avahi.py
 Restart=always
 StartLimitBurst=0
 [Install]

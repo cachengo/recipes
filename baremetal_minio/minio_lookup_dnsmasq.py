@@ -10,11 +10,14 @@ def is_ip_up(ip):
     response = os.system(f'ping -c 1 {ip}')
     return response == 0
 
-def all_ips_up(hostnames):
+def all_ips_up(hostnames,host_num):
+    ip_num = 0
     for host in hostnames:
-        if not is_ip_up(host):
-            return False
-    return True
+        if is_ip_up(host):
+            ip_num+=1
+    if ip_num >= host_num//2:
+        return True
+    return False
 
 
 def restart_service():
@@ -35,8 +38,8 @@ def restart_dns():
 
 if __name__ == "__main__":
     hostnames = json.loads(os.environ['HOSTNAMES'])
-
-    while not all_ips_up(hostnames):
+    host_num = len(hostnames)
+    while not all_ips_up(hostnames,host_num):
         print("Waiting for all nodes to come online")
         restart_dns()
         time.sleep(5)

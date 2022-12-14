@@ -2,6 +2,8 @@
 Description=MinioLookup
 [Service]
 Environment=HOSTNAMES='#hostnames_json#'
-ExecStart=/usr/bin/service_lookup.py
+ExecStart=/data/minio/minio_lookup.py
+Restart=on-failure
+StartLimitBurst=0
 [Install]
 WantedBy=multi-user.target
