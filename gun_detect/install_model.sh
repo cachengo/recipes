@@ -26,7 +26,8 @@ function do_install {
 function uninstall_only {
 
   echo "Removing model"
-  rm -rf /data/models/yolov5s_relu6_gun-fp32.tflite  
+  rm -rf /data/models/yolov5s_relu6_gun-fp32.tflite
+  rm -rf /data/models/detect_gun.py
   echo "Uninstallation Successful"
 }
 
