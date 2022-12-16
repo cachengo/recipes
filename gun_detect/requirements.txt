@@ -1,0 +1,8 @@
+tflite-runtime==2.8.0
+opencv-python
+matplotlib
+prettytable
+tensorflow
+torch
+torchvision
+shapely
