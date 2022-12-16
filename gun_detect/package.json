@@ -1,41 +1,19 @@
 {
-    "name": "baremetal-minio",
-    "display_name": "Baremetal MinIO",
-    "description": "MinIO is a high performance object storage server. Users can interact with it through its S3 API.",
-    "parameters": [
-      {
-        "name": "ACCESS_KEY",
-        "display_name": "Access Key",
-        "description": "Access key for accessing the S3 cluster",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "SECRET_KEY",
-        "display_name": "Secret Key",
-        "description": "Secret key for accessing the S3 cluster",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "HOSTNAMES",
-        "display_name": "Peer IPs",
-        "description": "IP addresses to use for cluster communication",
-        "type": "list",
-        "required": true
-      }
-    ],
-    "main": "baremetal_minio/install_model.sh",
+    "name": "gun-detection-model",
+    "display_name": "Gun Detection Model",
+    "description": "Yolov5 object detection model for gun detection",
+    "parameters":  [],
+    "main": "gun_detect/install_model.sh",
     "dependencies": [
-      "baremetal_minio/install_model.sh",
+      "gun_detect/install_model.sh",
       "utils/cachengo.sh",
       "utils/parameters.sh",
-      "baremetal_minio/bbox_utils.py",
-      "baremetal_minio/cachengo.jpg",
-      "baremetal_minio/cachengo.png",
-      "baremetal_minio/detect_gun.py",
-      "baremetal_minio/logo.txt",
-      "baremetal_minio/requirements.txt",
-      "baremetal_minio/yolov5_utils.py"
+      "gun_detect/bbox_utils.py",
+      "gun_detect/cachengo.jpg",
+      "gun_detect/cachengo.png",
+      "gun_detect/detect_gun.py",
+      "gun_detect/logo.txt",
+      "gun_detect/requirements.txt",
+      "gun_detect/yolov5_utils.py"
     ]
   }
