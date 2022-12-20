@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: cube-api
+  name: cube-api
+  namespace: #namespace_name#
+spec:
+  ports:
+    # - name: cube-react
+    #   port: 3000
+    #   nodePort: 32401
+    #   protocol: TCP
+    - name: cube-api
+      port: 4000
+  selector:
+    service: cube-api
