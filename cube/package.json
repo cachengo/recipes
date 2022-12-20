@@ -1,0 +1,19 @@
+{
+    "name": "cube",
+    "display_name": "cube",
+    "description": "cube",
+    "parameters": [],
+    "main": "cube/run.sh",
+    "dependencies": [
+    "cube/run.sh",
+    "utils/cachengo.sh",
+    "cube/cube-api-deployment.yaml",
+    "cube/cube-api-service.yaml",
+    "cube/cube-ingress.yaml",
+    "cube/cube-pvc.yaml",
+    "cube/redis-configmap.yaml",
+    "cube/redis-deployment.yaml",
+    "cube/redis-service.yaml",
+    "cube/redis-storage.yaml"
+    ]
+  }

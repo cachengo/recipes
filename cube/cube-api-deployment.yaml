@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: cube-api
+  name: cube-api
+  namespace: #namespace_name#
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: cube-api
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        service: cube-api
+    spec:
+      containers:
+        - env: # Refer to https://cube.dev/docs/reference/environment-variables for more options
+            - name: CUBEJS_API_SECRET
+              value: <API_SECRET>
+            - name: CUBEJS_CUBESTORE_HOST
+              value: "cubestore-router" # USING THIS CUBESTORE HOST BECAUSE THE CUBESTORE ROUTER SERVICE IS NAMED "CUBESTORE-ROUTER"
+            - name: CUBEJS_DB_HOST
+              value: postgres-service.postgres
+            - name: CUBEJS_DB_NAME
+              value: postgres
+            - name: CUBEJS_DB_USER
+              value: postgres
+            - name: CUBEJS_DB_PASS
+              value: password
+            - name: CUBEJS_DB_TYPE
+              value: postgres
+            - name: CUBEJS_DEV_MODE
+              value: "true" # NEVER RUN DEV MODE IN K8S
+            - name: CUBEJS_EXTERNAL_DEFAULT
+              value: "true"
+            - name: CUBEJS_REDIS_URL
+              value: redis://redis-server.cube:6379
+          image: cubejs/cube:v0.30.25
+          name: cube-api
+          ports:
+            - containerPort: 3000
+            - containerPort: 4000
+          resources: {}
+          volumeMounts:
+            - mountPath: /cube/conf/schema
+              name: cube-api-schema
+      restartPolicy: Always
+      volumes:
+        - name: cube-api-schema
+          persistentVolumeClaim:
+            claimName: cube-api-schema
+status: {}
