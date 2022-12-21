@@ -10,7 +10,7 @@ function do_install {
   cp gun_detect/*.py /data/models/
   cp gun_detect/cachengo* /data/models/
   cp gun_detect/logo.txt /data/models/
-  
+  cp gun_detect/requirements.txt /data/models/
   if [ ! -f /data/models/yolov5s_relu6_gun-fp32.tflite ]; then
     curl -L -o /data/models/yolov5s_relu6_gun-fp32.tflite "https://downloads.staging.cachengo.com/models/yolov5s_relu6_gun-fp32.tflite"
   fi
