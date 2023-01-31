@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -23,3 +24,30 @@ spec:
   resources:
     requests:
       storage: 1Gi
+=======
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-storage
+  namespace: #namespace_name#
+spec:
+  storageClassName: longhorn
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-datasources
+  namespace: #namespace_name#
+spec:
+  storageClassName: longhorn
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+>>>>>>> Stashed changes

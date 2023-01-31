@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -19,3 +20,26 @@ data:
             }
         ]
     }
+=======
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: #namespace_name#
+data:
+  prometheus.yaml: |-
+    {
+        "apiVersion": 1,
+        "datasources": [
+            {
+               "access":"proxy",
+                "editable": true,
+                "name": "prometheus",
+                "orgId": 1,
+                "type": "prometheus",
+                "url": "http://prometheus-service.monitoring.svc:8080",
+                "version": 1
+            }
+        ]
+    }
+>>>>>>> Stashed changes
