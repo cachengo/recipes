@@ -17,3 +17,9 @@ function delete_network {
 function container_state {
   echo "$( docker container inspect -f '{{.State.Status}}' $1 )"
 }
+
+function get_host {
+  HOST_NAME=$(hostname)
+  
+  echo "$HOST_NAME"
+}

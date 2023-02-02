@@ -1,0 +1,16 @@
+{
+    "name": "grafana",
+    "display_name": "grafana",
+    "description": "grafana",
+    "parameters": [],
+    "main": "grafana/run.sh",
+    "dependencies": [
+    "grafana/run.sh",
+    "utils/cachengo.sh",
+    "grafana/grafana-configmap.yaml",
+    "grafana/grafana-deployment.yaml",
+    "grafana/grafana-ingress.yaml",
+    "grafana/grafana-pvc.yaml",
+    "grafana/grafana-service.yaml"
+    ]
+  }
