@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argos-dep
+  namespace: argos
+  labels:
+    app: argos
+spec:
+  # serviceName: argos
+  replicas: 1
+  selector:
+    matchLabels:
+      app: argos
+  template:
+    metadata:
+      labels:
+        app: argos
+    spec:
+      serviceAccountName: argos-service-account
+      containers:
+      - name: argos
+        image: cachengo/argos:1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+          - name: DVR_DATA_DIR
+            value: "/raft-storage"
+          - name: DVR_DB_PASSWORD
+            value: ""
+          - name: DVR_DB_USERNAME
+            value: default
+          - name: DVR_DATABASE_URL
+            value: chi-pv-log-deployment-pv-0-0.clickhouse:9000,chi-pv-log-deployment-pv-1-0.clickhouse:9000
+          - name: DVR_DB_NAME
+            value: argos
+          - name: DVR_MINIO_ENDPOINT
+            value: minio-service.minio:9000
+          - name: DVR_MINIO_ACCESS_KEY
+            value: minioadmin
+          - name: DVR_MINIO_SECRET
+            value: minioadmin
+          - name: DVR_PROCESS_SUPERVISOR
+            value: kube
+        volumeMounts:
+        - name: argos-pvc
+          mountPath: /raft-storage/videos
+      volumes:
+        - name: argos-pvc
+          persistentVolumeClaim:
+            claimName: argos-pvc

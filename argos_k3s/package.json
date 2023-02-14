@@ -1,0 +1,34 @@
+{
+    "name": "argos-k3s",
+    "display_name": "ArgOS on K3S",
+    "description": "ArgOS camera monitoring system",
+    "parameters": [
+      {
+        "name": "ARGOS_VERSION",
+        "display_name": "ArgOS Version",
+        "description": "Desired version of ArgOS to install",
+        "type": "string",
+        "required": false
+      }      
+    ],
+    "main": "argos_k3s/argos/argos_install.sh",
+    "dependencies": [
+      "argos_k3s/argos/argos_install.sh",
+      "argos_k3s/argos/argos-deployment.yaml",
+      "argos_k3s/argos/argos-ingress.yaml",
+      "argos_k3s/argos/argos-namespace.yaml",
+      "argos_k3s/argos/argos-pvc.yaml",
+      "argos_k3s/argos/argos-role.yaml",
+      "argos_k3s/argos/argos-service.yaml",
+      "argos_k3s/clickhouse/clickhouse-deployment.yaml",
+      "argos_k3s/clickhouse/clickhouse-ingress.yaml",
+      "argos_k3s/clickhouse/create-clickhouse.sh",
+      "argos_k3s/minio/minio-deployment.yaml",
+      "argos_k3s/minio/minio-ingress.yaml",
+      "argos_k3s/minio/minio-namespace.yaml",
+      "argos_k3s/minio/minio-pvc.yaml",
+      "argos_k3s/minio/minio-service.yaml",
+      "argos_k3s/nginx/create-nginx.sh",
+      "argos_k3s/zookeeper/zookeeper.yaml"
+    ]
+  }
