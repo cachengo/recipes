@@ -11,9 +11,9 @@
         "required": false
       }      
     ],
-    "main": "argos_k3s/argos/argos_install.sh",
+    "main": "argos_k3s/argos_install.sh",
     "dependencies": [
-      "argos_k3s/argos/argos_install.sh",
+      "argos_k3s/argos_install.sh",
       "argos_k3s/argos/argos-deployment.yaml",
       "argos_k3s/argos/argos-ingress.yaml",
       "argos_k3s/argos/argos-namespace.yaml",
