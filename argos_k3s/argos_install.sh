@@ -1,6 +1,7 @@
 #!/bin/bash
 
 function do_install {
+    cachengo-cli updateInstallStatus $APPID "Installing"
     # zookeeper
     echo "Installing Zookeeper into k3s cluster"
     kubectl create ns zookeeper
@@ -23,14 +24,16 @@ function do_install {
 
     #argos
     kubectl apply -f argos-namespace.yaml -f argos-ingress.yaml -f argos-pvc.yaml -f argos-role.yaml -f argos-service.yaml -f argos-deployment.yaml
-
+    cachengo-cli updateInstallStatus $APPID "Installed"
 }
 
 function do_uninstall{
+    cachengo-cli updateInstallStatus $APPID "Uninstalling"
     kubectl delete -f zookeeper/zookeeper.yaml 
     kubectl delete -f minio/minio/minio-deployment.yaml -f minio/minio-service.yaml -f minio/minio-pvc.yaml -f minio/minio-ingress.yaml -f minio/minio-namespace.yaml
     kubectl delete -f clickhouse/clickhouse-deployment.yaml
     kubectl delete -f argos/argos-deployment.yaml -f argos-ingress.yaml -f argos-pvc.yaml -f argos-role.yaml -f argos-service.yaml -f argos/argos-namespace.yaml    
+    cachengo-cli updateInstallStatus $APPID "Uninstalled"
 }
 
 case "$1" in
