@@ -30,8 +30,12 @@ function do_install {
 function do_uninstall {
     cachengo-cli updateInstallStatus $APPID "Uninstalling"
     kubectl delete -f argos_k3s/zookeeper/zookeeper.yaml 
+    kubectl delete ns zookeeper
     kubectl delete -f argos_k3s/minio/minio-deployment.yaml -f argos_k3s/minio/minio-service.yaml -f argos_k3s/minio/minio-pvc.yaml -f argos_k3s/minio/minio-ingress.yaml -f argos_k3s/minio/minio-namespace.yaml
     kubectl delete -f argos_k3s/clickhouse/clickhouse-deployment.yaml
+    kubectl -n clickhouse delete deployment clickhouse-operator
+    kubectl -n clickhouse delete svc clickhouse-operator-metrics
+    kubectl -n clickhouse delete ns clickhouse
     kubectl delete -f argos_k3s/argos/argos-deployment.yaml -f argos_k3s/argos/argos-ingress.yaml -f argos_k3s/argos/argos-pvc.yaml -f argos_k3s/argos/argos-role.yaml -f argos_k3s/argos/argos-service.yaml -f argos_k3s/argos/argos-namespace.yaml    
     cachengo-cli updateInstallStatus $APPID "Uninstalled"
 }
