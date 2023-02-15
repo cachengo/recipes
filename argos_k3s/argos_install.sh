@@ -17,7 +17,7 @@ function do_install {
 
     # clickhouse
     ./clickhouse/create-clickhouse.sh 
-
+``
     sleep 60
 
     kubectl -n clickhouse exec chi-pv-log-deployment-pv-0-0-0 -- clickhouse-client --query "create database argos on cluster 'deployment-pv';"
@@ -27,7 +27,7 @@ function do_install {
     cachengo-cli updateInstallStatus $APPID "Installed"
 }
 
-function do_uninstall{
+function do_uninstall {
     cachengo-cli updateInstallStatus $APPID "Uninstalling"
     kubectl delete -f zookeeper/zookeeper.yaml 
     kubectl delete -f minio/minio/minio-deployment.yaml -f minio/minio-service.yaml -f minio/minio-pvc.yaml -f minio/minio-ingress.yaml -f minio/minio-namespace.yaml
