@@ -18,12 +18,13 @@ function do_install {
     # clickhouse
     ./argos_k3s/clickhouse/create-clickhouse.sh 
 
-    sleep 60
-
-    kubectl -n clickhouse exec chi-pv-log-deployment-pv-0-0-0 -- clickhouse-client --query "create database argos on cluster 'deployment-pv';"
+    # kubectl -n clickhouse exec chi-pv-log-deployment-pv-0-0-0 -- clickhouse-client --query "create database argos on cluster 'deployment-pv';"
 
     #argos
     kubectl apply -f argos_k3s/argos/argos-namespace.yaml -f argos_k3s/argos/argos-ingress.yaml -f argos_k3s/argos/argos-pvc.yaml -f argos_k3s/argos/argos-role.yaml -f argos_k3s/argos/argos-service.yaml -f argos_k3s/argos/argos-deployment.yaml
+
+    
+    
     cachengo-cli updateInstallStatus $APPID "Installed"
 }
 
