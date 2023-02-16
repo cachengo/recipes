@@ -6,9 +6,13 @@ function do_install {
   set -e
   cachengo-cli updateInstallStatus $APPID "Installing"
   # Remove user@host to add our own identifier
-  key="$( cut -d ' ' -f 2 <<< "$PUBLIC_KEY" )"
+  key="$( cut -d ' ' -f 1,2 <<< "$PUBLIC_KEY" )"
+  if [ $(wc -w <<< "$key") -lt 2 ]; then 
+    echo "Missing SSH Key Type" 
+    exit 1
+  fi
   sed -i -e '$a\' /home/$TARGET_USER/.ssh/authorized_keys
-  echo "ssh-rsa $key $APPID" >> /home/$TARGET_USER/.ssh/authorized_keys
+  echo "$key $APPID" >> /home/$TARGET_USER/.ssh/authorized_keys
   cachengo-cli updateInstallStatus $APPID "Installed"
 }
 
