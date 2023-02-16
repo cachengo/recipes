@@ -12,10 +12,22 @@ function do_install {
       exit 1
     fi 
     export K3S_TOKEN="$SECRET"
-    export INSTALL_K3S_EXEC="server --server https://$IP_ADDRESS:6443 --disable traefik --disable servicelb"
+    export INSTALL_K3S_EXEC="server --server https://$IP_ADDRESS:6443 --disable traefik --disable servicelb \
+    --kubelet-arg "node-status-update-frequency=4s" \
+    --kube-controller-manager-arg "node-monitor-period=4s" \
+    --kube-controller-manager-arg "node-monitor-grace-period=16s" \
+    --kube-controller-manager-arg "pod-eviction-timeout=20s" \
+    --kube-apiserver-arg "default-not-ready-toleration-seconds=20" \
+    --kube-apiserver-arg "default-unreachable-toleration-seconds=20""
   else
     export K3S_TOKEN="$SECRET"
-    export INSTALL_K3S_EXEC="server --cluster-init --disable traefik --disable servicelb"
+    export INSTALL_K3S_EXEC="server --cluster-init --disable traefik --disable servicelb \
+    --kubelet-arg "node-status-update-frequency=4s" \
+    --kube-controller-manager-arg "node-monitor-period=4s" \
+    --kube-controller-manager-arg "node-monitor-grace-period=16s" \
+    --kube-controller-manager-arg "pod-eviction-timeout=20s" \
+    --kube-apiserver-arg "default-not-ready-toleration-seconds=20" \
+    --kube-apiserver-arg "default-unreachable-toleration-seconds=20""
   fi 
     export K3S_KUBECONFIG_MODE="644"
     eval set -- $(escape "${INSTALL_K3S_EXEC}") $(quote "$@")
