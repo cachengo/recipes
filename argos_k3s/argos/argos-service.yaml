@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: argos-service
+  namespace: argos
+spec:
+  selector:
+    app: argos
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 32401
+  type: NodePort
