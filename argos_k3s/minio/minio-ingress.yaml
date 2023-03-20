@@ -16,4 +16,4 @@ spec:
           service:
             name: minio-service
             port:
-              number: 33973
+              number: 9001

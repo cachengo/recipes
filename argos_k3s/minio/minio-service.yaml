@@ -10,7 +10,7 @@ spec:
     - port: 9000
       protocol: TCP
       name: minio
-    - port: 33973
+    - port: 9001
       protocol: TCP
       name: minio-console
   selector:

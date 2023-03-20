@@ -29,6 +29,8 @@ spec:
         args:
         - server
         - /storage
+        - --console-address
+        - :9001
         env:
         # Minio access key and secret key
         - name: MINIO_ACCESS_KEY
@@ -38,6 +40,8 @@ spec:
         ports:
         - containerPort: 9000
           hostPort: 9000
+        - containerPort: 9001
+          hostPort: 9001
         # Mount the volume into the pod
         volumeMounts:
         - name: storage # must match the volume name, above
