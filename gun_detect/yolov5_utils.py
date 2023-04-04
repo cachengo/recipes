@@ -170,6 +170,7 @@ def preprocess_yolov5(filepath,image_size):
     letterbox_img,ratio, pad=letterbox(orig_img,new_shape=(image_size, image_size),auto=False, scaleFill=False,scaleup=False,stride=32)
     shapes = (orig_img.shape[0], orig_img.shape[1]), (ratio, pad) 
     img_array = np.expand_dims(np.array(letterbox_img), axis=0).astype(np.float32)
+    #img_array = np.expand_dims(np.array(letterbox_img), axis=0).astype(np.float16)
     img_array2=(img_array)/255
     torch_image=torch.tensor(img_array2)
     input_array=torch.cat([torch_image[..., ::2, ::2,:], torch_image[..., 1::2, ::2,:], torch_image[..., ::2, 1::2,:], torch_image[..., 1::2, 1::2,:]], 3)

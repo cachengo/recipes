@@ -1,0 +1,17 @@
+[Unit]
+Description=GunDetection
+[Service]
+WorkingDirectory=/data/models
+Environment=S3_ACCESS_KEY=
+Environment=S3_SECRET_KEY=                                    
+Environment=S3_ENDPOINT=https://len-detections.s3.us-east-2.amazonaws.com/                                    
+Environment=S3_REGION=us-east-2                                    
+Environment=S3_BUCKET=len-detections                                    
+Environment=MODEL=yolov5n_02-02-23_300.pt
+ExecStart=python3.8 -u /data/models/gun-detection.py
+Restart=always
+StartLimitBurst=0
+MemoryLimit=2G
+TimeoutSec=5
+[Install]
+WantedBy=multi-user.target

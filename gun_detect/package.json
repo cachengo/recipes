@@ -1,7 +1,7 @@
 {
     "name": "gun-detection-model",
     "display_name": "Gun Detection Model",
-    "description": "Yolov5 object detection model for gun detection",
+    "description": "Yolov5n gun detection demo",
     "parameters":  [],
     "main": "gun_detect/install_model.sh",
     "dependencies": [
@@ -9,11 +9,10 @@
       "utils/cachengo.sh",
       "utils/parameters.sh",
       "gun_detect/bbox_utils.py",
-      "gun_detect/cachengo.jpg",
-      "gun_detect/cachengo.png",
-      "gun_detect/detect_gun.py",
-      "gun_detect/logo.txt",
+      "gun_detect/gun-detection.py",
       "gun_detect/requirements.txt",
-      "gun_detect/yolov5_utils.py"
+      "gun_detect/yolov5_utils.py",
+      "gun_detect/detect_gun.service",
+      "gun_detect/detections.conf"
     ]
   }
