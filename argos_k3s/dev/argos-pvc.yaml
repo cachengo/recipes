@@ -5,7 +5,7 @@ metadata:
   namespace: argos
 spec:
   storageClassName: local-storage
-  volumeName: argos-pvc
+  volumeName: argos-pv
   accessModes: 
     - ReadWriteOnce
   resources:
