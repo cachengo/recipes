@@ -27,6 +27,15 @@ function do_install {
     systemctl restart dnsmasq
     cp baremetal_minio/minio_lookup_dnsmasq.py /data/minio/minio_lookup.py
     chmod +x /data/minio/minio_lookup.py
+    cp baremetal_minio/restart_avahi.py /data/minio/restart_avahi.py
+    chmod +x /data/minio/restart_avahi.py
+    cp baremetal_minio/restart_avahi.service /lib/systemd/system/restart_avahi.service
+    chmod 664 /lib/systemd/system/restart_avahi.service
+    systemctl enable restart_avahi
+    systemctl daemon-reload
+    service avahi-daemon restart
+    systemctl start restart_avahi.service
+
   else
     cp baremetal_minio/minio_lookup.py /data/minio/minio_lookup.py
     cp baremetal_minio/restart_avahi.py /data/minio/restart_avahi.py
