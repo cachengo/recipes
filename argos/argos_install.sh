@@ -58,7 +58,7 @@ function do_install {
   fi
 
   if [[ $platform == aarch64 ]]; then
-    dvr_executable=dvr_arm64-linux
+    dvr_executable=dvr_arm64-linux_maria
     ffmpeg_executable=ffmpeg-arm64-linux
     ffprobe_executable=ffprobe-arm64-linux
     immudb_executable=immudb-v1.3.1-linux-arm64
