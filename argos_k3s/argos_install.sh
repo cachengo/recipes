@@ -13,7 +13,7 @@ function do_install {
 
     # minio
     echo "Installing minio"
-    kubectl apply -f argos_k3s/minio/minio-namespace.yaml -f argos_k3s/minio/minio-service.yaml -f argos_k3s/minio/minio-pvc.yaml -f argos_k3s/minio/minio-ingress.yaml -f argos_k3s/minio/minio-deployment.yaml 
+    kubectl apply -f argos_k3s/minio/minio-namespace.yaml -f argos_k3s/minio/minio-service.yaml -f argos_k3s/minio/minio-pvc.yaml -f argos_k3s/minio/minio-api-ingress.yaml -f minio-console-ingress.yaml -f argos_k3s/minio/minio-deployment.yaml 
 
     # clickhouse
     ./argos_k3s/clickhouse/create-clickhouse.sh 
@@ -32,7 +32,7 @@ function do_uninstall {
     cachengo-cli updateInstallStatus $APPID "Uninstalling"
     kubectl delete -f argos_k3s/zookeeper/zookeeper.yaml 
     kubectl delete ns zookeeper
-    kubectl delete -f argos_k3s/minio/minio-deployment.yaml -f argos_k3s/minio/minio-service.yaml -f argos_k3s/minio/minio-pvc.yaml -f argos_k3s/minio/minio-ingress.yaml -f argos_k3s/minio/minio-namespace.yaml
+    kubectl delete -f argos_k3s/minio/minio-deployment.yaml -f argos_k3s/minio/minio-service.yaml -f argos_k3s/minio/minio-pvc.yaml -f argos_k3s/minio/minio-api-ingress.yaml -f minio-console-ingress.yaml -f argos_k3s/minio/minio-namespace.yaml
     kubectl delete -f argos_k3s/clickhouse/clickhouse-deployment.yaml
     kubectl -n clickhouse delete deployment clickhouse-operator
     kubectl -n clickhouse delete svc clickhouse-operator-metrics
