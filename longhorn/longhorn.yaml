@@ -1070,7 +1070,7 @@ spec:
             - name: proc
               mountPath: /host/proc/
             - name: longhorn
-              mountPath: /var/lib/longhorn/
+              mountPath: /data/longhorn-disk/
               mountPropagation: Bidirectional
             - name: longhorn-default-setting
               mountPath: /var/lib/longhorn-setting/
@@ -1099,7 +1099,7 @@ spec:
             path: /proc/
         - name: longhorn
           hostPath:
-            path: /var/lib/longhorn/
+            path: /data/longhorn-disk/
         - name: longhorn-default-setting
           configMap:
             name: longhorn-default-setting
