@@ -8,9 +8,13 @@ spec:
   sessionAffinity: None
   ports:
     - port: 9000
+      targetPort: 9000
+      nodePort: 30007
       protocol: TCP
       name: minio
     - port: 9001
+      targetPort: 9001
+      nodePort: 30008
       protocol: TCP
       name: minio-console
   selector:

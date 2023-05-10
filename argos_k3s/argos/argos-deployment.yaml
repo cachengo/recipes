@@ -19,10 +19,11 @@ spec:
       serviceAccountName: argos-service-account
       containers:
       - name: argos
-        image: cachengo/argos:1.0.0
+        image: cachengo/argos:1.0.1
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
+          hostPort: 8080
         env:
           - name: DVR_DATA_DIR
             value: "/raft-storage"
