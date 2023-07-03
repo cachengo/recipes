@@ -1,8 +1,10 @@
 import torch
-import cv2
+import cv2, math
 import numpy as np
 import copy
 from PIL import Image,ImageDraw
+from PIL import ImageFont
+
 
 def xywh2xyxy(x):
     # Convert nx4 boxes from [x, y, w, h] to [x1, y1, x2, y2] where xy1=top-left, xy2=bottom-right
@@ -96,10 +98,19 @@ def letterbox(im, new_shape=(640, 640), color=(114, 114, 114), auto=True, scaleF
 def to_numpy(tensor):
     return tensor.detach().cpu().numpy() if tensor.requires_grad else tensor.cpu().numpy()
 
-def overlay_boxes(image_array,predictions):
+def overlay_boxes(image_array,predictions,label):
     img_pil=Image.fromarray(image_array)
     draw = ImageDraw.Draw(img_pil)
+    scale = 4
+    colour = "red"
     for detected_object in predictions:
         for i in range(detected_object.shape[0]):
-            draw.rectangle(detected_object[i][0:4].detach().cpu().numpy(), fill=None, outline='red', width=3,)
+            score = math.floor(100*float(detected_object[i][-2]))/100
+            box = detected_object[i][0:4].detach().cpu().numpy()
+            draw.rectangle(detected_object[i][0:4].detach().cpu().numpy(), fill=None, outline=colour, width=2,)
+            draw.rectangle([box[0], box[1], box[0]+.20*(box[2]-box[0])*scale, box[1]-.02*(box[2]-box[0])*scale], fill=colour, outline=colour, width=10,)
+            font = ImageFont.truetype(font='fonts/Roboto-Medium.ttf',size=int(.03*(box[2]-box[0])*scale))
+            text_loc = box[1]-(.04*(box[2]-box[0])*scale/2)
+            draw.text((box[0]+5,text_loc),label+str(score),fill="white",font=font,align="center") 
+            # draw.rectangle(detected_object[i][0:4].detach().cpu().numpy(), fill=None, outline='red', width=3,)
     return img_pil

@@ -1,0 +1,12 @@
+[Unit]
+Description=GunDetection
+[Service]
+WorkingDirectory=/data/threat_detection                       
+Environment=MODEL=yolov5n_03-26-23-300.pt
+ExecStart=/data/threat_detection/.venv/bin/python3 -u /data/threat_detection/threat_detection.py
+Restart=always
+StartLimitBurst=0
+MemoryLimit=2G
+TimeoutSec=5
+[Install]
+WantedBy=multi-user.target
