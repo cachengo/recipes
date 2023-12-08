@@ -9,28 +9,36 @@ function do_install {
   local HOSTS_ARR
   array_from_json_list HOSTS_ARR "$HOSTNAMES"
   array_len=$((${#HOSTS_ARR[@]}-1 ))
-  
+
   # touch /etc/dnsmasq.d/$GROUPID.conf
 
   # for ((i=0;i<${#HOSTS_ARR[@]};++i)); do
   #   echo "cname=${GROUPID}-${i},${HOSTS_ARR[i]}" >> /etc/dnsmasq.d/$GROUPID.conf
   # done
+  touch /etc/cachengo-hosts/$GROUPID.hosts
+  chmod u=rwx,g=rwx,o=rwx /etc/cachengo-hosts/$GROUPID.hosts
+
+  for ((i=0;i<${#HOSTS_ARR[@]};++i)); do
+    echo "${HOSTS_ARR[i]}    ${GROUPID}-${i}" >> /etc/cachengo-hosts/$GROUPID.hosts
+  done
 
   systemctl restart dnsmasq
 
-  apt install -y avahi-utils
-  apt install -y python3
-  apt install -y supervisor
-  apt install -y curl
-  apt install -y atomicparsley openjdk-8-jdk  
-  
+  #apt install -y avahi-utils
+  #apt install -y python3
+  #apt install -y supervisor
+  #apt install -y curl
+  #apt install -y atomicparsley openjdk-8-jdk
+
   platform=`uname -m`
-  
-  if  [[ $DVR_SERVER_ID == "" ]]; then
-    h_name=`hostname`
-  else 
-    h_name=$DVR_SERVER_ID
-  fi 
+
+#  if  [[ $DVR_SERVER_ID == "" ]]; then
+#    h_name=`hostname`
+#  else 
+#    h_name=$DVR_SERVER_ID
+#  fi 
+
+  h_name=$(ifconfig eth0 | grep -v "::" | grep ":" | grep "inet6" | awk '{ print $2 }')
 
   join_address=""
 
@@ -39,18 +47,18 @@ function do_install {
     echo "h name is: $h_name"
 
     if  [[ ${HOSTS_ARR[i]} == $h_name ]]; then 
-  
-      peer_addr="${HOSTS_ARR[i]}" 
-  
+
+      peer_addr="${GROUPID}-${i}"
+
       if [[ $i != 0 ]] ; then
         echo "Follower node found"
-        join_address=$DVR_JOIN_ADDRESS
+        join_address="${GROUPID}-0:7000"
       fi
-    fi 
+    fi
  done
- 
-  
-  
+
+
+
   if [[ $platform == x86_64 ]]; then
     dvr_executable=dvr_amd64-linux
     ffmpeg_executable=ffmpeg-amd64-linux
@@ -65,19 +73,19 @@ function do_install {
   fi
   
   mkdir /data/argos 
-  mkdir /data/immudb
+#  mkdir /data/immudb
   chmod a+rwx /data/argos  #verify correct permissions later
-  chmod a+rwx /data/immudb 
+ # chmod a+rwx /data/immudb 
   curl -L -o /data/argos/dvr "https://downloads.staging.cachengo.com/argos/$dvr_executable"
-  curl -L -o /usr/bin/ffmpeg "https://downloads.staging.cachengo.com/argos/ffmpeg/$ffmpeg_executable"
-  curl -L -o /usr/bin/ffprobe "https://downloads.staging.cachengo.com/argos/ffmpeg/$ffprobe_executable"
-  curl -L -o /data/immudb/immudb "https://downloads.staging.cachengo.com/argos/immudb/$immudb_executable"
+  curl -L -o /data/system/usr/bin/ffmpeg "https://downloads.staging.cachengo.com/argos/ffmpeg/$ffmpeg_executable"
+  curl -L -o /data/system/usr/bin/ffprobe "https://downloads.staging.cachengo.com/argos/ffmpeg/$ffprobe_executable"
+ # curl -L -o /data/immudb/immudb "https://downloads.staging.cachengo.com/argos/immudb/$immudb_executable"
   curl -L -o /etc/CachengoExportConverter.zip "https://downloads.staging.cachengo.com/argos/CachengoExportConverter.zip"
                                                
   unzip /etc/CachengoExportConverter.zip -d /etc/ && rm -rf /etc/CachengoExportConverter.zip 
   # cp argos/dvr_arm64-linux /argos/dvr
   chmod a+rwx /data/argos/dvr
-  chmod a+rwx /data/immudb/immudb 
+ # chmod a+rwx /data/immudb/immudb 
   chmod a+rwx /usr/bin/ffmpeg
   chmod a+rwx /usr/bin/ffprobe
   # Replace vars on lookup service file
@@ -96,8 +104,8 @@ function do_install {
   sed -i "s/#leader_api_port#/$DVR_LEADER_API_PORT/" argos/argos.service
   sed -i "s/#net_interface#/$DVR_NET_INTERFACE/" argos/argos.service
   
-  cp argos/argos.service /lib/systemd/system/argos.service
-  cp argos/argos_lookup.service /lib/systemd/system/argos_lookup.service
+  cp argos/argos.service /data/system/system/argos.service
+  cp argos/argos_lookup.service /data/system/system/argos_lookup.service
   cp argos/service_lookup.py /data/argos/service_lookup.py
   chmod +x /data/argos/service_lookup.py
   
@@ -117,16 +125,17 @@ function uninstall_only {
   service argos_lookup stop
   
   echo "Removing services files"
-  rm /lib/systemd/system/argos.service
-  rm /lib/systemd/system/argos_lookup.*
-  rm -rf /data/immudb
-  rm /usr/bin/ffmpeg
-  rm /usr/bin/ffprobe
-  rm -rf /data/argos  
-  rm -rf /etc/dnsmasq.d/$GROUPID.conf
+  rm /data/system/system/argos.service
+  rm /data/system/system/argos_lookup.*
+ # rm -rf /data/immudb
+ # rm /usr/bin/ffmpeg
+ # rm /usr/bin/ffprobe
+  rm -rf /data/argos
+#  rm -rf /etc/dnsmasq.d/$GROUPID.conf
+  rm -rf /data/system/etc/cachengo-hosts/$GROUPID.hosts
   rm -rf /etc/CachengoExportConverter
   systemctl daemon-reload
-  
+
   sed -i "/$GROUPID/d" /etc/hosts
 
   echo "Uninstallation Successful"
