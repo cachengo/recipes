@@ -77,17 +77,26 @@ function do_install {
   chmod a+rwx /data/argos  #verify correct permissions later
  # chmod a+rwx /data/immudb 
   curl -L -o /data/argos/dvr "https://downloads.staging.cachengo.com/argos/$dvr_executable"
-  curl -L -o /data/system/usr/bin/ffmpeg "https://downloads.staging.cachengo.com/argos/ffmpeg/$ffmpeg_executable"
-  curl -L -o /data/system/usr/bin/ffprobe "https://downloads.staging.cachengo.com/argos/ffmpeg/$ffprobe_executable"
+  if [ -d /data/system/system ]; then
+    curl -L -o /data/system/usr/bin/ffmpeg "https://downloads.staging.cachengo.com/argos/ffmpeg/$ffmpeg_executable"
+    curl -L -o /data/system/usr/bin/ffprobe "https://downloads.staging.cachengo.com/argos/ffmpeg/$ffprobe_executable"
+    chmod a+rwx /data/system/usr/bin/ffmpeg
+    chmod a+rwx /data/system/usr/bin/ffprobe
+    ln -s /data/system/usr/bin/ff* /usr/bin/
+  else
+    curl -L -o /usr/bin/ffmpeg "https://downloads.staging.cachengo.com/argos/ffmpeg/$ffmpeg_executable"
+    curl -L -o /usr/bin/ffprobe "https://downloads.staging.cachengo.com/argos/ffmpeg/$ffprobe_executable"
+    chmod a+rwx /usr/bin/ffmpeg
+    chmod a+rwx /usr/bin/ffprobe 
+  fi
+
  # curl -L -o /data/immudb/immudb "https://downloads.staging.cachengo.com/argos/immudb/$immudb_executable"
   curl -L -o /etc/CachengoExportConverter.zip "https://downloads.staging.cachengo.com/argos/CachengoExportConverter.zip"
-                                               
+
   unzip /etc/CachengoExportConverter.zip -d /etc/ && rm -rf /etc/CachengoExportConverter.zip 
   # cp argos/dvr_arm64-linux /argos/dvr
   chmod a+rwx /data/argos/dvr
  # chmod a+rwx /data/immudb/immudb 
-  chmod a+rwx /usr/bin/ffmpeg
-  chmod a+rwx /usr/bin/ffprobe
   # Replace vars on lookup service file
   sed -i "s/#hostnames_json#/$HOSTNAMES/" argos/argos_lookup.service
   # sed -i "s/#group_id#/$GROUPID/" argos/argos_lookup.service
@@ -104,8 +113,14 @@ function do_install {
   sed -i "s/#leader_api_port#/$DVR_LEADER_API_PORT/" argos/argos.service
   sed -i "s/#net_interface#/$DVR_NET_INTERFACE/" argos/argos.service
   
-  cp argos/argos.service /data/system/system/argos.service
-  cp argos/argos_lookup.service /data/system/system/argos_lookup.service
+  if [ -d /data/system/system ]; then
+    cp argos/argos.service /data/system/system/argos.service
+    cp argos/argos_lookup.service /data/system/system/argos_lookup.service
+  else
+    cp argos/argos.service /lib/systemd/system/argos.service
+    cp argos/argos_lookup.service /lib/systemd/system/argos_lookup.service
+  fi
+
   cp argos/service_lookup.py /data/argos/service_lookup.py
   chmod +x /data/argos/service_lookup.py
   
@@ -125,14 +140,20 @@ function uninstall_only {
   service argos_lookup stop
   
   echo "Removing services files"
-  rm /data/system/system/argos.service
-  rm /data/system/system/argos_lookup.*
+  if [ -d /data/system/system ]; then
+    rm /data/system/system/argos.service
+    rm /data/system/system/argos_lookup.*
+  else
+    rm /lib/systemd/system/argos.service
+    rm /lib/systemd/system/argos_lookup.*
+  fi
+
  # rm -rf /data/immudb
  # rm /usr/bin/ffmpeg
  # rm /usr/bin/ffprobe
   rm -rf /data/argos
 #  rm -rf /etc/dnsmasq.d/$GROUPID.conf
-  rm -rf /data/system/etc/cachengo-hosts/$GROUPID.hosts
+  rm -rf /etc/cachengo-hosts/$GROUPID.hosts
   rm -rf /etc/CachengoExportConverter
   systemctl daemon-reload
 
