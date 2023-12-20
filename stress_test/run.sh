@@ -32,7 +32,7 @@ function do_install {
   unzip $DATADIR/hashcat-5.1.0.zip -d $DATADIR
 
   cachengo-cli updateInstallStatus $APPID "Installing: Starting Stress Test"
-  systemctl enable $NETWORKSERVICE stress_cpu.service stress_gpu.service
+#  systemctl enable $NETWORKSERVICE stress_cpu.service stress_gpu.service
   systemctl daemon-reload
   systemctl start $NETWORKSERVICE stress_cpu.service stress_gpu.service
 
