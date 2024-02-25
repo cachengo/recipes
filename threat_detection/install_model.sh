@@ -17,9 +17,10 @@ function do_install {
   cp threat_detection/fonts/Roboto-Medium.ttf /data/threat_detection/fonts/Roboto-Medium.ttf
   
   systemctl daemon-reload
-  if [ ! -f /data/threat_detection/yolov5n_03-26-23-300.pt ]; then
+  if [ ! -f /data/threat_detection/yolov5n_rknn_11-29-23.rknn ]; then
     curl -L -o /data/threat_detection/yolov5n_03-26-23-300.pt "https://downloads.staging.cachengo.com/models/yolov5n_03-26-23-300.pt"
     curl -L -o /data/threat_detection/yolov5n.pt "https://downloads.staging.cachengo.com/models/yolov5n.pt"
+    curl -L -o /data/threat_detection/yolov5n_rknn_11-29-23.rknn "https://downloads.staging.cachengo.com/models/yolov5n_rknn_11-29-23.rknn"
   fi
 
   apt install python3-pip ffmpeg libsm6 libxext6 -y
@@ -33,6 +34,15 @@ function do_install {
   if [[ $platform == aarch64 ]]; then
     curl -L -o /data/threat_detection/grpcio-1.43.0-cp38-cp38-linux_aarch64.whl "https://downloads.staging.cachengo.com/models/grpcio-1.43.0-cp38-cp38-linux_aarch64.whl"
     python3 -m pip install /data/threat_detection/grpcio-1.43.0-cp38-cp38-linux_aarch64.whl
+    curl -L -o /data/threat_detection/rknn_toolkit_lite2-1.5.2-cp310-cp310-linux_aarch64.whl "https://downloads.staging.cachengo.com/models/rknn_toolkit_lite2-1.5.2-cp310-cp310-linux_aarch64.whl"
+    python3 -m pip install /data/threat_detection/rknn_toolkit_lite2-1.5.2-cp310-cp310-linux_aarch64.whl
+    curl -L -o /usr/lib/librknnrt.so "https://downloads.staging.cachengo.com/models/runtime/Linux/librknn_api/aarch64/librknnrt.so"
+    curl -L -o /usr/bin/restart_rknn.sh "https://downloads.staging.cachengo.com/models/runtime/Linux/rknn_server/aarch64/usr/bin/restart_rknn.sh"
+    chmod +x /usr/bin/restart_rknn.sh
+    curl -L -o /usr/bin/rknn_server "https://downloads.staging.cachengo.com/models/runtime/Linux/rknn_server/aarch64/usr/bin/rknn_server"
+    chmod +x /usr/bin/rknn_server
+    curl -L -o /usr/bin/start_rknn.sh "https://downloads.staging.cachengo.com/models/runtime/Linux/rknn_server/aarch64/usr/bin/start_rknn.sh"
+    chmod +x /usr/bin/start_rknn.sh
   fi
 
   /data/threat_detection/.venv/bin/python3 -m pip install -r /data/threat_detection/requirements.txt

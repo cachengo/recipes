@@ -6,7 +6,7 @@ os.environ['NUMPY_LOG_LEVEL'] = 'OFF'
 os.environ['OPENCV_FFMPEG_DEBUG'] = 'OFF'
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import numpy as np
-from bbox_utils import overlay_boxes
+from bbox_utils import overlay_boxes, scale_predictions
 from yolov5_utils import *
 import numpy as np
 import time
@@ -22,13 +22,32 @@ import uuid
 import math
 import torch
 
-import queue, threading, time, ffmpeg, argparse
+import queue, threading, time, ffmpeg, argparse, sys
+from itertools import *
+
+from rknnlite.api import RKNNLite
+import rknnlite
+
+from hide_warnings import hide_warnings
 
 # parser = argparse.ArgumentParser()
 # parser.add_argument('-v', '--validate')
 # parser.add_argument('-d','-discourse')
 # options = parser.parse_args()
 
+
+s3_access_key = None
+s3_secret_key = None
+s3_endpoint = None
+s3_region = None
+s3_bucket = None
+api_url = None
+api_access_key = None
+api_secret_key = None
+validation_url = None
+discourse_username = None
+discourse_topic_ip = None
+discourse_category = None
 
 caps = []
 q = []
@@ -126,9 +145,11 @@ with open('detections.conf') as f:
                 crop_list.append(crop_list2)
 
             cameras.append({"id":cam[0], "rtsp":cam[1], "conf":float(cam[2]), "max_percentage":float(cam[3]),"crops":crop_list})
-        else:
+        elif len(cam) > 3:
             cameras.append({"id":cam[0], "rtsp":cam[1], "conf":float(cam[2]), "max_percentage":float(cam[3]),"crops":[]})
 
+if len(cameras) == 0:
+    sys.exit("No cameras found in config.")
 s3config = S3Config(signature_version='s3v4')
 s3config.s3 = {'use_dualstack_endpoint': True}
 
@@ -185,7 +206,7 @@ def get_video_size(filename):
     height = int(video_info['height'])
     return width, height
 
-validation_url = 'http://validation.cachengo.com/api/auth/detections'
+#validation_url = 'http://validation.cachengo.com/api/auth/detections'
 
 detection_classes = ['Firearm']
 
@@ -290,7 +311,10 @@ def run_inference_for_video():
             total_inference_time=0
             frames = [cv.cvtColor(frame, cv.COLOR_BGR2RGB) for frame in frames]
 
-            results,num_detections = perform_inference_on_batch(cropped_frames,model)
+            if model_path[-4:] == "rknn":
+                results,num_detections = perform_inference_on_npu(cropped_frames,model)
+            else:
+                results,num_detections = perform_inference_on_batch(cropped_frames,model)            
             if num_detections > 0:
                 camera_list = []
                 for camera in cameras:
@@ -352,27 +376,28 @@ def run_inference_for_video():
                             my_table.add_row([n, detection_dict[n]])
 
                         print(my_table)
-                        if stream_up[i]:
-                            print("stream is up")
-                            now = time.time()
-                            if now-start_time[i] >= 5:
-                                print("Triggering alarm!")
-                                stream_up[i] = validation_request(overlay_image_orig,s3,s3_bucket,cameras[i],newId,url,score)
-                                start_time[i] = time.time()
+                        if api_url:
+                            if stream_up[i]:
+                                print("stream is up")
+                                now = time.time()
+                                if now-start_time[i] >= 5:
+                                    print("Triggering alarm!")
+                                    stream_up[i] = validation_request(overlay_image_orig,cameras[i],newId,score)
+                                    start_time[i] = time.time()
+                                else:
+                                    print(f"{now-start_time[i]} seconds have passed")
+                                    print("Waiting for 5 seconds to pass")
                             else:
-                                print(f"{now-start_time[i]} seconds have passed")
-                                print("Waiting for 5 seconds to pass")
-                        else:
-                            print("Triggerring alarm!")
-                            stream_up[i] = validation_request(overlay_image_orig,s3,s3_bucket,cameras[i],newId,url,score)
-                            start_time[i] = time.time()
+                                print("Triggerring alarm!")
+                                stream_up[i] = validation_request(overlay_image_orig,cameras[i],newId,score)
+                                start_time[i] = time.time()
 
 
         else:
             break
     print('Finished video')
 
-def validation_request(image,s3,s3_bucket,camera,id,url,score):
+def validation_request(image,camera,id,score):
 
     try:
         im = cv.imencode('.jpg', image)[1].tobytes()
@@ -386,9 +411,13 @@ def validation_request(image,s3,s3_bucket,camera,id,url,score):
             headers = {"detection-access-key": api_access_key, "detection-access-token": api_secret_key}
             res = requests.post(validation_url, json=j, headers=headers)
         elif discourse_username:
-            j = {'raw': camera['id']+" "+str(now)+"\n"+im, 'topic_id': discourse_topic_id, 'category': discourse_category}
+            save_file(s3, s3_bucket, f"{camera['id']}-image-{id}.jpg", im)
+            url = get_file(s3, s3_bucket, f"{camera['id']}-image-{id}.jpg")
+            now = time.time()
+            print("about to make request")
+            j = {'raw': camera['id']+" "+str(now)+"\n"+url, 'topic_id': discourse_topic_id, 'category': discourse_category}
             headers = {"Api-Key": api_access_key, "Api-Username": discourse_username}
-            res = requests.post(validation_url, json=j, headers=headers)
+            res = requests.post(api_url, json=j, headers=headers)
         else:
             save_file(s3, s3_bucket, f"{camera['id']}-image-{id}.jpg", im)
             url = get_file(s3, s3_bucket, f"{camera['id']}-image-{id}.jpg")
@@ -415,6 +444,268 @@ def perform_inference_on_batch(frames,model):
             preds.append(result)
     return preds,dets
 
+def rknn_preprocess(frame):
+    frame = cv2.resize(frame, (IMG_SIZE, IMG_SIZE))
+    frame = np.expand_dims(frame,0)
+    return frame
+
+@hide_warnings
+def perform_inference_on_npu(frames,model):
+    preds = []
+    dets = 0
+    for frame in frames:
+        frame_preds = []
+        # frame2 = cv2.resize(frame, (IMG_SIZE, IMG_SIZE))
+        # frame2 = np.expand_dims(frame2,0)
+        frame2 = rknn_preprocess(frame)
+
+        # Inference
+        outputs = model.inference(inputs=[frame2], data_format=['nhwc'])
+
+        # post process
+        input0_data = outputs[0]
+        input1_data = outputs[1]
+        input2_data = outputs[2]
+
+        input0_data = input0_data.reshape([3, -1]+list(input0_data.shape[-2:]))
+        input1_data = input1_data.reshape([3, -1]+list(input1_data.shape[-2:]))
+        input2_data = input2_data.reshape([3, -1]+list(input2_data.shape[-2:]))
+
+        input_data = list()
+        input_data.append(np.transpose(input0_data, (2, 3, 0, 1)))
+        input_data.append(np.transpose(input1_data, (2, 3, 0, 1)))
+        input_data.append(np.transpose(input2_data, (2, 3, 0, 1)))
+
+        boxes, classes, scores = yolov5_post_process(input_data,frame)
+
+        if boxes[0] is not None:
+            #print(len(boxes))
+            for i,box in enumerate(boxes[0]):
+                if scores[i] >= conf_thresh and classes[i] == 0:
+                    dets+=1
+                    box = list(box)
+                    box.append(scores[i])
+                    box.append(classes[i])
+                    frame_preds.append(box)
+        preds.append(torch.Tensor([frame_preds]))
+
+    return preds,dets
+
+def xywh2xyxy2(x):
+    # Convert [x, y, w, h] to [x1, y1, x2, y2]
+    y = np.copy(x)
+    y[:, 0] = x[:, 0] - x[:, 2] / 2  # top left x
+    y[:, 1] = x[:, 1] - x[:, 3] / 2  # top left y
+    y[:, 2] = x[:, 0] + x[:, 2] / 2  # bottom right x
+    y[:, 3] = x[:, 1] + x[:, 3] / 2  # bottom right y
+    return y
+
+def yolov5_post_process(input_data,orig_image):
+    masks = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
+    anchors = [[10, 13], [16, 30], [33, 23], [30, 61], [62, 45],
+               [59, 119], [116, 90], [156, 198], [373, 326]]
+
+    boxes, classes, scores = [], [], []
+    for input, mask in zip(input_data, masks):
+        b, c, s = process(input, mask, anchors)
+        b, c, s = filter_boxes(b, c, s)
+        boxes.append(b)
+        classes.append(c)
+        scores.append(s)
+
+    boxes = np.concatenate(boxes)
+    boxes = xywh2xyxy2(boxes)
+    classes = np.concatenate(classes)
+    scores = np.concatenate(scores)
+
+    nboxes, nclasses, nscores = [], [], []
+    for c in set(classes):
+        inds = np.where(classes == c)
+        b = boxes[inds]
+        c = classes[inds]
+        s = scores[inds]
+
+        keep = nms_boxes(b, s)
+
+        nboxes.append(b[keep])
+        nclasses.append(c[keep])
+        nscores.append(s[keep])
+
+    if not nclasses and not nscores:
+        return None, None, None
+
+    boxes = np.concatenate(nboxes)
+    classes = np.concatenate(nclasses)
+    scores = np.concatenate(nscores)
+
+    shape = orig_image.shape[:2]
+    new_shape=(IMG_SIZE,IMG_SIZE)
+    r = min(new_shape[0]/shape[0],new_shape[1]/shape[1])
+    ratio = r,r
+
+    stride=32
+    new_unpad = int((shape[1] * r)), int((shape[0] * r))
+    dw, dh = new_shape[1] - new_unpad[0], new_shape[0] - new_unpad[1]
+    dw /= 2
+    dh /= 2
+    pad = (dw,dh)
+    shapes = (orig_image.shape[0], orig_image.shape[1]), (ratio, pad)
+    
+    # print(shapes)
+    
+    boxes = scale_predictions([boxes],(IMG_SIZE,IMG_SIZE),shapes[0],shapes[1])
+
+    return boxes, classes, scores
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+#def filter_boxes(boxes, box_confidences, box_class_probs):
+#    """Filter boxes with box threshold. It's a bit different with origin yolov5 post process!
+#
+#    # Arguments
+#        boxes: ndarray, boxes of objects.
+#        box_confidences: ndarray, confidences of objects.
+#        box_class_probs: ndarray, class_probs of objects.
+#
+#    # Returns
+#        boxes: ndarray, filtered boxes.
+#        classes: ndarray, classes for boxes.
+#        scores: ndarray, scores for boxes.
+#    """
+#    box_classes = np.argmax(box_class_probs, axis=-1)
+#    box_class_scores = np.max(box_class_probs, axis=-1)
+#    pos = np.where(box_confidences[..., 0] >= BOX_THESH)
+#
+#    boxes = boxes[pos]
+#    classes = box_classes[pos]
+#    scores = box_class_scores[pos]
+#
+#    return boxes, classes, scores
+def filter_boxes(boxes, box_confidences, box_class_probs):
+    """Filter boxes with box threshold. It's a bit different with origin yolov5 post process!
+
+    # Arguments
+        boxes: ndarray, boxes of objects.
+        box_confidences: ndarray, confidences of objects.
+        box_class_probs: ndarray, class_probs of objects.
+
+    # Returns
+        boxes: ndarray, filtered boxes.
+        classes: ndarray, classes for boxes.
+        scores: ndarray, scores for boxes.
+    """
+    boxes = boxes.reshape(-1, 4)
+    box_confidences = box_confidences.reshape(-1)
+    box_class_probs = box_class_probs.reshape(-1, box_class_probs.shape[-1])
+
+    _box_pos = np.where(box_confidences >= OBJ_THRESH)
+    boxes = boxes[_box_pos]
+    box_confidences = box_confidences[_box_pos]
+    box_class_probs = box_class_probs[_box_pos]
+
+    class_max_score = np.max(box_class_probs, axis=-1)
+    classes = np.argmax(box_class_probs, axis=-1)
+    _class_pos = np.where(class_max_score >= OBJ_THRESH)
+
+    boxes = boxes[_class_pos]
+    classes = classes[_class_pos]
+    scores = (class_max_score* box_confidences)[_class_pos]
+
+    return boxes, classes, scores
+
+def nms_boxes(boxes, scores):
+    """Suppress non-maximal boxes.
+
+    # Arguments
+        boxes: ndarray, boxes of objects.
+        scores: ndarray, scores of objects.
+
+    # Returns
+        keep: ndarray, index of effective boxes.
+    """
+    x = boxes[:, 0]
+    y = boxes[:, 1]
+    w = boxes[:, 2] - boxes[:, 0]
+    h = boxes[:, 3] - boxes[:, 1]
+
+    areas = w * h
+    order = scores.argsort()[::-1]
+
+    keep = []
+    while order.size > 0:
+        i = order[0]
+        keep.append(i)
+
+        xx1 = np.maximum(x[i], x[order[1:]])
+        yy1 = np.maximum(y[i], y[order[1:]])
+        xx2 = np.minimum(x[i] + w[i], x[order[1:]] + w[order[1:]])
+        yy2 = np.minimum(y[i] + h[i], y[order[1:]] + h[order[1:]])
+
+        w1 = np.maximum(0.0, xx2 - xx1 + 0.00001)
+        h1 = np.maximum(0.0, yy2 - yy1 + 0.00001)
+        inter = w1 * h1
+
+        ovr = inter / (areas[i] + areas[order[1:]] - inter)
+        inds = np.where(ovr <= NMS_THRESH)[0]
+        order = order[inds + 1]
+    keep = np.array(keep)
+    return keep
+
+#def process(input, mask, anchors):
+
+ #   anchors = [anchors[i] for i in mask]
+ #   grid_h, grid_w = map(int, input.shape[0:2])
+
+ #   box_confidence = sigmoid(input[..., 4])
+ #   box_confidence = np.expand_dims(box_confidence, axis=-1)
+
+ #   box_class_probs = sigmoid(input[..., 5:])
+
+ #   box_xy = sigmoid(input[..., :2])*2 - 0.5
+
+ #   col = np.tile(np.arange(0, grid_w), grid_w).reshape(-1, grid_w)
+ #   row = np.tile(np.arange(0, grid_h).reshape(-1, 1), grid_h)
+ #   col = col.reshape(grid_h, grid_w, 1, 1).repeat(3, axis=-2)
+ #   row = row.reshape(grid_h, grid_w, 1, 1).repeat(3, axis=-2)
+ #   grid = np.concatenate((col, row), axis=-1)
+ #   box_xy += grid
+ #   box_xy *= int(IMG_SIZE/grid_h)
+
+ #   box_wh = pow(sigmoid(input[..., 2:4])*2, 2)
+ #   box_wh = box_wh * anchors
+
+ #   box = np.concatenate((box_xy, box_wh), axis=-1)
+
+ 
+#   return box, box_confidence, box_class_probs
+
+def process(input, mask, anchors):
+
+    anchors = [anchors[i] for i in mask]
+    grid_h, grid_w = map(int, input.shape[0:2])
+
+    box_confidence = input[..., 4]
+    box_confidence = np.expand_dims(box_confidence, axis=-1)
+
+    box_class_probs = input[..., 5:]
+
+    box_xy = input[..., :2]*2 - 0.5
+
+    col = np.tile(np.arange(0, grid_w), grid_w).reshape(-1, grid_w)
+    row = np.tile(np.arange(0, grid_h).reshape(-1, 1), grid_h)
+    col = col.reshape(grid_h, grid_w, 1, 1).repeat(3, axis=-2)
+    row = row.reshape(grid_h, grid_w, 1, 1).repeat(3, axis=-2)
+    grid = np.concatenate((col, row), axis=-1)
+    box_xy += grid
+    box_xy *= int(IMG_SIZE/grid_h)
+
+    box_wh = pow(input[..., 2:4]*2, 2)
+    box_wh = box_wh * anchors
+
+    box = np.concatenate((box_xy, box_wh), axis=-1)
+
+    return box, box_confidence, box_class_probs
 
 def filter(predictions,frame,camera):
     filtered_predictions = []
@@ -529,13 +820,29 @@ def filter(predictions,frame,camera):
 image_size=640
 conf_thresh=min([c['conf'] for c in cameras])
 iou_thresh=0.6
-#model = torch.hub.load('ultralytics/yolov5', 'custom', path=model_path)
-model = torch.hub.load('./ultralytics/yolov5', 'custom', path=model_path, source="local")
-model.conf = conf_thresh
-model.iou=iou_thresh
-model.classes = [80]
 
-people_model = torch.hub.load('./ultralytics/yolov5', 'custom', path='yolov5n.pt', source="local")
+BOX_THESH = 0.5
+NMS_THRESH = 0.6
+IMG_SIZE = 640
+OBJ_THRESH = 0.25
+# NMS_THRESH = 0.45
+
+if model_path[-4:] == "rknn":
+    model = RKNNLite(verbose=False) # successful
+    ret = model.load_rknn(model_path) # successful
+    #if model != 0:
+    #    print('Load RKNN model failed')
+    #    exit(model)
+    ret = model.init_runtime(core_mask=RKNNLite.NPU_CORE_0)
+    #  ret = model.init_runtime()
+else:
+
+    model = torch.hub.load('./ultralytics/yolov5', 'custom', path=model_path, source="local")
+    model.conf = conf_thresh
+    model.iou=iou_thresh
+    model.classes = [80]
+
+people_model = torch.hub.load('./ultralytics/yolov5', 'custom', path='./models/yolov5n.pt', source="local")
 people_model.conf = 0.4
 people_model.iou = iou_thresh
 people_model.classes = [0]
