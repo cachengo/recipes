@@ -23,7 +23,7 @@ function do_install {
     curl -L -o /data/threat_detection/yolov5n_rknn_11-29-23.rknn "https://downloads.staging.cachengo.com/models/yolov5n_rknn_11-29-23.rknn"
   fi
 
-  apt install python3-pip ffmpeg libsm6 libxext6 -y
+  apt install python3-pip python3.10-venv ffmpeg libsm6 libxext6 -y
   apt install build-essential python3-dev git -y
   python3 -m venv /data/threat_detection/.venv
  
@@ -32,10 +32,10 @@ function do_install {
   fi
 
   if [[ $platform == aarch64 ]]; then
-    curl -L -o /data/threat_detection/grpcio-1.43.0-cp38-cp38-linux_aarch64.whl "https://downloads.staging.cachengo.com/models/grpcio-1.43.0-cp38-cp38-linux_aarch64.whl"
-    python3 -m pip install /data/threat_detection/grpcio-1.43.0-cp38-cp38-linux_aarch64.whl
+    # curl -L -o /data/threat_detection/grpcio-1.43.0-cp38-cp38-linux_aarch64.whl "https://downloads.staging.cachengo.com/models/grpcio-1.43.0-cp38-cp38-linux_aarch64.whl"
+    # python3 -m pip install /data/threat_detection/grpcio-1.43.0-cp38-cp38-linux_aarch64.whl
     curl -L -o /data/threat_detection/rknn_toolkit_lite2-1.5.2-cp310-cp310-linux_aarch64.whl "https://downloads.staging.cachengo.com/models/rknn_toolkit_lite2-1.5.2-cp310-cp310-linux_aarch64.whl"
-    python3 -m pip install /data/threat_detection/rknn_toolkit_lite2-1.5.2-cp310-cp310-linux_aarch64.whl
+    /data/threat_detection/.venv/bin/python -m pip install /data/threat_detection/rknn_toolkit_lite2-1.5.2-cp310-cp310-linux_aarch64.whl
     curl -L -o /usr/lib/librknnrt.so "https://downloads.staging.cachengo.com/models/runtime/Linux/librknn_api/aarch64/librknnrt.so"
     curl -L -o /usr/bin/restart_rknn.sh "https://downloads.staging.cachengo.com/models/runtime/Linux/rknn_server/aarch64/usr/bin/restart_rknn.sh"
     chmod +x /usr/bin/restart_rknn.sh
@@ -45,7 +45,7 @@ function do_install {
     chmod +x /usr/bin/start_rknn.sh
   fi
 
-  /data/threat_detection/.venv/bin/python3 -m pip install -r /data/threat_detection/requirements.txt
+  /data/threat_detection/.venv/bin/python -m pip install -r /data/threat_detection/requirements.txt
   mkdir -p /data/threat_detection/ultralytics
   git clone https://github.com/ultralytics/yolov5.git /data/threat_detection/ultralytics/yolov5
 

@@ -478,7 +478,7 @@ def perform_inference_on_npu(frames,model):
 
         boxes, classes, scores = yolov5_post_process(input_data,frame)
 
-        if boxes[0] is not None:
+        if boxes is not None and boxes[0] is not None:
             #print(len(boxes))
             for i,box in enumerate(boxes[0]):
                 if scores[i] >= conf_thresh and classes[i] == 0:
