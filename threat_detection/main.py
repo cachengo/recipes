@@ -104,7 +104,7 @@ def get_next_frame(proc,width,height):
 
 cameras = []
 
-with open('detections.conf') as f:
+with open('reporting.conf') as f:
     lines = f.readlines()
     for line in lines:
         cam = line.split()
@@ -134,6 +134,11 @@ with open('detections.conf') as f:
                 discourse_topic_id = new_line[1]
             if new_line[0] == "DISCOURSE_CATEGORY":
                 discourse_category = new_line[1]
+
+with open('detections.conf') as f:
+    lines = f.readlines()
+    for line in lines:
+        cam = line.split()
         if len(cam) > 4:
             crop_list = []
             num_crops = int(cam[4])

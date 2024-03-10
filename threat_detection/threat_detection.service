@@ -2,11 +2,11 @@
 Description=GunDetection
 [Service]
 WorkingDirectory=/data/threat_detection                       
-Environment=MODEL=yolov5n_rknn_11-29-23.rknn
+Environment=MODEL=yolov5n_rknn_03-05-24.rknn
 ExecStart=/data/threat_detection/.venv/bin/python -u /data/threat_detection/main.py
 Restart=always
 StartLimitBurst=0
-MemoryLimit=2G
+MemoryLimit=12G
 TimeoutSec=5
 [Install]
 WantedBy=multi-user.target

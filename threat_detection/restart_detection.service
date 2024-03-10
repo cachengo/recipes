@@ -1,0 +1,17 @@
+#!/bin/bash
+
+while :
+do
+sudo systemctl restart threat_detection
+sleep 10m
+done
+root@brad-TensorBook-2022:/home/brad/Cachengo/frost-science/bento# cat restart_detection.service 
+[Unit]
+Description=GunDetection
+[Service]
+ExecStart=/usr/bin/restart_detection.sh
+Restart=always
+StartLimitBurst=0
+MemoryLimit=500M
+[Install]
+WantedBy=multi-user.target

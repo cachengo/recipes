@@ -15,6 +15,9 @@
       "threat_detection/threat_detection.service",
       "threat_detection/detections.conf",
       "threat_detection/create_config.py",
-      "threat_detection/fonts/Roboto-Medium.ttf"
+      "threat_detection/fonts/Roboto-Medium.ttf",
+      "threat_detection/restart_detection.sh",
+      "threat_detection/restart_detection.service",
+      "threat_detection/reporting.conf"
     ]
   }

@@ -13,6 +13,10 @@ function do_install {
   cp threat_detection/requirements.txt /data/threat_detection/
   cp threat_detection/detections.conf /data/threat_detection/
   cp threat_detection/threat_detection.service /lib/systemd/system/
+  cp threat_detection/restart_detection.service /lib/systemd/system/
+  cp threat_detection/restart_detection.sh /usr/bin/
+  chmod +x /usr/bin/restart_detection.sh
+  
   mkdir -p /data/threat_detection/fonts
   cp threat_detection/fonts/Roboto-Medium.ttf /data/threat_detection/fonts/Roboto-Medium.ttf
   
@@ -20,7 +24,7 @@ function do_install {
   if [ ! -f /data/threat_detection/yolov5n_rknn_11-29-23.rknn ]; then
     curl -L -o /data/threat_detection/yolov5n_03-26-23-300.pt "https://downloads.staging.cachengo.com/models/yolov5n_03-26-23-300.pt"
     curl -L -o /data/threat_detection/yolov5n.pt "https://downloads.staging.cachengo.com/models/yolov5n.pt"
-    curl -L -o /data/threat_detection/yolov5n_rknn_11-29-23.rknn "https://downloads.staging.cachengo.com/models/yolov5n_rknn_11-29-23.rknn"
+    curl -L -o /data/threat_detection/yolov5n_rknn_03-05-24.rknn https://downloads.staging.cachengo.com/models/yolov5n_rknn_03-05-24/yolov5n_rknn_03-05-24.rknn
   fi
 
   apt install python3-pip python3.10-venv ffmpeg libsm6 libxext6 -y
