@@ -76,8 +76,9 @@ def reader():
   while True:
     for i,cap in enumerate(caps):
       frame = get_next_frame(cap,dims[i][0],dims[i][1])
-      if frame is None:
-        break
+  #    if frame is None:
+      #  break
+ #       print("No frame found")
       if not q[i].empty():
         try:
           q[i].get_nowait()   # discard previous (unprocessed) frame
@@ -88,10 +89,11 @@ def reader():
 def read():
   frames = []
   for ret in q:
-    try:
-      frames.append(ret.get(False))
-    except queue.Empty:
-      frames.append(None)
+  #  try:
+    frames.append(ret.get())
+  #  except queue.Empty:
+  #    print("Frame not found")
+  #    frames.append(None)
   return frames
 
 def get_next_frame(proc,width,height):
@@ -208,11 +210,15 @@ def get_file(s3, s3_bucket, filename):
 #     config=s3config
 # )
 def get_video_size(filename):
-    probe = ffmpeg.probe(filename)
-    video_info = next(s for s in probe['streams'] if s['codec_type'] == 'video')
-    width = int(video_info['width'])
-    height = int(video_info['height'])
-    return width, height
+    try:
+      probe = ffmpeg.probe(filename)
+      video_info = next(s for s in probe['streams'] if s['codec_type'] == 'video')
+      width = int(video_info['width'])
+      height = int(video_info['height'])
+      return width, height
+    except:
+      print("Couldn't probe stream")
+      return 0,0
 
 #validation_url = 'http://validation.cachengo.com/api/auth/detections'
 
@@ -318,6 +324,7 @@ def run_inference_for_video():
     time.sleep(5)
     while True:
         frames = read()
+#        print(frames)
         cropped_frames = crop_frames(frames,cameras)
         if len(frames) >= 1:
             t_start_inference = time.time()
