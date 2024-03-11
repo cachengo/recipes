@@ -25,6 +25,7 @@ function do_install {
     curl -L -o /data/threat_detection/yolov5n_03-26-23-300.pt "https://downloads.staging.cachengo.com/models/yolov5n_03-26-23-300.pt"
     curl -L -o /data/threat_detection/yolov5n.pt "https://downloads.staging.cachengo.com/models/yolov5n.pt"
     curl -L -o /data/threat_detection/yolov5n_rknn_03-05-24.rknn https://downloads.staging.cachengo.com/models/yolov5n_rknn_03-05-24/yolov5n_rknn_03-05-24.rknn
+    curl -L -o /data/threat_detection/yolov5s-640-640.rknn https://downloads.staging.cachengo.com/models/yolov5s-640-640.rknn
   fi
 
   apt install python3-pip python3.10-venv ffmpeg libsm6 libxext6 -y

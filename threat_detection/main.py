@@ -87,8 +87,11 @@ def reader():
 
 def read():
   frames = []
-  for queue in q:
-    frames.append(queue.get())
+  for ret in q:
+    try:
+      frames.append(ret.get(False))
+    except queue.Empty:
+      frames.append(None)
   return frames
 
 def get_next_frame(proc,width,height):
@@ -221,9 +224,13 @@ def crop_frames(frames,cameras):
         if len(cam['crops']) == 0:
             new_frames.append(frames[i])
         else:
-            h = frames[i].shape[0]
-            w = frames[i].shape[1]
+            if frames[i] is not None:
+              h = frames[i].shape[0]
+              w = frames[i].shape[1]
             for crop in cam['crops']:
+                if frames[i] is None:
+                  new_frames.append(frames[i])
+                  continue
                 new_frames.append(frames[i][round(h*crop[0]):round(h*crop[1]),round(w*crop[2]):round(w*crop[3])])
     return new_frames
 
@@ -308,18 +315,22 @@ def run_inference_for_video():
     start_cams(cameras)
     stream_up = [False for rtsp in cameras]
     start_time = [None for rtsp in cameras]
+    time.sleep(5)
     while True:
         frames = read()
         cropped_frames = crop_frames(frames,cameras)
         if len(frames) >= 1:
             t_start_inference = time.time()
             total_inference_time=0
-            frames = [cv.cvtColor(frame, cv.COLOR_BGR2RGB) for frame in frames]
+            #frames = [cv.cvtColor(frame, cv.COLOR_BGR2RGB) for frame in frames]
+            for i,frame in enumerate(frames):
+              if frame is not None:
+                frames[i] = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
 
             if model_path[-4:] == "rknn":
                 results,num_detections = perform_inference_on_npu(cropped_frames,model)
             else:
-                results,num_detections = perform_inference_on_batch(cropped_frames,model)            
+                results,num_detections = perform_inference_on_batch(cropped_frames,model)
             if num_detections > 0:
                 camera_list = []
                 for camera in cameras:
@@ -335,11 +346,12 @@ def run_inference_for_video():
                 if num_detections > 0:
                     results = combine_results(results,cameras,frames)
 
-            total_inference_time += time.time() - t_start_inference
-            print("Inference took: "+str(total_inference_time) + "s")
-            print("Results: "+ str(results))
+                total_inference_time += time.time() - t_start_inference
+                print("Inference took: "+str(total_inference_time) + "s")
+                print("Results: "+ str(results))
 
             if num_detections > 0:
+                #print("Results: "+ str(results))
                 now = datetime.now()
                 dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
                 for i,result in enumerate(results):
@@ -460,38 +472,39 @@ def perform_inference_on_npu(frames,model):
     dets = 0
     for frame in frames:
         frame_preds = []
+        if frame is not None:
         # frame2 = cv2.resize(frame, (IMG_SIZE, IMG_SIZE))
         # frame2 = np.expand_dims(frame2,0)
-        frame2 = rknn_preprocess(frame)
+            frame2 = rknn_preprocess(frame)
 
         # Inference
-        outputs = model.inference(inputs=[frame2], data_format=['nhwc'])
+            outputs = model.inference(inputs=[frame2], data_format=['nhwc'])
 
         # post process
-        input0_data = outputs[0]
-        input1_data = outputs[1]
-        input2_data = outputs[2]
+            input0_data = outputs[0]
+            input1_data = outputs[1]
+            input2_data = outputs[2]
 
-        input0_data = input0_data.reshape([3, -1]+list(input0_data.shape[-2:]))
-        input1_data = input1_data.reshape([3, -1]+list(input1_data.shape[-2:]))
-        input2_data = input2_data.reshape([3, -1]+list(input2_data.shape[-2:]))
+            input0_data = input0_data.reshape([3, -1]+list(input0_data.shape[-2:]))
+            input1_data = input1_data.reshape([3, -1]+list(input1_data.shape[-2:]))
+            input2_data = input2_data.reshape([3, -1]+list(input2_data.shape[-2:]))
 
-        input_data = list()
-        input_data.append(np.transpose(input0_data, (2, 3, 0, 1)))
-        input_data.append(np.transpose(input1_data, (2, 3, 0, 1)))
-        input_data.append(np.transpose(input2_data, (2, 3, 0, 1)))
+            input_data = list()
+            input_data.append(np.transpose(input0_data, (2, 3, 0, 1)))
+            input_data.append(np.transpose(input1_data, (2, 3, 0, 1)))
+            input_data.append(np.transpose(input2_data, (2, 3, 0, 1)))
 
-        boxes, classes, scores = yolov5_post_process(input_data,frame)
+            boxes, classes, scores = yolov5_post_process(input_data,frame)
 
-        if boxes is not None and boxes[0] is not None:
+            if boxes is not None and boxes[0] is not None:
             #print(len(boxes))
-            for i,box in enumerate(boxes[0]):
-                if scores[i] >= conf_thresh and classes[i] == 0:
-                    dets+=1
-                    box = list(box)
-                    box.append(scores[i])
-                    box.append(classes[i])
-                    frame_preds.append(box)
+                for i,box in enumerate(boxes[0]):
+                    if scores[i] >= conf_thresh and classes[i] == 0:
+                        dets+=1
+                        box = list(box)
+                        box.append(scores[i])
+                        box.append(classes[i])
+                        frame_preds.append(box)
         preds.append(torch.Tensor([frame_preds]))
 
     return preds,dets
@@ -717,9 +730,10 @@ def filter(predictions,frame,camera):
     intersecting_preds = []
     final_preds = []
     scores = []
-    image_width = frame.shape[1]
-    image_height = frame.shape[0]
-    image_area = image_width*image_height
+    if frame is not None:
+      image_width = frame.shape[1]
+      image_height = frame.shape[0]
+      image_area = image_width*image_height
     for detected_object in predictions:
         for i in range(detected_object.shape[0]):
             score = math.floor(100*float(detected_object[i][-2]))/100
@@ -734,13 +748,17 @@ def filter(predictions,frame,camera):
                 area = width*height
                 ratio = area/image_area
     #            if height < width and ratio < max_percentage and ratio != 0.0:
-                if ratio < camera['max_percentage'] and ratio != 0.0:
+         #       if ratio < camera['max_percentage'] and ratio != 0.0:
+                if ratio < 0.1 and ratio != 0.0:
+
                     detected_object = detected_object.tolist()
                     filtered_predictions.append(detected_object[i])
                     scores.append(score)
                     detected_object = torch.Tensor(detected_object)
+#        return torch.Tensor(filtered_predictions),len(filtered_predictions)
+ 
         if len(filtered_predictions):
-            people_results,num_detections = perform_inference_on_batch([frame],people_model)
+            people_results,num_detections = perform_inference_on_npu([frame],people_model)
             print(str(len(people_results[0][0]))+" people found")
             for res in people_results[0]:
                 res = res.tolist()
@@ -775,7 +793,7 @@ def filter(predictions,frame,camera):
     for pred in intersecting_preds:
         height = pred[3]-pred[1]
         width = pred[2]-pred[0]
-        print(pred)
+        #print(pred)
         percent_diff_top = height*.50
         percent_diff_left = width*.50
         x1 = pred[0] - percent_diff_left
@@ -826,10 +844,10 @@ image_size=640
 conf_thresh=min([c['conf'] for c in cameras])
 iou_thresh=0.6
 
-BOX_THESH = 0.5
+#BOX_THRESH = 0.5
 NMS_THRESH = 0.6
 IMG_SIZE = 640
-OBJ_THRESH = 0.25
+OBJ_THRESH = 0.4
 # NMS_THRESH = 0.45
 
 if model_path[-4:] == "rknn":
@@ -840,6 +858,13 @@ if model_path[-4:] == "rknn":
     #    exit(model)
     ret = model.init_runtime(core_mask=RKNNLite.NPU_CORE_0)
     #  ret = model.init_runtime()
+    people_model = RKNNLite(verbose=False)
+    p_ret = people_model.load_rknn("./yolov5s-640-640.rknn")
+    p_ret = people_model.init_runtime(core_mask=RKNNLite.NPU_CORE_0)
+#    gun_frame = cv2.imread("./people.jpg")
+#    _,num_detections = perform_inference_on_npu([gun_frame],people_model)
+#    print(str(num_detections) + " guns")
+#    input("Continue?")
 else:
 
     model = torch.hub.load('./ultralytics/yolov5', 'custom', path=model_path, source="local")
@@ -847,10 +872,10 @@ else:
     model.iou=iou_thresh
     model.classes = [80]
 
-people_model = torch.hub.load('./ultralytics/yolov5', 'custom', path='./models/yolov5n.pt', source="local")
-people_model.conf = 0.4
-people_model.iou = iou_thresh
-people_model.classes = [0]
+    people_model = torch.hub.load('./ultralytics/yolov5', 'custom', path='./models/yolov5n.pt', source="local")
+    people_model.conf = 0.4
+    people_model.iou = iou_thresh
+    people_model.classes = [0]
 
 while True:
     dims = [get_video_size(camera['rtsp']) for camera in cameras]
