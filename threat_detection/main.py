@@ -793,7 +793,7 @@ def filter(predictions,frame,camera):
             y2 = frame.shape[0]
 
         crop_frame = frame[round(y1):round(y2),round(x1):round(x2)]
-        results,num_detections = perform_inference_on_batch(crop_frame,model)
+        results,num_detections = perform_inference_on_npu([crop_frame],model)
 
         if num_detections > 0:
             for object in intersecting_preds:
