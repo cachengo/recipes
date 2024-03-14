@@ -1,0 +1,15 @@
+{
+    "validation_url":"",
+    "api_url":"",
+    "api_access_key":"",
+    "api_secret_key":"",
+    "s3_url":"",
+    "s3_access_key":"",
+    "s3_secret_key":"",
+    "s3_bucket":"",
+    "s3_region":"",
+    "discourse_username":"",
+    "discourse_topic_id":"",
+    "discourse_category":"",
+    "cameras":[]
+}

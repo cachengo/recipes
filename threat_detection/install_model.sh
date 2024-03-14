@@ -11,7 +11,19 @@ function do_install {
   mkdir -p /data/threat_detection
   cp threat_detection/*.py /data/threat_detection/
   cp threat_detection/requirements.txt /data/threat_detection/
-  cp threat_detection/detections.conf /data/threat_detection/
+  cp threat_detection/config.json /data/threat_detection/
+  
+  if [ "$LEGACY" = true ] 
+  then
+    sed -i 's/#model#/yolov5n_03-26-23-300.pt/'
+    curl -L -o /data/threat_detection/yolov5n_03-26-23-300.pt "https://downloads.staging.cachengo.com/models/yolov5n_03-26-23-300.pt"
+    curl -L -o /data/threat_detection/yolov5n.pt "https://downloads.staging.cachengo.com/models/yolov5n.pt"
+  else  
+    sed -i 's/#model#/yolov5n_rknn_03-05-24.rknn/'  
+    curl -L -o /data/threat_detection/yolov5n_rknn_03-05-24.rknn https://downloads.staging.cachengo.com/models/yolov5n_rknn_03-05-24/yolov5n_rknn_03-05-24.rknn
+    curl -L -o /data/threat_detection/yolov5s-640-640.rknn https://downloads.staging.cachengo.com/models/yolov5s-640-640.rknn
+  fi
+  
   cp threat_detection/threat_detection.service /lib/systemd/system/
   cp threat_detection/restart_detection.service /lib/systemd/system/
   cp threat_detection/restart_detection.sh /usr/bin/
@@ -21,12 +33,6 @@ function do_install {
   cp threat_detection/fonts/Roboto-Medium.ttf /data/threat_detection/fonts/Roboto-Medium.ttf
   
   systemctl daemon-reload
-  if [ ! -f /data/threat_detection/yolov5n_rknn_11-29-23.rknn ]; then
-    curl -L -o /data/threat_detection/yolov5n_03-26-23-300.pt "https://downloads.staging.cachengo.com/models/yolov5n_03-26-23-300.pt"
-    curl -L -o /data/threat_detection/yolov5n.pt "https://downloads.staging.cachengo.com/models/yolov5n.pt"
-    curl -L -o /data/threat_detection/yolov5n_rknn_03-05-24.rknn https://downloads.staging.cachengo.com/models/yolov5n_rknn_03-05-24/yolov5n_rknn_03-05-24.rknn
-    curl -L -o /data/threat_detection/yolov5s-640-640.rknn https://downloads.staging.cachengo.com/models/yolov5s-640-640.rknn
-  fi
 
   apt install python3-pip python3.10-venv ffmpeg libsm6 libxext6 -y
   apt install build-essential python3-dev git -y
@@ -36,9 +42,11 @@ function do_install {
     /data/threat_detection/.venv/bin/python3 -m pip install grpcio==1.43.0
   fi
 
-  if [[ $platform == aarch64 ]]; then
-    # curl -L -o /data/threat_detection/grpcio-1.43.0-cp38-cp38-linux_aarch64.whl "https://downloads.staging.cachengo.com/models/grpcio-1.43.0-cp38-cp38-linux_aarch64.whl"
-    # python3 -m pip install /data/threat_detection/grpcio-1.43.0-cp38-cp38-linux_aarch64.whl
+  if [ "$LEGACY" = true ] 
+  then
+    curl -L -o /data/threat_detection/grpcio-1.43.0-cp38-cp38-linux_aarch64.whl "https://downloads.staging.cachengo.com/models/grpcio-1.43.0-cp38-cp38-linux_aarch64.whl"
+    python3 -m pip install /data/threat_detection/grpcio-1.43.0-cp38-cp38-linux_aarch64.whl
+  else  
     curl -L -o /data/threat_detection/rknn_toolkit_lite2-1.5.2-cp310-cp310-linux_aarch64.whl "https://downloads.staging.cachengo.com/models/rknn_toolkit_lite2-1.5.2-cp310-cp310-linux_aarch64.whl"
     /data/threat_detection/.venv/bin/python -m pip install /data/threat_detection/rknn_toolkit_lite2-1.5.2-cp310-cp310-linux_aarch64.whl
     curl -L -o /usr/lib/librknnrt.so "https://downloads.staging.cachengo.com/models/runtime/Linux/librknn_api/aarch64/librknnrt.so"
@@ -49,6 +57,11 @@ function do_install {
     curl -L -o /usr/bin/start_rknn.sh "https://downloads.staging.cachengo.com/models/runtime/Linux/rknn_server/aarch64/usr/bin/start_rknn.sh"
     chmod +x /usr/bin/start_rknn.sh
   fi
+
+  # if [[ $platform == aarch64 ]]; then
+    
+    
+  # fi
 
   /data/threat_detection/.venv/bin/python -m pip install -r /data/threat_detection/requirements.txt
   mkdir -p /data/threat_detection/ultralytics

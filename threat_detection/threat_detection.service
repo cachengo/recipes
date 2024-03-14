@@ -2,7 +2,7 @@
 Description=GunDetection
 [Service]
 WorkingDirectory=/data/threat_detection                       
-Environment=MODEL=yolov5n_rknn_03-05-24.rknn
+Environment=MODEL=#model#
 ExecStart=/data/threat_detection/.venv/bin/python -u /data/threat_detection/main.py
 Restart=always
 StartLimitBurst=0

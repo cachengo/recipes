@@ -30,12 +30,6 @@ import rknnlite
 
 from hide_warnings import hide_warnings
 
-# parser = argparse.ArgumentParser()
-# parser.add_argument('-v', '--validate')
-# parser.add_argument('-d','-discourse')
-# options = parser.parse_args()
-
-
 s3_access_key = None
 s3_secret_key = None
 s3_endpoint = None
@@ -46,8 +40,64 @@ api_access_key = None
 api_secret_key = None
 validation_url = None
 discourse_username = None
-discourse_topic_ip = None
+discourse_topic_id = None
 discourse_category = None
+location = None
+
+config = json.load(open("config.json", 'r', encoding='utf-8'))
+
+if config['validation_url'] != "" and not config['validation_url'].isspace():
+    validation_url = config['validation_url']
+if config['api_url'] != "" and not config['api_url'].isspace():
+    api_url = config['api_url']
+    api_access_key = config['api_access_key']
+    api_secret_key = config['api_secret_key']
+    s3_endpoint = config['s3_url']
+    s3_access_key = config['s3_access_key']
+    s3_secret_key = config['s3_secret_key']
+    s3_bucket = config['s3_bucket']
+    s3_region = config['s3_region']
+if config['discourse_username'] != "" and not config['discourse_username'].isspace():
+    discourse_username = config['discourse_username']
+    discourse_topic_id = config['discourse_topic_id']
+    discourse_category = config['discourse_category']
+
+cameras = config["cameras"]
+
+if len(cameras) == 0:
+    sys.exit("No cameras found in config.")
+s3config = S3Config(signature_version='s3v4')
+s3config.s3 = {'use_dualstack_endpoint': True}
+
+model_path = os.environ['MODEL']
+
+if s3_endpoint:
+    s3 = boto3.client(
+        's3',
+        region_name=s3_region,
+        aws_access_key_id=s3_access_key,
+        aws_secret_access_key=s3_secret_key,
+        endpoint_url=s3_endpoint,
+        config=s3config
+    )
+
+def save_file(s3, s3_bucket,filename, data):
+    s3.put_object(
+        Body=data,
+        Bucket=s3_bucket,
+        Key=filename
+    )
+
+def get_file(s3, s3_bucket, filename):
+    url = s3.generate_presigned_url(
+        'get_object',
+        Params={
+            'Bucket': s3_bucket,
+            'Key': filename
+        },
+        ExpiresIn=604800,
+    )
+    return url
 
 caps = []
 q = []
@@ -107,108 +157,6 @@ def get_next_frame(proc,width,height):
     )
     return in_frame
 
-cameras = []
-
-with open('reporting.conf') as f:
-    lines = f.readlines()
-    for line in lines:
-        cam = line.split()
-        if len(cam) == 1:
-            new_line = cam[0].split("=")
-            if new_line[0] == "VALIDATION_URL":
-                validation_url = new_line[1]
-            if new_line[0] == "API_URL":
-                api_url = new_line[1]
-            if new_line[0] == "API_ACCESS_KEY":
-                api_access_key = new_line[1]
-            if new_line[0] == "API_SECRET_KEY":
-                api_secret_key = new_line[1]
-            if new_line[0] == "S3_URL":
-                s3_endpoint = new_line[1]
-            if new_line[0] == "S3_ACCESS_KEY":
-                s3_access_key = new_line[1]
-            if new_line[0] == "S3_SECRET_KEY":
-                s3_secret_key = new_line[1]
-            if new_line[0] == "S3_BUCKET":
-                s3_bucket = new_line[1]
-            if new_line[0] == "S3_REGION":
-                s3_region = new_line[1]
-            if new_line[0] == "DISCOURSE_USERNAME":
-                discourse_username = new_line[1]
-            if new_line[0] == "DISCOURSE_TOPIC_ID":
-                discourse_topic_id = new_line[1]
-            if new_line[0] == "DISCOURSE_CATEGORY":
-                discourse_category = new_line[1]
-
-with open('detections.conf') as f:
-    lines = f.readlines()
-    for line in lines:
-        cam = line.split()
-        if len(cam) > 4:
-            crop_list = []
-            num_crops = int(cam[4])
-            crops = cam[5].split(',')
-            for i in range(num_crops):
-                crop_list2 = []
-                for n in range(4):
-                    crop_list2.append(float(crops.pop(0)))
-                crop_list.append(crop_list2)
-
-            cameras.append({"id":cam[0], "rtsp":cam[1], "conf":float(cam[2]), "max_percentage":float(cam[3]),"crops":crop_list})
-        elif len(cam) > 3:
-            cameras.append({"id":cam[0], "rtsp":cam[1], "conf":float(cam[2]), "max_percentage":float(cam[3]),"crops":[]})
-
-if len(cameras) == 0:
-    sys.exit("No cameras found in config.")
-s3config = S3Config(signature_version='s3v4')
-s3config.s3 = {'use_dualstack_endpoint': True}
-
-# s3_access_key = os.environ['S3_ACCESS_KEY']
-# s3_secret_key = os.environ['S3_SECRET_KEY']
-# s3_endpoint = os.environ['S3_ENDPOINT']
-# s3_region = os.environ['S3_REGION']
-# s3_bucket = os.environ['S3_BUCKET']
-model_path = os.environ['MODEL']
-# api_url = os.environ['BEMOTION_URL']
-# api_access_key = "asd@#$fdsf4yh*^%^3gfds2dgdfH%3DfSDvqrt2tg099sdjfsdds_dg_dK_EMN_DETECTION"
-# api_secret_key = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImVtbkBlbW4uY29tIiwibmFtZSI6IkFobWFkIE1hdGthcmkiLCJ1c2VySWQiOjk5OTk5OTk5OTk5LCJub3ciOiIyMDIzLTAxLTAxVDA5OjMwOjMyKzAyOjAwIiwiaXNEZXRlY3Rpb24iOnRydWUsImxhbmd1YWdlSWQiOjF9.l7DgI2sMccAn1CsPhHBcS9ts09SCoBYj92z1CTLZtZk"
-
-if s3_endpoint:
-    s3 = boto3.client(
-        's3',
-        region_name=s3_region,
-        aws_access_key_id=s3_access_key,
-        aws_secret_access_key=s3_secret_key,
-        endpoint_url=s3_endpoint,
-        config=s3config
-    )
-
-def save_file(s3, s3_bucket,filename, data):
-    s3.put_object(
-        Body=data,
-        Bucket=s3_bucket,
-        Key=filename
-    )
-
-def get_file(s3, s3_bucket, filename):
-    url = s3.generate_presigned_url(
-        'get_object',
-        Params={
-            'Bucket': s3_bucket,
-            'Key': filename
-        },
-        ExpiresIn=604800,
-    )
-    return url
-
-# s3_ampere = boto3.client(
-#     's3',
-#     # #region_name=s3_region,
-#     aws_access_key_id="cachengo",
-#     aws_secret_access_key="cachengo",
-#     endpoint_url="http://35.130.101.197:9000",
-#     config=s3config
-# )
 def get_video_size(filename):
     try:
       probe = ffmpeg.probe(filename)
@@ -219,8 +167,6 @@ def get_video_size(filename):
     except:
       print("Couldn't probe stream")
       return 0,0
-
-#validation_url = 'http://validation.cachengo.com/api/auth/detections'
 
 detection_classes = ['Firearm']
 
@@ -249,7 +195,6 @@ def combine_results(results,cameras,frames):
             temp_results = []
             for crop in cam['crops']:
                 result = results.pop(0)
-                #if len(result[0]) > 0:
                 if len(result) > 0:
                     h = frames[i].shape[0]
                     w = frames[i].shape[1]
@@ -257,7 +202,6 @@ def combine_results(results,cameras,frames):
                     top = round(h*crop[0])
                     bottom = round(h-(h*crop[1]))
                     left = round(w*crop[2])
-                #right = round(w-(w*.7))
                     right = round(w-(w*crop[3]))
 
                     result = resize_label(result,top,bottom,left,right,frames[i].shape)
@@ -281,55 +225,21 @@ def resize_label(results, top, bottom, left, right, bg_size):
      y = y+top
      class_num = results[best_score][5]
      score = results[best_score][4]
-     #x = int(x * resize)
-     #y = int(y * resize)
-     #dx = int(dx * resize)
-     #dy = int(dy * resize)
-     #x += x_loc
-     #y += y_loc
-    #  label = "0 {} {} {} {}".format((x+dx/2)/bg_size[1], (y+dy/2)/bg_size[0], dx/bg_size[1], dy/bg_size[0])
+
      return [torch.FloatTensor([[x, y, x+dx, y+dy, score, class_num]])]
 
-#def resize_label(results, top, bottom, left, right, bg_size):
-    # best_score = np.argmax([result[4] for result in results[0]])
-#    new_results = []
-    #for result in results[0]:
-#    for result in results:
-#        class_num = float(result[-1])
-#        score = math.floor(100*float(result[-2]))/100
-#        x = result[0]
-#        y = result[1]
-#        x1 = result[2]
-#        y1 = result[3]
-
-#        dx = result[2] - x
-#        dy = result[3] - y
-
-#        x = x+left
-#        y = y+top
-        #x = int(x * resize)
-        #y = int(y * resize)
-        #dx = int(dx * resize)
-        #dy = int(dy * resize)
-        #x += x_loc
-        #y += y_loc
- #       label = "{} {} {} {} {}".format(class_num, (x+dx/2)/bg_size[1], (y+dy/2)/bg_size[0], dx/bg_size[1], dy/bg_size[0])
- #       new_results.append(torch.FloatTensor([[x, y, x+dx, y+dy, score, class_num]]))
- #   return new_results
 
 def run_inference_for_video():
     start_cams(cameras)
     stream_up = [False for rtsp in cameras]
     start_time = [None for rtsp in cameras]
-    time.sleep(5)
+    print("Threat detection is running")
     while True:
         frames = read()
-#        print(frames)
         cropped_frames = crop_frames(frames,cameras)
         if len(frames) >= 1:
             t_start_inference = time.time()
             total_inference_time=0
-            #frames = [cv.cvtColor(frame, cv.COLOR_BGR2RGB) for frame in frames]
             for i,frame in enumerate(frames):
               if frame is not None:
                 frames[i] = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
@@ -338,6 +248,7 @@ def run_inference_for_video():
                 results,num_detections = perform_inference_on_npu(cropped_frames,model)
             else:
                 results,num_detections = perform_inference_on_batch(cropped_frames,model)
+
             if num_detections > 0:
                 camera_list = []
                 for camera in cameras:
@@ -358,13 +269,10 @@ def run_inference_for_video():
                 print("Results: "+ str(results))
 
             if num_detections > 0:
-                #print("Results: "+ str(results))
                 now = datetime.now()
                 dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
                 for i,result in enumerate(results):
-                    # result,scores = filter(result,frames[i],cameras[i])
                     if len(result[0]) > 0:
-                        # score = scores[0]
                         scores = []
                         for detected_object in result:
                             for n in range(detected_object.shape[0]):
@@ -378,18 +286,6 @@ def run_inference_for_video():
                         print("Date" + dt_string)
                         im = cv.imencode('.jpg', frames[i])[1].tobytes()
                         newId = str(uuid.uuid4())
-                        # try:
-                        #     save_file(s3, s3_bucket, f"{cameras[i]['id']}-image-{newId}-nb.jpg", im)
-                        #     url = get_file(s3, s3_bucket, f"{cameras[i]['id']}-image-{newId}-nb.jpg")
-                        #     print(dt_string)
-                        # except Exception as e:
-                        #     print("Couldn't save to Amazon S3: ", e)
-                        #     break
-#                        try:
-#                            save_file(s3_ampere, "frost-backgrounds", f"{cameras[i]['id']}-image-{newId}-nb.jpg", im)
-
-#                        except Exception as e:
-#                            print("couldn't save to Cachengo S3:", e)
 
                         my_table = PrettyTable()
                         my_table.field_names = ["Detection Name","Number of Detections"]
@@ -431,8 +327,8 @@ def validation_request(image,camera,id,score):
             url = get_file(s3, s3_bucket, f"{camera['id']}-image-{id}.jpg")
             print(url)
             now = time.time()
-            j = {'cameraId': camera['id'], 'imageUrl': url, 'dateTime': str(now), 'imageType': 'weapon', 'bemotionUrl':api_url, 'confidence':score}
-            headers = {"detection-access-key": api_access_key, "detection-access-token": api_secret_key}
+            j = {'cameraId': camera['id'], 'imageUrl': url, 'dateTime': str(now), 'imageType': 'weapon', 'bemotionUrl':api_url, 'confidence':score, 'accessKey':api_access_key, 'accessToken':api_secret_key, 'location':location}
+            headers = {"detection-access-key": 'asd@#$fdsf4yh(&%$#42dfH%3DfSDvqrt2tg099sdjfsdds_dg_dK_FROSTSCIENCE_DETECTION', "detection-access-token": 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImZyb3N0c2NpZW5jZUBmcm9zdHNjaWVuY2UuY29tIiwibmFtZSI6IkFobWFkIE1hdGthcmkiLCJ1c2VySWQiOjk5OTk5OTk5OTk5LCJub3ciOiIyMDIzLTAxLTAxVDA5OjMwOjMyKzAyOjAwIiwiaXNEZXRlY3Rpb24iOnRydWUsImxhbmd1YWdlSWQiOjF9.6ODrQsWkvp66bcORbMxPYG8car7iGFV1tNEkkitIdNc'}
             res = requests.post(validation_url, json=j, headers=headers)
         elif discourse_username:
             save_file(s3, s3_bucket, f"{camera['id']}-image-{id}.jpg", im)
@@ -455,6 +351,7 @@ def validation_request(image,camera,id,score):
     except requests.exceptions.RequestException as e:
         print(f'Request Failed')
         return False
+    
 
 
 def perform_inference_on_batch(frames,model):
@@ -585,28 +482,6 @@ def yolov5_post_process(input_data,orig_image):
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
-#def filter_boxes(boxes, box_confidences, box_class_probs):
-#    """Filter boxes with box threshold. It's a bit different with origin yolov5 post process!
-#
-#    # Arguments
-#        boxes: ndarray, boxes of objects.
-#        box_confidences: ndarray, confidences of objects.
-#        box_class_probs: ndarray, class_probs of objects.
-#
-#    # Returns
-#        boxes: ndarray, filtered boxes.
-#        classes: ndarray, classes for boxes.
-#        scores: ndarray, scores for boxes.
-#    """
-#    box_classes = np.argmax(box_class_probs, axis=-1)
-#    box_class_scores = np.max(box_class_probs, axis=-1)
-#    pos = np.where(box_confidences[..., 0] >= BOX_THESH)
-#
-#    boxes = boxes[pos]
-#    classes = box_classes[pos]
-#    scores = box_class_scores[pos]
-#
-#    return boxes, classes, scores
 def filter_boxes(boxes, box_confidences, box_class_probs):
     """Filter boxes with box threshold. It's a bit different with origin yolov5 post process!
 
@@ -677,34 +552,6 @@ def nms_boxes(boxes, scores):
     keep = np.array(keep)
     return keep
 
-#def process(input, mask, anchors):
-
- #   anchors = [anchors[i] for i in mask]
- #   grid_h, grid_w = map(int, input.shape[0:2])
-
- #   box_confidence = sigmoid(input[..., 4])
- #   box_confidence = np.expand_dims(box_confidence, axis=-1)
-
- #   box_class_probs = sigmoid(input[..., 5:])
-
- #   box_xy = sigmoid(input[..., :2])*2 - 0.5
-
- #   col = np.tile(np.arange(0, grid_w), grid_w).reshape(-1, grid_w)
- #   row = np.tile(np.arange(0, grid_h).reshape(-1, 1), grid_h)
- #   col = col.reshape(grid_h, grid_w, 1, 1).repeat(3, axis=-2)
- #   row = row.reshape(grid_h, grid_w, 1, 1).repeat(3, axis=-2)
- #   grid = np.concatenate((col, row), axis=-1)
- #   box_xy += grid
- #   box_xy *= int(IMG_SIZE/grid_h)
-
- #   box_wh = pow(sigmoid(input[..., 2:4])*2, 2)
- #   box_wh = box_wh * anchors
-
- #   box = np.concatenate((box_xy, box_wh), axis=-1)
-
- 
-#   return box, box_confidence, box_class_probs
-
 def process(input, mask, anchors):
 
     anchors = [anchors[i] for i in mask]
@@ -754,108 +601,30 @@ def filter(predictions,frame,camera):
                 height = y2-y1
                 area = width*height
                 ratio = area/image_area
-    #            if height < width and ratio < max_percentage and ratio != 0.0:
-         #       if ratio < camera['max_percentage'] and ratio != 0.0:
-                if ratio < 0.1 and ratio != 0.0:
 
+                if ratio < 0.1 and ratio != 0.0:
                     detected_object = detected_object.tolist()
                     filtered_predictions.append(detected_object[i])
                     scores.append(score)
                     detected_object = torch.Tensor(detected_object)
 #        return torch.Tensor(filtered_predictions),len(filtered_predictions)
- 
+
         if len(filtered_predictions):
             people_results,num_detections = perform_inference_on_npu([frame],people_model)
             print(str(len(people_results[0][0]))+" people found")
-            for res in people_results[0]:
-                res = res.tolist()
-                for i,_ in enumerate(res):
-                    if res[i][-1] == 0:
-                        height = res[i][3]-res[i][1]
-                        width = res[i][2]-res[i][0]
-                        height_diff_bot = height*.20
-                        height_diff_top = height*.25
-                        res[i][3]-=height_diff_bot
-                        res[i][1]-=height_diff_top
-                        width_diff= width*.20
-                        res[i][0]-=width_diff
-                        res[i][2]+=width_diff
-                        if res[i][1] < 0:
-                            res[i][1] = 0
-                        if res[i][0] < 0:
-                            res[i][0] = 0
-                        if res[i][3] > frame.shape[0]:
-                            res[i][3] = frame.shape[0]
-                        if res[i][2] > frame.shape[1]:
-                            res[i][2] = frame.shape[1]
-                        for pred in filtered_predictions:
-                            x1 = pred[0]
-                            y1 = pred[1]
-                            x2 = pred[2]
-                            y2 = pred[3]
-                            if (x1 >= res[i][0] and x1 <= res[i][2]) or (x2 <= res[i][2] and x2 >= res[i][0]):
-                                if (y1 >= res[i][1] and y2 <= res[i][3]):
-                                    intersecting_preds.append(pred)
-                                    intersecting_preds.append(res[i])
-    for pred in intersecting_preds:
-        height = pred[3]-pred[1]
-        width = pred[2]-pred[0]
-        #print(pred)
-        percent_diff_top = height*.50
-        percent_diff_left = width*.50
-        x1 = pred[0] - percent_diff_left
-        y1 = pred[1] - percent_diff_top
-        x2 = pred[2] + percent_diff_left
-        y2 = pred[3] + percent_diff_top
+            if len(people_results[0][0]) > 0:
+              return torch.Tensor(filtered_predictions),len(filtered_predictions)
 
-        if x1 < 0:
-            x1 = 0
-        if x2 > frame.shape[1]:
-            x2 = frame.shape[1]
-        if y1 < 0:
-            y1 = 0
-        if y2 > frame.shape[0]:
-            y2 = frame.shape[0]
-
-        crop_frame = frame[round(y1):round(y2),round(x1):round(x2)]
-        results,num_detections = perform_inference_on_npu([crop_frame],model)
-
-        if num_detections > 0:
-            for object in intersecting_preds:
-                if object[-1] != 0:
-                    final_preds.append(object)
-            return torch.Tensor(final_preds),len(final_preds)
-
-    # return [torch.Tensor(intersecting_preds)]
-    # return [torch.Tensor(final_preds)]
     return torch.Tensor([]), 0
-         #   for res in people_results[0]:
-         #       res = res.tolist()
-         #       for i,_ in enumerate(res):
-         #           for pred in intersecting_preds:
-         #               if res[i][-1] != 0:
 
-          #                  x1 = pred[0]
-          #                  y1 = pred[1]
-          #                  x2 = pred[2]
-          #                  y2 = pred[3]
-          #                  if (res[i][0] >= x1 and res[i][0] <= x2) or (res[i][2] <= x2  and res[i][2] >= x1):
-          #                      if (res[i][1] >= y1 and res[i][1] <= y2) or (res[i][3] <= y2 and res[i][3] >= y1):
-          #                          continue
-          #              final_preds.append(pred)
-    #return torch.Tensor(final_preds),len(final_preds)
-
-   # return torch.Tensor(filtered_predictions)
 
 image_size=640
 conf_thresh=min([c['conf'] for c in cameras])
 iou_thresh=0.6
 
-#BOX_THRESH = 0.5
 NMS_THRESH = 0.6
 IMG_SIZE = 640
 OBJ_THRESH = 0.4
-# NMS_THRESH = 0.45
 
 if model_path[-4:] == "rknn":
     model = RKNNLite(verbose=False) # successful
@@ -876,7 +645,7 @@ else:
 
     model = torch.hub.load('./ultralytics/yolov5', 'custom', path=model_path, source="local")
     model.conf = conf_thresh
-    model.iou=iou_thresh
+    model.iou = iou_thresh
     model.classes = [80]
 
     people_model = torch.hub.load('./ultralytics/yolov5', 'custom', path='./models/yolov5n.pt', source="local")
