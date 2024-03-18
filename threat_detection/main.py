@@ -601,21 +601,158 @@ def filter(predictions,frame,camera):
                 height = y2-y1
                 area = width*height
                 ratio = area/image_area
-
+    #            if height < width and ratio < max_percentage and ratio != 0.0:
+         #       if ratio < camera['max_percentage'] and ratio != 0.0:
                 if ratio < 0.1 and ratio != 0.0:
+
                     detected_object = detected_object.tolist()
                     filtered_predictions.append(detected_object[i])
                     scores.append(score)
                     detected_object = torch.Tensor(detected_object)
 #        return torch.Tensor(filtered_predictions),len(filtered_predictions)
+ 
+def filter(predictions,frame,camera):
+    filtered_predictions = []
+    intersecting_preds = []
+    people_preds = []
+    final_preds = []
+    scores = []
+    if frame is not None:
+      image_width = frame.shape[1]
+      image_height = frame.shape[0]
+      image_area = image_width*image_height
+    for detected_object in predictions:
+        for i in range(detected_object.shape[0]):
+            score = math.floor(100*float(detected_object[i][-2]))/100
+            if score >= camera['conf']:
+                box = detected_object[i][0:4].detach().cpu().numpy()
+                x1 = box[0]
+                x2 = box[2]
+                y1 = box[1]
+                y2 = box[3]
+                width = x2-x1
+                height = y2-y1
+                area = width*height
+                ratio = area/image_area
+    #            if height < width and ratio < max_percentage and ratio != 0.0:
+         #       if ratio < camera['max_percentage'] and ratio != 0.0:
+                if ratio < 0.1 and ratio != 0.0:
 
+                    detected_object = detected_object.tolist()
+                    filtered_predictions.append(detected_object[i])
+                    scores.append(score)
+                    detected_object = torch.Tensor(detected_object)
+#        return torch.Tensor(filtered_predictions),len(filtered_predictions)
+ 
         if len(filtered_predictions):
             people_results,num_detections = perform_inference_on_npu([frame],people_model)
             print(str(len(people_results[0][0]))+" people found")
-            if len(people_results[0][0]) > 0:
-              return torch.Tensor(filtered_predictions),len(filtered_predictions)
+            for res in people_results[0]:
+                res = res.tolist()
+                for i,_ in enumerate(res):
+                    if res[i][-1] == 0:
+                        height = res[i][3]-res[i][1]
+                        width = res[i][2]-res[i][0]
+                        height_diff_bot = height*.20
+                        height_diff_top = height*.25
+                        res[i][3]-=height_diff_bot
+                        res[i][1]-=height_diff_top
+                        width_diff= width*.20
+                        res[i][0]-=width_diff
+                        res[i][2]+=width_diff
+                        if res[i][1] < 0:
+                            res[i][1] = 0
+                        if res[i][0] < 0:
+                            res[i][0] = 0
+                        if res[i][3] > frame.shape[0]:
+                            res[i][3] = frame.shape[0]
+                        if res[i][2] > frame.shape[1]:
+                            res[i][2] = frame.shape[1]
+                        for pred in filtered_predictions:
+                            x1 = pred[0]
+                            y1 = pred[1]
+                            x2 = pred[2]
+                            y2 = pred[3]
+                            if (x1 >= res[i][0] and x1 <= res[i][2]) or (x2 <= res[i][2] and x2 >= res[i][0]):
+                                if (y1 >= res[i][1] and y2 <= res[i][3]):
+                                    intersecting_preds.append(pred)
+                                    people_preds.append(res[i])
+    for pred in intersecting_preds:
+        height = pred[3]-pred[1]
+        width = pred[2]-pred[0]
+        #print(pred)
+        percent_diff_top = height*.50
+        percent_diff_left = width*.50
+        x1 = pred[0] - percent_diff_left
+        y1 = pred[1] - percent_diff_top
+        x2 = pred[2] + percent_diff_left
+        y2 = pred[3] + percent_diff_top
 
+        if x1 < 0:
+            x1 = 0
+        if x2 > frame.shape[1]:
+            x2 = frame.shape[1]
+        if y1 < 0:
+            y1 = 0
+        if y2 > frame.shape[0]:
+            y2 = frame.shape[0]
+
+        crop_frame = frame[round(y1):round(y2),round(x1):round(x2)]
+        results,num_detections = perform_inference_on_npu([crop_frame],model)
+
+        if num_detections > 0:
+            for object in intersecting_preds:
+                final_preds.append(object)
+            return torch.Tensor(final_preds),len(final_preds)
+    for pred in people_preds:
+        height = pred[3]-pred[1]
+        width = pred[2]-pred[0]
+        #print(pred)
+        percent_diff_top = height*.50
+        percent_diff_left = width*.50
+        x1 = pred[0] - percent_diff_left
+        y1 = pred[1] - percent_diff_top
+        x2 = pred[2] + percent_diff_left
+        y2 = pred[3] + percent_diff_top
+
+        if x1 < 0:
+            x1 = 0
+        if x2 > frame.shape[1]:
+            x2 = frame.shape[1]
+        if y1 < 0:
+            y1 = 0
+        if y2 > frame.shape[0]:
+            y2 = frame.shape[0]
+
+        crop_frame = frame[round(y1):round(y2),round(x1):round(x2)]
+        results,num_detections = perform_inference_on_npu([crop_frame],model)
+
+        if num_detections > 0:
+            for object in intersecting_preds:
+                final_preds.append(object)
+            return torch.Tensor(final_preds),len(final_preds)
+
+    # return [torch.Tensor(intersecting_preds)]
+    # return [torch.Tensor(final_preds)]
     return torch.Tensor([]), 0
+         #   for res in people_results[0]:
+         #       res = res.tolist()
+         #       for i,_ in enumerate(res):
+         #           for pred in intersecting_preds:
+         #               if res[i][-1] != 0:
+
+          #                  x1 = pred[0]
+          #                  y1 = pred[1]
+          #                  x2 = pred[2]
+          #                  y2 = pred[3]
+          #                  if (res[i][0] >= x1 and res[i][0] <= x2) or (res[i][2] <= x2  and res[i][2] >= x1):
+          #                      if (res[i][1] >= y1 and res[i][1] <= y2) or (res[i][3] <= y2 and res[i][3] >= y1):
+          #                          continue
+          #              final_preds.append(pred)
+    #return torch.Tensor(final_preds),len(final_preds)
+
+   # return torch.Tensor(filtered_predictions)
+
 
 
 image_size=640
