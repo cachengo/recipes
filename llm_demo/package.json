@@ -1,0 +1,12 @@
+{
+    "name": "llm-demo",
+    "display_name": "LLM Demo",
+    "description": "Demonstration of LLMs running on symbiote.",
+    "parameters": [],
+    "main": "llm_demo/install.sh",
+    "dependencies": [
+      "llm_demo/install.sh",
+      "utils/cachengo.sh",
+      "utils/parameters.sh"
+    ]
+  }
