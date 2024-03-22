@@ -15,7 +15,7 @@ function do_install {
   
   if [ "$LEGACY" = true ] 
   then
-    sed -i 's/#model#/yolov5n_03-26-23-300.pt/'
+    sed -i 's/#model#/yolov5n_03-26-23-300.pt/' threat_detection/threat_detection.service
     curl -L -o /data/threat_detection/yolov5n_03-26-23-300.pt "https://downloads.staging.cachengo.com/models/yolov5n_03-26-23-300.pt"
     curl -L -o /data/threat_detection/yolov5n.pt "https://downloads.staging.cachengo.com/models/yolov5n.pt"
   else  

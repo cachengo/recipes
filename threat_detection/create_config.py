@@ -96,7 +96,7 @@ with open(config_file, 'w+', encoding='utf-8') as f:
     f.write(new_json)
 
 while True:
-    subprocess.run(["systemctl", "restart", "threat_detection"])
+#    subprocess.run(["systemctl", "restart", "threat_detection"])
     sleep(600) 
 # print(other_options)
 # with open('detections.conf') as f:
