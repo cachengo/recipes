@@ -38,7 +38,7 @@ function do_install {
 #    h_name=$DVR_SERVER_ID
 #  fi 
 
-  h_name=$(ifconfig eth0 | grep -v "::" | grep ":" | grep "inet6" | awk '{ print $2 }')
+  h_name=$(ifconfig eth0 | grep -v "::" | grep ":" | grep "inet6" | awk '{ print $2 }' | grep "fdad")
 
   join_address=""
 
