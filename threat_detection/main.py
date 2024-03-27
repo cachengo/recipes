@@ -25,10 +25,10 @@ import torch
 import queue, threading, time, ffmpeg, argparse, sys
 from itertools import *
 
-from rknnlite.api import RKNNLite
-import rknnlite
+#from rknnlite.api import RKNNLite
+#import rknnlite
 
-from hide_warnings import hide_warnings
+#from hide_warnings import hide_warnings
 
 s3_access_key = None
 s3_secret_key = None
@@ -370,7 +370,7 @@ def rknn_preprocess(frame):
     frame = np.expand_dims(frame,0)
     return frame
 
-@hide_warnings
+#@hide_warnings
 def perform_inference_on_npu(frames,model):
     preds = []
     dets = 0
@@ -645,7 +645,7 @@ def filter(predictions,frame,camera):
 #        return torch.Tensor(filtered_predictions),len(filtered_predictions)
  
         if len(filtered_predictions):
-            people_results,num_detections = perform_inference_on_npu([frame],people_model)
+            people_results,num_detections = perform_inference_on_batch([frame],people_model)
             print(str(len(people_results[0][0]))+" people found")
             for res in people_results[0]:
                 res = res.tolist()
@@ -698,7 +698,7 @@ def filter(predictions,frame,camera):
             y2 = frame.shape[0]
 
         crop_frame = frame[round(y1):round(y2),round(x1):round(x2)]
-        results,num_detections = perform_inference_on_npu([crop_frame],model)
+        results,num_detections = perform_inference_on_batch([crop_frame],model)
 
         if num_detections > 0:
             for object in intersecting_preds:
@@ -725,7 +725,7 @@ def filter(predictions,frame,camera):
             y2 = frame.shape[0]
 
         crop_frame = frame[round(y1):round(y2),round(x1):round(x2)]
-        results,num_detections = perform_inference_on_npu([crop_frame],model)
+        results,num_detections = perform_inference_on_batch([crop_frame],model)
 
         if num_detections > 0:
             for object in intersecting_preds:
@@ -793,3 +793,4 @@ else:
 while True:
     dims = [get_video_size(camera['rtsp']) for camera in cameras]
     run_inference_for_video()
+
