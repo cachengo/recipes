@@ -82,16 +82,21 @@ function do_install {
     chmod +x /data/minio/minio
   fi
 
+  SERVICE_FILE="minio.service"
+  if [ "${#HOSTS_ARR[@]}" -eq 1 ]; then
+      SERVICE_FILE="single-minio.service"
+  fi
+
   echo "Installing Min.io service"
-  sed -i "s/#access_key#/$ACCESS_KEY/" baremetal_minio/minio.service
-  sed -i "s/#secret_key#/$SECRET_KEY/" baremetal_minio/minio.service
-  sed -i "s/#host_number#/$array_len/" baremetal_minio/minio.service
-  sed -i "s/#group_id#/$GROUPID/g" baremetal_minio/minio.service
+  sed -i "s/#access_key#/$ACCESS_KEY/" baremetal_minio/$SERVICE_FILE
+  sed -i "s/#secret_key#/$SECRET_KEY/" baremetal_minio/$SERVICE_FILE
+  sed -i "s/#host_number#/$array_len/" baremetal_minio/$SERVICE_FILE
+  sed -i "s/#group_id#/$GROUPID/g" baremetal_minio/$SERVICE_FILE
   if [ -d '/data/system/system' ]; then
-    cp baremetal_minio/minio.service /data/system/system/minio.service
+    cp baremetal_minio/$SERVICE_FILE /data/system/system/minio.service
     chmod 664 /data/system/system/minio.service
   else
-    cp baremetal_minio/minio.service /lib/systemd/system/minio.service
+    cp baremetal_minio/$SERVICE_FILE /lib/systemd/system/minio.service
     chmod 664 /lib/systemd/system/minio.service 
   fi
   #cp baremetal_minio/minio.service /data/system/system/minio.service

@@ -33,6 +33,7 @@
       "baremetal_minio/minio_lookup.py",
       "baremetal_minio/minio_lookup_dnsmasq.py",
       "baremetal_minio/minio.service",
+      "baremetal_minio/single-minio.service",
       "baremetal_minio/minio_lookup.service",
       "baremetal_minio/restart_avahi.py",
       "baremetal_minio/restart_avahi.service"
