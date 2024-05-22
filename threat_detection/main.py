@@ -635,8 +635,8 @@ def filter(predictions,frame,camera):
                 area = width*height
                 ratio = area/image_area
     #            if height < width and ratio < max_percentage and ratio != 0.0:
-         #       if ratio < camera['max_percentage'] and ratio != 0.0:
-                if ratio < 0.1 and ratio != 0.0:
+                if ratio < camera['max_percentage'] and ratio != 0.0:
+                # if ratio < 0.1 and ratio != 0.0:
 
                     detected_object = detected_object.tolist()
                     filtered_predictions.append(detected_object[i])
