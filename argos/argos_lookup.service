@@ -1,0 +1,11 @@
+[Unit]
+Description=ArgosLookup
+Wants=network-online.target
+After=network-online.target
+[Service]
+Environment=HOSTNAMES='#hostnames_json#'
+ExecStart=/data/argos/service_lookup.py
+Restart=on-failure
+StartLimitBurst=0
+[Install]
+WantedBy=multi-user.target
