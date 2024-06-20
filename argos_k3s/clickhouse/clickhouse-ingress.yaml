@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: clickhouse-client
+  namespace: clickhouse
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+    - host: clickhouse.mybento.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: clickhouse-pv-log
+                port:
+                  number: 8123
+    - host: clickhouse-client.mybento.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: clickhouse-pv-log
+                port:
+                  number: 9000
