@@ -1,0 +1,11 @@
+{
+    "name": "degirum_server",
+    "display_name": "Degirum Server",
+    "description": "Degirum Server is a machine learning API.",
+    "parameters": [],
+    "main": "degirum/run.sh",
+    "dependencies": [
+      "degirum/run.sh",
+      "utils/cachengo.sh",
+    ]
+  }
