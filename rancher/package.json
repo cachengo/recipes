@@ -1,0 +1,28 @@
+{
+    "name": "rancher",
+    "display_name": "Rancher",
+    "description": "Initialize rancher cluster",
+    "parameters": [
+        {
+            "name": "K3S_TOKEN",
+            "display_name": "Secret token",
+            "description": "Secret token used for joining new nodes" ,
+            "type": "string",
+            "required": true,
+            "default": []
+        },
+        {
+            "name": "IP_ADDRESS",
+            "display_name": "Leader IP",
+            "description": "IP address of the leader node" ,
+            "type": "string",
+            "required": false,
+            "default": []
+        }
+    ],
+    "main": "rancher/run.sh",
+    "dependencies": [
+      "rancher/run.sh",
+      "utils/parameters.sh"
+    ]
+  }
