@@ -1,0 +1,11 @@
+{
+  "name": "llama-cpp",
+  "display_name": "Llama Cpp Kubernetes",
+  "description": "Install llama cpp helm chart",
+  "parameters": [],
+  "main": "llama-cpp/run.sh",
+  "dependencies": [
+    "llama-cpp/run.sh",
+    "utils/cachengo.sh"
+  ]
+}
