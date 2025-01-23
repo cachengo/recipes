@@ -1,0 +1,341 @@
+#!/bin/bash
+typeset -x mode="$1";
+
+typeset -x LOG_FILE="/storage.log";
+typeset -x DEVICE="/dev/$(lsblk -no PKNAME $(findmnt -n -o SOURCE /uboot))";
+typeset -x PARTED="/usr/sbin/parted";
+typeset -x ZFS_CACHE_DEVICE="${DEVICE}p5";
+typeset -x ZFS_LOG_DEVICE="${DEVICE}p6";
+typeset -x ZFS_DATA_DEVICE="${DEVICE}p7";
+typeset -x ZFS_CACHE_DEVICE_2="${DEVICE}p8";
+typeset -x ZFS_LOG_DEVICE_2="${DEVICE}p9";
+typeset -x ZFS_DATA_DEVICE_2="${DEVICE}p10";
+typeset -x ZFS_PRIMARY_POOL="cas";
+typeset -x ZFS_VOLUME_0="$ZFS_PRIMARY_POOL/cas0";
+typeset -x ZFS_CACHENGO_POOL="cachengo";
+typeset -x ZFS_CACHENGO_VOLUME="$ZFS_CACHENGO_POOL/cachengo";
+typeset -x STORAGE_BASE="/storage";
+typeset -x ZFS_STORAGE="/$ZFS_VOLUME_0/$STORAGE_BASE";
+typeset -x ZFS_CACHENGO_BASE="/$ZFS_CACHENGO_VOLUME/$STORAGE_BASE";
+typeset -x SYS_VAR_LIB_BASE="/data/system/var/lib";
+typeset -x ZFS_VAR_LIB_BASE="/storage/system/var/lib";
+typeset -x DOCKER="docker";
+typeset -x CONTAINERD="containerd";
+typeset -x RANCHER="rancher";
+typeset -x SYS_DOCKER_BASE="$SYS_VAR_LIB_BASE/$DOCKER";
+typeset -x SYS_CONTAINERD_BASE="$SYS_VAR_LIB_BASE/$CONTAINERD";
+typeset -x SYS_RANCHER_BASE="$SYS_VAR_LIB_BASE/$RANCHER";
+typeset -x ZFS_DOCKER_BASE="$ZFS_VAR_LIB_BASE/$DOCKER";
+typeset -x ZFS_CONTAINERD_BASE="$ZFS_VAR_LIB_BASE/$CONTAINERD";
+typeset -x ZFS_RANCHER_BASE="$ZFS_VAR_LIB_BASE/$RANCHER";
+#
+# size threshold is 400 GB
+# 15GB  -- OS
+# 15GB  -- /data
+# 48GB  -- pool 0 zfs metadata
+# 256GB -- pool 0 zfs data
+# 48GB  -- pool 1 zfs metadata
+# ----------------------------
+# 382GB -- total
+#
+typeset -x THRESHOLD=$((400 * 1024 * 1024 * 1024));
+
+function log() {
+  local message="$1";
+  echo "cas: $message" >> $LOG_FILE 2>&1;
+}
+
+function usage() {
+  echo "USAGE: cas <mode>";
+  echo "  mode:";
+  echo "    setup  -- create partitions on primary device, if required";
+  echo "    config -- create primary zfs pool and volume, if required";
+}
+
+function run_command() {
+  local command="$1";
+  log "running [$command]";
+  local output=$(eval "$command" 2>&1 | tee -a "${LOG_FILE}");
+  log "command returned [$output]";
+  echo "$output";
+}
+
+function run_check_command {
+  local command="$1";
+  log "running [$command]";
+  eval "$command" >> $LOG_FILE 2>&1;
+  local status=$?;
+  log "command status: $status";
+  return $status;
+}
+
+function is_large_disk() {
+  local size="$(run_command "blockdev --getsize64 $DEVICE")";
+  if [ "$size" -gt "$THRESHOLD" ]; then
+    return 0;
+  fi;
+  return 1;
+}
+
+function npart() {
+  local result="$(run_command "parted $DEVICE print | grep '^.[0-9].*' | wc -l")";
+  echo "$result"
+}
+
+function mkpart() {
+  local name="$1";
+  local start="$2";
+  local end="$3";
+  run_command "$PARTED $DEVICE mkpart $name $start $end";
+}
+
+function is_zfs_kernel() {
+  local result="$(run_command "grep zfs_ /boot/System.map-$(uname -r) | wc -l")";
+  echo "$result";
+}
+
+function pool_exists() {
+  local name="$1";
+  return $(run_check_command "zpool status $name");
+}
+
+function volume_exists() {
+  local name="$1";
+  return $(run_check_command "zfs list $name");
+}
+
+function create_primary_pool() {
+  run_check_command "zpool create -f -o ashift=13 $ZFS_PRIMARY_POOL $ZFS_DATA_DEVICE";
+  run_check_command "zpool add $ZFS_PRIMARY_POOL cache $ZFS_CACHE_DEVICE";
+  run_check_command "zpool add -f $ZFS_PRIMARY_POOL log $ZFS_LOG_DEVICE";
+}
+
+function create_cachengo_pool() {
+  run_check_command "zpool create -f -o ashift=13 $ZFS_CACHENGO_POOL $ZFS_DATA_DEVICE_2";
+  run_check_command "zpool add $ZFS_CACHENGO_POOL cache $ZFS_CACHE_DEVICE_2";
+  run_check_command "zpool add -f $ZFS_CACHENGO_POOL log $ZFS_LOG_DEVICE_2";
+}
+
+function create_volume() {
+  local name="$1";
+  run_check_command "zfs create $name";
+}
+
+function is_daemon_running() {
+  local name="$1";
+  log "checking if $name daemon is running";
+  run_check_command "systemctl --type=service --state=running | grep $name";
+  return $?;
+}
+
+function start_stop_daemon() {
+  local command="$1";
+  local name="$2";
+  run_command "systemctl $command $name";
+}
+
+function move_docker_dir() {
+  log "checking $SYS_DOCKER_BASE";
+  if [ ! -L "$SYS_DOCKER_BASE" ]; then
+    log "relocating $SYS_DOCKER_BASE to $ZFS_DOCKER_BASE";
+    is_daemon_running "$DOCKER";
+    docker_not_running=$?;
+    if [ $docker_not_running -eq 0 ]; then
+      start_stop_daemon "stop" "$DOCKER";
+    fi;
+
+    run_command "mkdir -p $ZFS_VAR_LIB_BASE";
+    run_command "mv $SYS_DOCKER_BASE/ $ZFS_VAR_LIB_BASE/";
+    run_command "ln -s $ZFS_DOCKER_BASE/ $SYS_DOCKER_BASE";
+
+    if [ $docker_not_running -eq 0 ]; then
+      start_stop_daemon "start" "$DOCKER";
+    fi;
+  fi;
+  log "$SYS_DOCKER_BASE has been relocated";
+}
+
+function move_containerd_dir() {
+  log "checking $SYS_CONTAINERD_BASE";
+  if [ ! -L "$SYS_CONTAINERD_BASE" ]; then
+    log "relocating $SYS_CONTAINERD_BASE to $ZFS_CONTAINERD_BASE";
+    is_daemon_running "$CONTAINERD";
+    containerd_not_running=$?;
+    if [ $containerd_not_running -eq 0 ]; then
+      start_stop_daemon "stop" "$CONTAINERD";
+    fi;
+
+    run_command "mkdir -p $ZFS_VAR_LIB_BASE";
+    run_command "mv $SYS_CONTAINERD_BASE/ $ZFS_VAR_LIB_BASE/";
+    run_command "ln -s $ZFS_CONTAINERD_BASE/ $SYS_CONTAINERD_BASE";
+
+    if [ $containerd_not_running -eq 0 ]; then
+      start_stop_daemon "start" "$CONTAINERD";
+    fi;
+  fi;
+  log "$SYS_CONTAINERD_BASE has been relocated";
+}
+
+function move_rancher_dir() {
+  log "checking $SYS_RANCHER_BASE";
+  if [ ! -L "$SYS_RANCHER_BASE" ]; then
+    log "relocating $SYS_RANCHER_BASE to $ZFS_RANCHER_BASE";
+
+    run_command "mkdir -p $ZFS_VAR_LIB_BASE";
+    run_command "mv $SYS_RANCHER_BASE/ $ZFS_VAR_LIB_BASE/";
+    run_command "ln -s $ZFS_RANCHER_BASE/ $SYS_RANCHER_BASE";
+
+  fi;
+  log "$SYS_RANCHER_BASE has been relocated";
+}
+
+#
+# main
+#
+if [ x"$mode" == "x" ]; then
+  usage;
+  exit 1;
+fi;
+
+if [ "$mode" != "setup" -a "$mode" != "config" ]; then
+  echo "ERROR: invalid mode: $mode";
+  usage;
+  exit 1;
+fi;
+
+log "===";
+log "=== start $mode: `date`";
+log "===";
+
+# setup
+if [ "$mode" == "setup" ]; then
+  log "$mode -- setting up storage volumes on $DEVICE"
+  result=$(npart);
+  log "number of partitions on $DEVICE is $result";
+  if [ $result -lt 5 ]; then
+    log "creating zfs cache partition";
+    mkpart "zfscache" "30G" "62G"; 
+  fi;
+  if [ $result -lt 6 ]; then
+    log "creating zfs log partition";
+    mkpart "zfslog" "62G" "78G";
+  fi;
+  if [ $result -lt 7 ]; then
+    log "creating zfs data partition";
+    is_large_disk;
+    if [ $? -eq 0 ]; then
+      log "$DEVICE size is above threshold";
+      mkpart "zfsdata" "78G" "334G";
+      log "creating zfs cache 2 partition";
+      mkpart "zfscache2" "334G" "366G";
+      log "creating zfs log 2 partition";
+      mkpart "zfslog2" "366G" "382G";
+      log "creating zfs data 2 partition";
+      mkpart "zfsdata2" "382G" "100%";
+    else
+      log "$DEVICE size is below threshold";
+      mkpart "zfsdata" "78G" "100%";
+    fi;
+  fi;
+  if [ $result -ge 7 ]; then
+    log "nothing to do";
+  fi;
+  run_command "parted $DEVICE print";
+fi;
+
+# config
+if [ "$mode" == "config" ]; then
+  log "$mode -- configuring zfs storage";
+  log "checking for zfs support in the kernel";
+  result=$(is_zfs_kernel);
+  if [ $result -eq 0 ]; then
+    log "current kernel does not seem to support zfs";
+    exit 1;
+  else
+    log "current kernel supports zfs; proceeding with configuration";
+  fi;
+
+  # primary (RaN) pool
+  log "checking if primary pool exists";
+  pool_exists "$ZFS_PRIMARY_POOL";
+  result=$?;
+  if [ $result -eq 0 ]; then
+    log "pool $ZFS_PRIMARY_POOL already exists; not creating";
+  else
+    log "pool $ZFS_PRIMARY_POOL does not exist; creating it";
+    create_primary_pool;
+    run_command "zpool status";
+  fi;
+
+  log "checking if volume $ZFS_VOLUME_0 exist";
+  volume_exists "$ZFS_VOLUME_0";
+  result=$?;
+  if [ $result -eq 0 ]; then
+    log "volume $ZFS_VOLUME_0 already exists; not creating";
+  else
+    log "volume $ZFS_VOLUME_0 does not exist; creating it";
+    create_volume "$ZFS_VOLUME_0";
+    run_command "zfs list";
+  fi;
+
+  log "checking $STORAGE_BASE directory";
+  if [ ! -e "$STORAGE_BASE" ]; then
+    log "$STORAGE_BASE does not exist; creating";
+    run_check_command "mkdir -p $ZFS_STORAGE";
+    run_check_command "chown cachengo:cachengo $ZFS_STORAGE";
+    run_check_command "ln -s $ZFS_STORAGE $STORAGE_BASE";
+  else
+    log "$STORAGE_BASE exists; nothing to do";
+    run_command "ls -ld $STORAGE_BASE";
+  fi;
+
+  is_large_disk;
+  if [ $? -eq 0 ]; then
+    log "$DEVICE size is above threshold";
+    # cachengo pool
+    log "checking if $ZFS_CACHENGO_POOL pool exists";
+    pool_exists "$ZFS_CACHENGO_POOL";
+    result=$?;
+    if [ $result -eq 0 ]; then
+      log "pool $ZFS_CACHENGO_POOL already exists; not creating";
+    else
+      log "pool $ZFS_CACHENGO_POOL does not exist; creating it";
+      create_cachengo_pool;
+      run_command "zpool status";
+    fi;
+
+    # cachengo volume
+    log "checking if volume $ZFS_CACHENGO_VOLUME exist";
+    volume_exists "$ZFS_CACHENGO_VOLUME";
+    result=$?;
+    if [ $result -eq 0 ]; then
+      log "volume $ZFS_CACHENGO_VOLUME already exists; not creating";
+    else
+      log "volume $ZFS_CACHENGO_VOLUME does not exist; creating it";
+      create_volume "$ZFS_CACHENGO_VOLUME";
+      run_command "zfs list";
+    fi;
+
+    # cachengo storage base
+    log "checking $ZFS_CACHENGO_BASE directory";
+    if [ ! -e "$ZFS_CACHENGO_BASE" ]; then
+      log "$ZFS_CACHENGO_BASE does not exist; creating";
+      run_check_command "mkdir -p $ZFS_CACHENGO_BASE";
+      run_check_command "chown cachengo:cachengo $ZFS_CACHENGO_BASE";
+    else
+      log "$ZFS_CACHENGO_BASE exists; nothing to do";
+      run_command "ls -ld $ZFS_CACHENGO_BASE";
+    fi;
+  fi;
+
+  log "checking daemon directories in $SYS_VAR_LIB_BASE";
+  move_docker_dir;
+  move_containerd_dir;
+  move_rancher_dir;
+fi;
+
+log "===";
+log "=== end $mode: `date`";
+log "===";
+
+exit 0;

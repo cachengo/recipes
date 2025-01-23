@@ -1,0 +1,16 @@
+{
+    "name": "zfs-update",
+    "display_name": "ZFS Update",
+    "description": "Convert filesystem to zfs",
+    "parameters": [],
+    "main": "zfs_update/run.sh",
+    "dependencies": [
+      "zfs_update/run.sh",
+      "zfs_update/old_init",
+      "zfs_update/init",
+      "zfs_update/cas",
+      "zfs_update/cachengo-cas-configurator.service",
+      "utils/cachengo.sh",
+      "utils/parameters.sh"
+    ]
+  }

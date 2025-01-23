@@ -1,0 +1,13 @@
+[Unit]
+Description=Cachengo CAS Configuration Service
+After=local-fs.target zfs.target
+ConditionPathExists=/sbin/cas
+
+[Service]
+Type=oneshot
+ExecStart=/sbin/cas setup
+ExecStart=/sbin/cas config
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

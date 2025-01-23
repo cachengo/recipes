@@ -1,0 +1,13 @@
+#!/bin/sh
+echo "----- Init script enter. Mounting /data -----" | tee /dev/kmsg
+
+ROOT_DEV=/dev/$(dmesg | awk '/EXT4-fs/ {print $4}' | tr -d '()' | head -n 1 | sed 's/...$//')
+DATA_DEV=/dev/$(dmesg | awk '/EXT4-fs/ {print $4}' | tr -d '()' | head -n 1 | sed 's/...$//')p4
+
+resize2fs $DATA_DEV 7324218
+parted $ROOT_DEV --script unit B resizepart 4 30000000000
+#Mount devices that need to be present for systemd to run below. Otherwise let systemd mount them
+mount $DATA_DEV /data
+
+#Run systemd
+exec /lib/systemd/systemd "$@"
