@@ -1,0 +1,9 @@
+#!/bin/sh
+echo "----- Init script enter. Mounting /data -----" | tee /dev/kmsg
+
+DATA_DEV=/dev/$(dmesg | awk '/EXT4-fs/ {print $4}' | tr -d '()' | head -n 1 | sed 's/...$//')p4
+
+mount $DATA_DEV /data
+
+#Run systemd
+exec /lib/systemd/systemd "$@"

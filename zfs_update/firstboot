@@ -1,0 +1,21 @@
+ethtool -s eth0 speed 1000 duplex full autoneg off
+chown -R zerotier-one:zerotier-one /data/system/var/lib/zerotier-one
+modprobe tun
+modprobe sunrpc
+systemctl restart zerotier-one
+systemctl restart cachengo
+sudo ip link set dev eth0 down
+macchanger --mac=74:9a:c0:00:1a:21 eth0
+sudo ip link set dev eth0 up
+DRIVE=$(lsblk -f | grep data | awk '{ print $1 }' | sed 's~[^[:alnum:]/]\+~~g')
+mount /dev/$DRIVE /data
+lxc list || true
+echo performance | tee /sys/devices/platform/fdab0000.npu/devfreq/fdab0000.npu/governor > /dev/null || true
+echo performance | tee /sys/devices/platform/fb000000.gpu/devfreq/fb000000.gpu/governor > /dev/null || true
+echo performance | tee /sys/bus/cpu/devices/cpu*/cpufreq/scaling_governor > /dev/null || true
+echo performance | tee /sys/devices/platform/dmc/devfreq/dmc/governor > /dev/null || true
+ROOT_DEV=/dev/$(lsblk -f | grep data | awk '{ print $1 }' | sed 's~[^[:alnum:]/]\+~~g' | sed 's/..$//')
+yes | parted $ROOT_DEV ---pretend-input-tty resizepart 4 30G
+resize2fs $DRIVE
+systemctl enable cachengo-cas-configurator
+systemctl start cachengo-cas-configurator

@@ -8,6 +8,8 @@
       "zfs_update/run.sh",
       "zfs_update/old_init",
       "zfs_update/init",
+      "zfs_update/firstboot",
+      "zfs_update/old_firstboot",
       "zfs_update/cas",
       "zfs_update/cachengo-cas-configurator.service",
       "utils/cachengo.sh",

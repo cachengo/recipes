@@ -18,13 +18,13 @@ function do_install {
   rm -rf /boot/config*
   rm -rf /boot/dtbs/*
   rm -rf /boot/initrd*
-  rm -rf /vmlinuz*
+  rm -rf /boot/vmlinuz-5.10.66-1-rockchip-g856bdc53aa57
 
   dpkg -i ./linux*.deb
   rm -rf ./linux*.deb
 
-  cp /boot/dtbs/5.10.66-1-rockchip-ga3df2c4e4892/rockchip/rk3588-rock-5b.dtb /boot/rk3588-rock-5b.dtb
-  cp /boot/vmlinuz* /boot/Image
+  cp /boot/dtbs/5.10.66-1-rockchip-ga3df2c4e4892/rockchip/rk3588-zaku2.dtb /boot/rk3588-rock-5b.dtb  
+  cp /boot/vmlinuz-5.10.66-1-rockchip-ga3df2c4e4892 /boot/Image
 
   apt install -y zfsutils-linux
   
@@ -35,15 +35,20 @@ function do_install {
   chmod +x /sbin/cas
   cp zfs_update/cachengo-cas-configurator.service /lib/systemd/system/cachengo-cas-configurator.service
   chmod 664 /lib/systemd/system/cachengo-cas-configurator.service
-  systemctl enable cachengo-cas-configurator
+  cp zfs_update/firstboot /sbin/firstboot
+  chmod +x /sbin/firstboot
 
   echo "Installation Successful"
+  echo "Rebooting"
+  # reboot
 }
 
 function uninstall_only {
   echo "Updating init file"
   cp zfs_update/old_init /sbin/init
   chmod +x /sbin/init
+  cp zfs_update/old_firstboot /sbin/firstboot
+  chmod +x /sbin/firstboot
   echo "Uninstallation Successful"
 }
 
