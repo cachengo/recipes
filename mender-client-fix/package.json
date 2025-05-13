@@ -1,0 +1,11 @@
+{
+  "name": "mender-client-fix",
+  "display_name": "Fix mender-client",
+  "description": "Fixes OpenSSL dependency for mender-client allowing for OTA updates",
+  "main": "mender-client-fix/run.sh",
+  "dependencies": [
+    "mender-client-fix/run.sh",
+    "mender-client-fix/libssl1.1_1.1.1f-1ubuntu2.23_arm64.deb",
+    "utils/cachengo.sh"
+  ]
+}
